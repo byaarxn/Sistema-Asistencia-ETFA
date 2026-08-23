@@ -1,0 +1,305 @@
+{% extends "base.html" %}
+
+{% block title %}
+Nuevo Alumno | ETFA
+{% endblock %}
+
+{% block page_title %}
+Nuevo alumno
+{% endblock %}
+
+{% block page_description %}
+Registro de alumnos del Primer Año Militar
+{% endblock %}
+
+{% block content %}
+
+<div class="page-header-card">
+
+    <div>
+
+        <span class="panel-label">
+            NUEVO REGISTRO
+        </span>
+
+        <h2>
+            Registrar alumno
+        </h2>
+
+        <p>
+            Primer Año Militar · Paralelo C · ETFA
+        </p>
+
+    </div>
+
+    <a
+        href="{{ url_for('alumnos') }}"
+        class="btn-cancel"
+    >
+        ← Volver
+    </a>
+
+</div>
+
+
+<div class="form-card">
+
+    <div class="form-card-header">
+
+        <span class="panel-label">
+            INFORMACIÓN
+        </span>
+
+        <h2>
+            Datos del alumno
+        </h2>
+
+        <p>
+            Complete la información solicitada.
+        </p>
+
+    </div>
+
+
+    <form
+        method="POST"
+        action="{{ url_for('nuevo_alumno') }}"
+        class="student-form"
+    >
+
+        <div class="form-grid">
+
+            <div class="form-group">
+
+                <label>
+                    Número de lista
+                </label>
+
+                <input
+                    type="number"
+                    name="numero_lista"
+                    min="1"
+                    placeholder="Ej. 1"
+                    required
+                >
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label>
+                    Cédula
+                </label>
+
+                <input
+                    type="text"
+                    name="cedula"
+                    maxlength="10"
+                    minlength="10"
+                    pattern="[0-9]{10}"
+                    inputmode="numeric"
+                    placeholder="Ej. 1750000000"
+                    required
+                >
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label>
+                    Nombres
+                </label>
+
+                <input
+                    type="text"
+                    name="nombres"
+                    placeholder="Ingrese los nombres"
+                    required
+                >
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label>
+                    Apellidos
+                </label>
+
+                <input
+                    type="text"
+                    name="apellidos"
+                    placeholder="Ingrese los apellidos"
+                    required
+                >
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label>
+                    Curso
+                </label>
+
+                <input
+                    type="text"
+                    name="curso"
+                    value="Primer Año Militar"
+                    required
+                >
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label>
+                    Paralelo
+                </label>
+
+                <input
+                    type="text"
+                    name="paralelo"
+                    value="C"
+                    required
+                >
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label>
+                    Especialidad
+                </label>
+
+                <select
+                    name="especialidad"
+                    required
+                >
+
+                    <option value="">
+                        Seleccione una especialidad
+                    </option>
+
+                    <option value="Especialidad por asignar">
+                        Especialidad por asignar
+                    </option>
+
+                    <option value="Tránsito Aéreo">
+                        Tránsito Aéreo
+                    </option>
+
+                    <option value="Meteorología">
+                        Meteorología
+                    </option>
+
+                    <option value="Defensa Aérea">
+                        Defensa Aérea
+                    </option>
+
+                    <option value="Despachador de Vuelo">
+                        Despachador de Vuelo
+                    </option>
+
+                    <option value="Abastecimientos">
+                        Abastecimientos
+                    </option>
+
+                    <option value="Comunicaciones">
+                        Comunicaciones
+                    </option>
+
+                    <option value="Mantenimiento">
+                        Mantenimiento
+                    </option>
+
+                    <option value="Electrónica">
+                        Electrónica
+                    </option>
+
+                    <option value="Informática">
+                        Informática
+                    </option>
+
+                    <option value="Personal">
+                        Personal
+                    </option>
+
+                    <option value="Inteligencia">
+                        Inteligencia
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label>
+                    Condición
+                </label>
+
+                <select
+                    name="estado"
+                    required
+                >
+
+                    <option value="DISPONIBLE">
+                        Disponible
+                    </option>
+
+                    <option value="DESCANSO MÉDICO">
+                        Descanso médico
+                    </option>
+
+                </select>
+
+            </div>
+
+        </div>
+
+
+        <div class="schedule-info-box">
+
+            <strong>
+                Estado del alumno
+            </strong>
+
+            <p>
+                Los alumnos disponibles participan normalmente
+                en el control de asistencia. Un alumno en
+                descanso médico no será considerado ausente
+                mientras mantenga dicha condición.
+            </p>
+
+        </div>
+
+
+        <div class="form-actions">
+
+            <a
+                href="{{ url_for('alumnos') }}"
+                class="btn-cancel"
+            >
+                Cancelar
+            </a>
+
+            <button
+                type="submit"
+                class="btn-primary"
+            >
+                Guardar alumno
+            </button>
+
+        </div>
+
+    </form>
+
+</div>
+
+{% endblock %}

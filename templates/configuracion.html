@@ -1,0 +1,346 @@
+{% extends "base.html" %}
+
+{% block title %}
+Configuración | ETFA
+{% endblock %}
+
+{% block page_title %}
+Configuración
+{% endblock %}
+
+{% block page_description %}
+Información y parámetros generales del sistema
+{% endblock %}
+
+{% block content %}
+
+<div class="page-header-card">
+
+    <div>
+
+        <span class="panel-label">
+            SISTEMA
+        </span>
+
+        <h2>
+            Configuración general
+        </h2>
+
+        <p>
+            Resumen operativo del sistema ETFA.
+        </p>
+
+    </div>
+
+</div>
+
+
+<div class="report-stats-grid">
+
+    <div class="report-stat-card">
+
+        <div class="report-stat-icon">
+            👥
+        </div>
+
+        <div>
+
+            <span>
+                Alumnos registrados
+            </span>
+
+            <strong>
+                {{ total_alumnos }}
+            </strong>
+
+            <small>
+                Nómina general
+            </small>
+
+        </div>
+
+    </div>
+
+
+    <div class="report-stat-card">
+
+        <div class="report-stat-icon">
+            👤
+        </div>
+
+        <div>
+
+            <span>
+                Usuarios activos
+            </span>
+
+            <strong>
+                {{ usuarios_activos }}
+            </strong>
+
+            <small>
+                Acceso al sistema
+            </small>
+
+        </div>
+
+    </div>
+
+
+    <div class="report-stat-card">
+
+        <div class="report-stat-icon">
+            🕒
+        </div>
+
+        <div>
+
+            <span>
+                Horario
+            </span>
+
+            <strong style="font-size:14px;">
+
+                {% if horario_activo %}
+
+                    {{ horario_activo.nombre }}
+
+                {% else %}
+
+                    Sin horario
+
+                {% endif %}
+
+            </strong>
+
+            <small>
+                Configuración activa
+            </small>
+
+        </div>
+
+    </div>
+
+
+    <div class="report-stat-card">
+
+        <div class="report-stat-icon">
+            ✓
+        </div>
+
+        <div>
+
+            <span>
+                Estado
+            </span>
+
+            <strong class="report-success">
+                Operativo
+            </strong>
+
+            <small>
+                Sistema funcionando
+            </small>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<div class="config-layout">
+
+    <div class="panel">
+
+        <div class="panel-header">
+
+            <div>
+
+                <span class="panel-label">
+                    CONTROL
+                </span>
+
+                <h2>
+                    Parámetros operativos
+                </h2>
+
+            </div>
+
+        </div>
+
+
+        <div style="
+            padding:22px;
+            display:grid;
+            gap:12px;
+        ">
+
+            <div class="schedule-info-box">
+
+                <strong>
+                    Horarios
+                </strong>
+
+                <p>
+                    La hora de entrada, hora de salida y
+                    tolerancia se administran desde el
+                    módulo Horarios.
+                </p>
+
+                <div style="margin-top:12px;">
+
+                    <a
+                        href="{{ url_for('horarios') }}"
+                        class="btn-primary"
+                    >
+                        Gestionar horarios
+                    </a>
+
+                </div>
+
+            </div>
+
+
+            <div class="schedule-info-box">
+
+                <strong>
+                    Nómina de estudiantes
+                </strong>
+
+                <p>
+                    La nómina se genera automáticamente
+                    a partir de los alumnos registrados
+                    y su número de lista.
+                </p>
+
+                <div style="margin-top:12px;">
+
+                    <a
+                        href="{{ url_for('nomina') }}"
+                        class="btn-primary"
+                    >
+                        Ver nómina
+                    </a>
+
+                </div>
+
+            </div>
+
+
+            <div class="schedule-info-box">
+
+                <strong>
+                    Usuarios
+                </strong>
+
+                <p>
+                    Los permisos y credenciales se
+                    administran desde el módulo Usuarios.
+                </p>
+
+                <div style="margin-top:12px;">
+
+                    <a
+                        href="{{ url_for('auth.usuarios') }}"
+                        class="btn-primary"
+                    >
+                        Gestionar usuarios
+                    </a>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <div class="config-summary-card">
+
+        <span class="panel-label">
+            HORARIO ACTUAL
+        </span>
+
+        <h2>
+            Jornada activa
+        </h2>
+
+
+        {% if horario_activo %}
+
+            <div class="config-value-card">
+
+                <span>
+                    Nombre
+                </span>
+
+                <strong style="font-size:15px;">
+                    {{ horario_activo.nombre }}
+                </strong>
+
+            </div>
+
+
+            <div class="config-value-card">
+
+                <span>
+                    Entrada
+                </span>
+
+                <strong>
+                    {{ horario_activo.hora_entrada }}
+                </strong>
+
+            </div>
+
+
+            <div class="config-value-card">
+
+                <span>
+                    Salida
+                </span>
+
+                <strong>
+                    {{ horario_activo.hora_salida }}
+                </strong>
+
+            </div>
+
+
+            <div class="config-value-card">
+
+                <span>
+                    Tolerancia
+                </span>
+
+                <strong>
+                    {{ horario_activo.tolerancia_minutos }} min
+                </strong>
+
+            </div>
+
+        {% else %}
+
+            <div class="schedule-info-box">
+
+                <strong>
+                    Sin horario activo
+                </strong>
+
+                <p>
+                    Debe registrar un horario para
+                    calcular correctamente puntualidad
+                    y atrasos.
+                </p>
+
+            </div>
+
+        {% endif %}
+
+    </div>
+
+</div>
+
+{% endblock %}

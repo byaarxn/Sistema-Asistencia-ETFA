@@ -1,0 +1,171 @@
+{% extends "base.html" %}
+
+{% block title %}
+Nuevo Horario | ETFA
+{% endblock %}
+
+{% block page_title %}
+Nuevo horario
+{% endblock %}
+
+{% block page_description %}
+Crear una nueva configuración de jornada
+{% endblock %}
+
+{% block content %}
+
+<div class="page-header-card">
+
+    <div>
+
+        <span class="panel-label">
+            NUEVO HORARIO
+        </span>
+
+        <h2>
+            Configuración de jornada
+        </h2>
+
+        <p>
+            El nuevo horario quedará activo automáticamente.
+        </p>
+
+    </div>
+
+    <a href="{{ url_for('horarios') }}"
+       class="btn-cancel">
+
+        ← Volver
+
+    </a>
+
+</div>
+
+
+<div class="form-card">
+
+    <div class="form-card-header">
+
+        <span class="panel-label">
+            DATOS
+        </span>
+
+        <h2>
+            Información del horario
+        </h2>
+
+        <p>
+            Configure las horas utilizadas para asistencia.
+        </p>
+
+    </div>
+
+
+    <form method="POST"
+          action="{{ url_for('nuevo_horario') }}"
+          class="student-form">
+
+        <div class="form-grid">
+
+            <div class="form-group">
+
+                <label>
+                    Nombre del horario
+                </label>
+
+                <input
+                    type="text"
+                    name="nombre"
+                    placeholder="Ej. Horario General ETFA"
+                    required>
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label>
+                    Minutos de tolerancia
+                </label>
+
+                <input
+                    type="number"
+                    name="tolerancia_minutos"
+                    min="0"
+                    max="120"
+                    value="5"
+                    required>
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label>
+                    Hora de entrada
+                </label>
+
+                <input
+                    type="time"
+                    name="hora_entrada"
+                    value="07:00"
+                    required>
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label>
+                    Hora de salida
+                </label>
+
+                <input
+                    type="time"
+                    name="hora_salida"
+                    value="16:00"
+                    required>
+
+            </div>
+
+        </div>
+
+
+        <div class="schedule-info-box">
+
+            <strong>
+                Ejemplo de tolerancia
+            </strong>
+
+            <p>
+                Si la entrada es 07:00 y la tolerancia es de
+                5 minutos, el alumno será puntual hasta las
+                07:05. Desde las 07:06 será atrasado.
+            </p>
+
+        </div>
+
+
+        <div class="form-actions">
+
+            <a href="{{ url_for('horarios') }}"
+               class="btn-cancel">
+
+                Cancelar
+
+            </a>
+
+            <button type="submit"
+                    class="btn-primary">
+
+                Guardar y activar
+
+            </button>
+
+        </div>
+
+    </form>
+
+</div>
+
+{% endblock %}

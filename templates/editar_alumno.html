@@ -1,0 +1,329 @@
+{% extends "base.html" %}
+
+{% block title %}
+Editar Alumno | ETFA
+{% endblock %}
+
+{% block page_title %}
+Editar alumno
+{% endblock %}
+
+{% block page_description %}
+Actualizar información y condición del alumno
+{% endblock %}
+
+{% block content %}
+
+<div class="page-header-card">
+
+    <div>
+
+        <span class="panel-label">
+            MODIFICACIÓN
+        </span>
+
+        <h2>
+            Editar información
+        </h2>
+
+        <p>
+            {{ alumno.nombres }} {{ alumno.apellidos }}
+        </p>
+
+    </div>
+
+    <a
+        href="{{ url_for('alumnos') }}"
+        class="btn-cancel"
+    >
+        ← Volver
+    </a>
+
+</div>
+
+
+<div class="form-card">
+
+    <div class="form-card-header">
+
+        <span class="panel-label">
+            DATOS PERSONALES
+        </span>
+
+        <h2>
+            Información del alumno
+        </h2>
+
+        <p>
+            Modifique los datos necesarios.
+        </p>
+
+    </div>
+
+
+    <form
+        method="POST"
+        action="{{ url_for(
+            'editar_alumno',
+            id_alumno=alumno.id_alumno
+        ) }}"
+        class="student-form"
+    >
+
+        <div class="form-grid">
+
+            <div class="form-group">
+
+                <label>
+                    Número de lista
+                </label>
+
+                <input
+                    type="number"
+                    name="numero_lista"
+                    min="1"
+                    value="{{ alumno.numero_lista or '' }}"
+                    required
+                >
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label>
+                    Cédula
+                </label>
+
+                <input
+                    type="text"
+                    name="cedula"
+                    maxlength="10"
+                    minlength="10"
+                    pattern="[0-9]{10}"
+                    value="{{ alumno.cedula }}"
+                    required
+                >
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label>
+                    Nombres
+                </label>
+
+                <input
+                    type="text"
+                    name="nombres"
+                    value="{{ alumno.nombres }}"
+                    required
+                >
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label>
+                    Apellidos
+                </label>
+
+                <input
+                    type="text"
+                    name="apellidos"
+                    value="{{ alumno.apellidos }}"
+                    required
+                >
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label>
+                    Curso
+                </label>
+
+                <input
+                    type="text"
+                    name="curso"
+                    value="{{ alumno.curso }}"
+                    required
+                >
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label>
+                    Paralelo
+                </label>
+
+                <input
+                    type="text"
+                    name="paralelo"
+                    value="{{ alumno.paralelo }}"
+                    required
+                >
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label>
+                    Especialidad
+                </label>
+
+                <select
+                    name="especialidad"
+                    required
+                >
+
+                    <option
+                        value="Especialidad por asignar"
+                        {% if alumno.especialidad == "Especialidad por asignar" %}selected{% endif %}
+                    >
+                        Especialidad por asignar
+                    </option>
+
+                    <option
+                        value="Tránsito Aéreo"
+                        {% if alumno.especialidad == "Tránsito Aéreo" %}selected{% endif %}
+                    >
+                        Tránsito Aéreo
+                    </option>
+
+                    <option
+                        value="Meteorología"
+                        {% if alumno.especialidad == "Meteorología" %}selected{% endif %}
+                    >
+                        Meteorología
+                    </option>
+
+                    <option
+                        value="Defensa Aérea"
+                        {% if alumno.especialidad == "Defensa Aérea" %}selected{% endif %}
+                    >
+                        Defensa Aérea
+                    </option>
+
+                    <option
+                        value="Despachador de Vuelo"
+                        {% if alumno.especialidad == "Despachador de Vuelo" %}selected{% endif %}
+                    >
+                        Despachador de Vuelo
+                    </option>
+
+                    <option
+                        value="Abastecimientos"
+                        {% if alumno.especialidad == "Abastecimientos" %}selected{% endif %}
+                    >
+                        Abastecimientos
+                    </option>
+
+                    <option
+                        value="Comunicaciones"
+                        {% if alumno.especialidad == "Comunicaciones" %}selected{% endif %}
+                    >
+                        Comunicaciones
+                    </option>
+
+                    <option
+                        value="Mantenimiento"
+                        {% if alumno.especialidad == "Mantenimiento" %}selected{% endif %}
+                    >
+                        Mantenimiento
+                    </option>
+
+                    <option
+                        value="Electrónica"
+                        {% if alumno.especialidad == "Electrónica" %}selected{% endif %}
+                    >
+                        Electrónica
+                    </option>
+
+                    <option
+                        value="Informática"
+                        {% if alumno.especialidad == "Informática" %}selected{% endif %}
+                    >
+                        Informática
+                    </option>
+
+                    <option
+                        value="Personal"
+                        {% if alumno.especialidad == "Personal" %}selected{% endif %}
+                    >
+                        Personal
+                    </option>
+
+                    <option
+                        value="Inteligencia"
+                        {% if alumno.especialidad == "Inteligencia" %}selected{% endif %}
+                    >
+                        Inteligencia
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label>
+                    Condición
+                </label>
+
+                <select
+                    name="estado"
+                    required
+                >
+
+                    <option
+                        value="DISPONIBLE"
+                        {% if alumno.estado == "DISPONIBLE" %}selected{% endif %}
+                    >
+                        Disponible
+                    </option>
+
+                    <option
+                        value="DESCANSO MÉDICO"
+                        {% if alumno.estado == "DESCANSO MÉDICO" %}selected{% endif %}
+                    >
+                        Descanso médico
+                    </option>
+
+                </select>
+
+            </div>
+
+        </div>
+
+
+        <div class="form-actions">
+
+            <a
+                href="{{ url_for('alumnos') }}"
+                class="btn-cancel"
+            >
+                Cancelar
+            </a>
+
+            <button
+                type="submit"
+                class="btn-primary"
+            >
+                Guardar cambios
+            </button>
+
+        </div>
+
+    </form>
+
+</div>
+
+{% endblock %}

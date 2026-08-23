@@ -1,0 +1,606 @@
+{% extends "base.html" %}
+
+{% block title %}
+Nómina de Alumnos | ETFA
+{% endblock %}
+
+{% block page_title %}
+Nómina de alumnos
+{% endblock %}
+
+{% block page_description %}
+Listado oficial de estudiantes del Primer Año Militar · Paralelo C
+{% endblock %}
+
+
+{% block content %}
+
+<!-- =====================================================
+     CABECERA PRINCIPAL
+===================================================== -->
+
+<div class="page-header-card nomina-page-header no-print">
+
+    <div>
+
+        <span class="panel-label">
+            NÓMINA GENERAL
+        </span>
+
+        <h2>
+            Nómina del Paralelo C
+        </h2>
+
+        <p>
+            Primer Año Militar · Escuela Técnica de la Fuerza Aérea
+        </p>
+
+    </div>
+
+
+    <div class="nomina-header-actions">
+
+        <button
+            type="button"
+            class="btn-cancel"
+            onclick="window.print();"
+        >
+            🖨 Imprimir
+        </button>
+
+
+        <a
+            href="{{ url_for('nuevo_alumno') }}"
+            class="btn-primary"
+        >
+            + Nuevo alumno
+        </a>
+
+    </div>
+
+</div>
+
+
+<!-- =====================================================
+     RESUMEN
+===================================================== -->
+
+<div class="nomina-summary no-print">
+
+    <div class="nomina-summary-card">
+
+        <div class="nomina-summary-icon">
+            👥
+        </div>
+
+        <div>
+
+            <span>
+                Total alumnos
+            </span>
+
+            <strong>
+                {{ total }}
+            </strong>
+
+        </div>
+
+    </div>
+
+
+    <div class="nomina-summary-card">
+
+        <div class="nomina-summary-icon success">
+            ✓
+        </div>
+
+        <div>
+
+            <span>
+                Disponibles
+            </span>
+
+            <strong class="nomina-success">
+                {{ disponibles }}
+            </strong>
+
+        </div>
+
+    </div>
+
+
+    <div class="nomina-summary-card">
+
+        <div class="nomina-summary-icon medical">
+            +
+        </div>
+
+        <div>
+
+            <span>
+                Descanso médico
+            </span>
+
+            <strong class="nomina-medical">
+                {{ descanso_medico }}
+            </strong>
+
+        </div>
+
+    </div>
+
+
+    <div class="nomina-summary-card">
+
+        <div class="nomina-summary-icon">
+            C
+        </div>
+
+        <div>
+
+            <span>
+                Paralelo
+            </span>
+
+            <strong>
+                C
+            </strong>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- =====================================================
+     CONTENEDOR PRINCIPAL
+===================================================== -->
+
+<div class="panel nomina-panel">
+
+
+    <!-- =================================================
+         CABECERA SOLO PARA IMPRESIÓN
+    ================================================== -->
+
+    <div class="nomina-print-header">
+
+        <div class="nomina-print-logo">
+            ETFA
+        </div>
+
+
+        <div class="nomina-print-center">
+
+            <span>
+                ESCUELA TÉCNICA DE LA FUERZA AÉREA
+            </span>
+
+            <h1>
+                NÓMINA DE ALUMNOS
+            </h1>
+
+            <p>
+                Primer Año Militar · Paralelo C
+            </p>
+
+        </div>
+
+
+        <div class="nomina-print-date">
+
+            <span>
+                FECHA
+            </span>
+
+            <strong id="fechaImpresion">
+                --
+            </strong>
+
+        </div>
+
+    </div>
+
+
+    <!-- =================================================
+         FILTROS
+    ================================================== -->
+
+    <div class="nomina-toolbar no-print">
+
+        <form
+            method="GET"
+            action="{{ url_for('nomina') }}"
+            class="nomina-filter-form"
+        >
+
+            <div class="nomina-search-box">
+
+                <span>
+                    🔎
+                </span>
+
+                <input
+                    type="text"
+                    name="buscar"
+                    value="{{ buscar }}"
+                    placeholder="Buscar por N°, cédula, nombre, apellido o especialidad"
+                >
+
+            </div>
+
+
+            <select
+                name="estado"
+                class="nomina-select"
+            >
+
+                <option value="">
+                    Todas las condiciones
+                </option>
+
+
+                <option
+                    value="DISPONIBLE"
+                    {% if estado == "DISPONIBLE" %}
+                    selected
+                    {% endif %}
+                >
+                    Disponible
+                </option>
+
+
+                <option
+                    value="DESCANSO MÉDICO"
+                    {% if estado == "DESCANSO MÉDICO" %}
+                    selected
+                    {% endif %}
+                >
+                    Descanso médico
+                </option>
+
+            </select>
+
+
+            <button
+                type="submit"
+                class="btn-primary"
+            >
+                Buscar
+            </button>
+
+
+            {% if buscar or estado %}
+
+            <a
+                href="{{ url_for('nomina') }}"
+                class="btn-clear"
+            >
+                Limpiar
+            </a>
+
+            {% endif %}
+
+        </form>
+
+
+        <span class="nomina-results">
+
+            {{ alumnos|length }} alumno(s)
+
+        </span>
+
+    </div>
+
+
+    <!-- =================================================
+         TABLA
+    ================================================== -->
+
+    <div class="nomina-table-wrapper">
+
+        <table class="nomina-table">
+
+            <thead>
+
+                <tr>
+
+                    <th class="col-num">
+                        N°
+                    </th>
+
+                    <th class="col-cedula">
+                        Cédula
+                    </th>
+
+                    <th>
+                        Apellidos
+                    </th>
+
+                    <th>
+                        Nombres
+                    </th>
+
+                    <th class="col-curso">
+                        Curso
+                    </th>
+
+                    <th class="col-paralelo">
+                        Paralelo
+                    </th>
+
+                    <th>
+                        Especialidad
+                    </th>
+
+                    <th class="col-condicion">
+                        Condición
+                    </th>
+
+                </tr>
+
+            </thead>
+
+
+            <tbody>
+
+            {% if alumnos %}
+
+                {% for alumno in alumnos %}
+
+                <tr>
+
+                    <td>
+
+                        <div class="nomina-number">
+
+                            {% if alumno.numero_lista %}
+
+                                {{ "%02d"|format(alumno.numero_lista) }}
+
+                            {% else %}
+
+                                --
+
+                            {% endif %}
+
+                        </div>
+
+                    </td>
+
+
+                    <td>
+
+                        <strong class="nomina-cedula">
+                            {{ alumno.cedula }}
+                        </strong>
+
+                    </td>
+
+
+                    <td>
+
+                        <strong class="nomina-name">
+                            {{ alumno.apellidos }}
+                        </strong>
+
+                    </td>
+
+
+                    <td>
+
+                        {{ alumno.nombres }}
+
+                    </td>
+
+
+                    <td>
+
+                        {{ alumno.curso }}
+
+                    </td>
+
+
+                    <td>
+
+                        <span class="nomina-paralelo">
+                            {{ alumno.paralelo }}
+                        </span>
+
+                    </td>
+
+
+                    <td>
+
+                        <span class="nomina-specialty">
+
+                            {{ alumno.especialidad or "Especialidad por asignar" }}
+
+                        </span>
+
+                    </td>
+
+
+                    <td>
+
+                        {% if alumno.estado == "DISPONIBLE" %}
+
+                            <span class="badge badge-success">
+                                Disponible
+                            </span>
+
+                        {% elif alumno.estado == "DESCANSO MÉDICO" %}
+
+                            <span class="badge badge-info">
+                                Descanso médico
+                            </span>
+
+                        {% else %}
+
+                            <span class="badge badge-neutral">
+                                {{ alumno.estado }}
+                            </span>
+
+                        {% endif %}
+
+                    </td>
+
+                </tr>
+
+                {% endfor %}
+
+
+            {% else %}
+
+                <tr>
+
+                    <td
+                        colspan="8"
+                        class="empty-table"
+                    >
+                        No existen alumnos registrados en la nómina.
+                    </td>
+
+                </tr>
+
+            {% endif %}
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+
+    <!-- =================================================
+         PIE
+    ================================================== -->
+
+    <div class="nomina-footer no-print">
+
+        <div>
+
+            <strong>
+                Primer Año Militar · Paralelo C
+            </strong>
+
+            <span>
+                Nómina registrada en el sistema ETFA
+            </span>
+
+        </div>
+
+
+        <div>
+
+            <span>
+                Total
+            </span>
+
+            <strong>
+                {{ alumnos|length }}
+            </strong>
+
+        </div>
+
+    </div>
+
+
+    <!-- =================================================
+         FIRMAS SOLO PARA IMPRESIÓN
+    ================================================== -->
+
+    <div class="nomina-signatures">
+
+        <div class="signature-box">
+
+            <div class="signature-space"></div>
+
+            <div class="signature-line"></div>
+
+            <strong>
+                ELABORADO POR
+            </strong>
+
+            <span>
+                Responsable del registro
+            </span>
+
+        </div>
+
+
+        <div class="signature-box">
+
+            <div class="signature-space"></div>
+
+            <div class="signature-line"></div>
+
+            <strong>
+                REVISADO POR
+            </strong>
+
+            <span>
+                Responsable del Paralelo C
+            </span>
+
+        </div>
+
+
+        <div class="signature-box">
+
+            <div class="signature-space"></div>
+
+            <div class="signature-line"></div>
+
+            <strong>
+                APROBADO POR
+            </strong>
+
+            <span>
+                Autoridad correspondiente
+            </span>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}
+
+
+{% block extra_js %}
+
+<script>
+
+function actualizarFechaNomina() {
+
+    const elemento =
+        document.getElementById(
+            "fechaImpresion"
+        );
+
+    if (!elemento) {
+        return;
+    }
+
+    const hoy = new Date();
+
+    elemento.textContent =
+        hoy.toLocaleDateString(
+            "es-EC",
+            {
+                day: "2-digit",
+                month: "2-digit",
+                year: "numeric"
+            }
+        );
+
+}
+
+actualizarFechaNomina();
+
+</script>
+
+{% endblock %}

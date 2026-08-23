@@ -1,0 +1,280 @@
+{% extends "base.html" %}
+
+
+{% block title %}
+Usuarios | ETFA
+{% endblock %}
+
+
+{% block page_title %}
+Usuarios
+{% endblock %}
+
+
+{% block page_description %}
+Administración de usuarios y permisos del sistema
+{% endblock %}
+
+
+{% block content %}
+
+
+<div class="page-header-card">
+
+
+    <div>
+
+        <span class="panel-label">
+            SEGURIDAD
+        </span>
+
+        <h2>
+            Usuarios del sistema
+        </h2>
+
+        <p>
+            Administre las cuentas que pueden
+            ingresar al sistema ETFA.
+        </p>
+
+    </div>
+
+
+    <a
+        href="{{ url_for(
+            'auth.nuevo_usuario'
+        ) }}"
+        class="btn-primary"
+    >
+
+        + Nuevo usuario
+
+    </a>
+
+
+</div>
+
+
+
+<div class="panel">
+
+
+    <div class="panel-header">
+
+
+        <div>
+
+            <span class="panel-label">
+                ACCESOS
+            </span>
+
+            <h2>
+                Usuarios registrados
+            </h2>
+
+        </div>
+
+
+        <span class="result-counter">
+
+            {{ usuarios|length }}
+            usuario(s)
+
+        </span>
+
+
+    </div>
+
+
+
+    <div class="table-container">
+
+
+        <table>
+
+
+            <thead>
+
+                <tr>
+
+                    <th>
+                        Usuario
+                    </th>
+
+                    <th>
+                        Nombre
+                    </th>
+
+                    <th>
+                        Rol
+                    </th>
+
+                    <th>
+                        Estado
+                    </th>
+
+                    <th>
+                        Creación
+                    </th>
+
+                    <th>
+                        Acción
+                    </th>
+
+                </tr>
+
+            </thead>
+
+
+
+            <tbody>
+
+
+            {% if usuarios %}
+
+
+                {% for usuario in usuarios %}
+
+
+                <tr>
+
+
+                    <td>
+
+                        <strong>
+                            {{ usuario.usuario }}
+                        </strong>
+
+                    </td>
+
+
+                    <td>
+
+                        {{ usuario.nombres }}
+
+                    </td>
+
+
+                    <td>
+
+
+                        {% if usuario.rol == "ADMINISTRADOR" %}
+
+                        <span class="badge badge-info">
+
+                            Administrador
+
+                        </span>
+
+
+                        {% else %}
+
+
+                        <span class="badge badge-neutral">
+
+                            Usuario
+
+                        </span>
+
+
+                        {% endif %}
+
+
+                    </td>
+
+
+                    <td>
+
+
+                        {% if usuario.estado == "ACTIVO" %}
+
+
+                        <span class="badge badge-success">
+
+                            Activo
+
+                        </span>
+
+
+                        {% else %}
+
+
+                        <span class="badge badge-danger">
+
+                            Inactivo
+
+                        </span>
+
+
+                        {% endif %}
+
+
+                    </td>
+
+
+                    <td>
+
+                        {{ usuario.fecha_creacion }}
+
+                    </td>
+
+
+                    <td>
+
+
+                        <a
+                            href="{{ url_for(
+                                'auth.editar_usuario',
+                                id_usuario=usuario.id_usuario
+                            ) }}"
+                            class="btn-action edit"
+                        >
+
+                            Editar
+
+                        </a>
+
+
+                    </td>
+
+
+                </tr>
+
+
+                {% endfor %}
+
+
+            {% else %}
+
+
+                <tr>
+
+                    <td
+                        colspan="6"
+                        class="empty-table"
+                    >
+
+                        No existen usuarios
+                        registrados.
+
+                    </td>
+
+                </tr>
+
+
+            {% endif %}
+
+
+            </tbody>
+
+
+        </table>
+
+
+    </div>
+
+
+</div>
+
+
+{% endblock %}

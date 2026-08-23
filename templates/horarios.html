@@ -1,0 +1,310 @@
+{% extends "base.html" %}
+
+{% block title %}
+Horarios | ETFA
+{% endblock %}
+
+{% block page_title %}
+Horarios
+{% endblock %}
+
+{% block page_description %}
+Configuración de jornada y tolerancia
+{% endblock %}
+
+{% block content %}
+
+<div class="page-header-card">
+
+    <div>
+
+        <span class="panel-label">
+            CONFIGURACIÓN
+        </span>
+
+        <h2>
+            Horario de asistencia
+        </h2>
+
+        <p>
+            Define la hora de entrada, salida y tolerancia.
+        </p>
+
+    </div>
+
+    <a href="{{ url_for('nuevo_horario') }}"
+       class="btn-primary">
+
+        + Nuevo horario
+
+    </a>
+
+</div>
+
+
+{% if horario_activo %}
+
+<div class="schedule-active-card">
+
+    <div class="schedule-active-header">
+
+        <div>
+
+            <span class="schedule-active-label">
+                HORARIO ACTIVO
+            </span>
+
+            <h2>
+                {{ horario_activo.nombre }}
+            </h2>
+
+            <p>
+                Este horario se utiliza para calcular
+                puntualidad y atrasos.
+            </p>
+
+        </div>
+
+        <span class="badge badge-success">
+            Activo
+        </span>
+
+    </div>
+
+
+    <div class="schedule-active-grid">
+
+        <div class="schedule-data">
+
+            <span>
+                Hora de entrada
+            </span>
+
+            <strong>
+                {{ horario_activo.hora_entrada }}
+            </strong>
+
+        </div>
+
+
+        <div class="schedule-data">
+
+            <span>
+                Hora de salida
+            </span>
+
+            <strong>
+                {{ horario_activo.hora_salida }}
+            </strong>
+
+        </div>
+
+
+        <div class="schedule-data">
+
+            <span>
+                Tolerancia
+            </span>
+
+            <strong>
+                {{ horario_activo.tolerancia_minutos }} min
+            </strong>
+
+        </div>
+
+
+        <div class="schedule-data">
+
+            <span>
+                Estado
+            </span>
+
+            <strong>
+                ACTIVO
+            </strong>
+
+        </div>
+
+    </div>
+
+
+    <div class="schedule-active-actions">
+
+        <a href="{{ url_for(
+                    'editar_horario',
+                    id_horario=horario_activo.id_horario
+                ) }}"
+           class="btn-primary">
+
+            Editar horario activo
+
+        </a>
+
+    </div>
+
+</div>
+
+{% endif %}
+
+
+<div class="panel schedule-list-panel">
+
+    <div class="panel-header">
+
+        <div>
+
+            <span class="panel-label">
+                HISTORIAL
+            </span>
+
+            <h2>
+                Horarios registrados
+            </h2>
+
+        </div>
+
+        <span class="result-counter">
+            {{ horarios|length }} horario(s)
+        </span>
+
+    </div>
+
+
+    <div class="table-container">
+
+        <table>
+
+            <thead>
+
+                <tr>
+                    <th>Nombre</th>
+                    <th>Entrada</th>
+                    <th>Salida</th>
+                    <th>Tolerancia</th>
+                    <th>Estado</th>
+                    <th>Acciones</th>
+                </tr>
+
+            </thead>
+
+
+            <tbody>
+
+            {% if horarios %}
+
+                {% for horario in horarios %}
+
+                <tr>
+
+                    <td>
+                        <strong>
+                            {{ horario.nombre }}
+                        </strong>
+                    </td>
+
+                    <td>
+                        {{ horario.hora_entrada }}
+                    </td>
+
+                    <td>
+                        {{ horario.hora_salida }}
+                    </td>
+
+                    <td>
+                        {{ horario.tolerancia_minutos }} min
+                    </td>
+
+                    <td>
+
+                        {% if horario.estado == "ACTIVO" %}
+
+                            <span class="badge badge-success">
+                                Activo
+                            </span>
+
+                        {% else %}
+
+                            <span class="badge badge-neutral">
+                                Inactivo
+                            </span>
+
+                        {% endif %}
+
+                    </td>
+
+
+                    <td>
+
+                        <div class="action-buttons">
+
+                            <a href="{{ url_for(
+                                        'editar_horario',
+                                        id_horario=horario.id_horario
+                                    ) }}"
+                               class="btn-action edit">
+
+                                Editar
+
+                            </a>
+
+
+                            {% if horario.estado != "ACTIVO" %}
+
+                                <a href="{{ url_for(
+                                            'activar_horario',
+                                            id_horario=horario.id_horario
+                                        ) }}"
+                                   class="btn-action status">
+
+                                    Activar
+
+                                </a>
+
+
+                                <a href="{{ url_for(
+                                            'eliminar_horario',
+                                            id_horario=horario.id_horario
+                                        ) }}"
+                                   class="btn-action delete"
+                                   onclick="return confirm(
+                                       '¿Deseas eliminar este horario?'
+                                   );">
+
+                                    Eliminar
+
+                                </a>
+
+                            {% endif %}
+
+                        </div>
+
+                    </td>
+
+                </tr>
+
+                {% endfor %}
+
+            {% else %}
+
+                <tr>
+
+                    <td colspan="6"
+                        class="empty-table">
+
+                        No existen horarios registrados.
+
+                    </td>
+
+                </tr>
+
+            {% endif %}
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>
+
+{% endblock %}

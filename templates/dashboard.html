@@ -1,0 +1,445 @@
+{% extends "base.html" %}
+
+{% block title %}
+Dashboard | ETFA
+{% endblock %}
+
+{% block page_title %}
+Dashboard
+{% endblock %}
+
+{% block page_description %}
+Sistema de Control de Asistencia, Horarios y Nómina
+{% endblock %}
+
+{% block content %}
+
+<div class="welcome-card">
+
+    <div>
+
+        <span class="welcome-label">
+            PANEL GENERAL
+        </span>
+
+        <h2>
+            Control de asistencia
+        </h2>
+
+        <p>
+            Primer Año Militar · Paralelo C · ETFA
+        </p>
+
+    </div>
+
+
+    <div class="welcome-status">
+
+        <span class="status-dot"></span>
+
+        Sistema operativo
+
+    </div>
+
+</div>
+
+
+<div class="stats-grid">
+
+
+    <div class="stat-card">
+
+        <div class="stat-icon">
+            👥
+        </div>
+
+        <div class="stat-content">
+
+            <span class="stat-title">
+                Total alumnos
+            </span>
+
+            <h3>
+                {{ total_alumnos }}
+            </h3>
+
+            <span class="stat-detail">
+                Alumnos activos
+            </span>
+
+        </div>
+
+    </div>
+
+
+    <div class="stat-card">
+
+        <div class="stat-icon">
+            ✓
+        </div>
+
+        <div class="stat-content">
+
+            <span class="stat-title">
+                Presentes
+            </span>
+
+            <h3>
+                {{ presentes }}
+            </h3>
+
+            <span class="stat-detail success">
+                Registrados hoy
+            </span>
+
+        </div>
+
+    </div>
+
+
+    <div class="stat-card">
+
+        <div class="stat-icon">
+            ◷
+        </div>
+
+        <div class="stat-content">
+
+            <span class="stat-title">
+                Atrasados
+            </span>
+
+            <h3>
+                {{ atrasados }}
+            </h3>
+
+            <span class="stat-detail warning">
+                Fuera de horario
+            </span>
+
+        </div>
+
+    </div>
+
+
+    <div class="stat-card">
+
+        <div class="stat-icon">
+            ✕
+        </div>
+
+        <div class="stat-content">
+
+            <span class="stat-title">
+                Ausentes
+            </span>
+
+            <h3>
+                {{ ausentes }}
+            </h3>
+
+            <span class="stat-detail danger">
+                Sin registro
+            </span>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<div class="content-grid">
+
+
+<div class="panel registros-panel">
+
+    <div class="panel-header">
+
+        <div>
+
+            <span class="panel-label">
+                ACTIVIDAD
+            </span>
+
+            <h2>
+                Últimas marcaciones
+            </h2>
+
+        </div>
+
+
+        <a href="{{ url_for('historial') }}"
+           class="button-secondary"
+           style="text-decoration:none;">
+
+            Ver historial
+
+        </a>
+
+    </div>
+
+
+    <div class="table-container">
+
+        <table>
+
+            <thead>
+
+                <tr>
+                    <th>Alumno</th>
+                    <th>Fecha</th>
+                    <th>Entrada</th>
+                    <th>Salida</th>
+                    <th>Estado</th>
+                    <th>Horas</th>
+                </tr>
+
+            </thead>
+
+
+            <tbody>
+
+            {% if registros %}
+
+                {% for registro in registros %}
+
+                <tr>
+
+                    <td>
+
+                        <div class="student-cell">
+
+                            <div class="student-avatar">
+                                {{ registro.nombres[0] }}
+                            </div>
+
+                            <div>
+
+                                <strong>
+                                    {{ registro.apellidos }}
+                                    {{ registro.nombres }}
+                                </strong>
+
+                                <span>
+                                    Primer Año Militar · C
+                                </span>
+
+                            </div>
+
+                        </div>
+
+                    </td>
+
+
+                    <td>
+                        {{ registro.fecha }}
+                    </td>
+
+
+                    <td>
+
+                        {% if registro.hora_entrada %}
+
+                            {{ registro.hora_entrada }}
+
+                        {% else %}
+
+                            --
+
+                        {% endif %}
+
+                    </td>
+
+
+                    <td>
+
+                        {% if registro.hora_salida %}
+
+                            {{ registro.hora_salida }}
+
+                        {% else %}
+
+                            --
+
+                        {% endif %}
+
+                    </td>
+
+
+                    <td>
+
+                        {% if registro.estado == "PUNTUAL" %}
+
+                            <span class="badge badge-success">
+                                Puntual
+                            </span>
+
+                        {% elif registro.estado == "ATRASADO" %}
+
+                            <span class="badge badge-warning">
+                                Atrasado
+                            </span>
+
+                        {% elif registro.estado == "AUSENTE" %}
+
+                            <span class="badge badge-danger">
+                                Ausente
+                            </span>
+
+                        {% elif registro.estado == "JUSTIFICADO" %}
+
+                            <span class="badge badge-info">
+                                Justificado
+                            </span>
+
+                        {% else %}
+
+                            <span class="badge badge-neutral">
+                                {{ registro.estado }}
+                            </span>
+
+                        {% endif %}
+
+                    </td>
+
+
+                    <td>
+                        {{ registro.horas_trabajadas or 0 }} h
+                    </td>
+
+                </tr>
+
+                {% endfor %}
+
+
+            {% else %}
+
+                <tr>
+
+                    <td colspan="6"
+                        class="empty-table">
+
+                        No existen registros de asistencia.
+
+                    </td>
+
+                </tr>
+
+            {% endif %}
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>
+
+
+<div class="panel quick-panel">
+
+    <div class="panel-header">
+
+        <div>
+
+            <span class="panel-label">
+                ACCESOS
+            </span>
+
+            <h2>
+                Acciones rápidas
+            </h2>
+
+        </div>
+
+    </div>
+
+
+    <div class="quick-actions">
+
+        <a href="{{ url_for('asistencia') }}"
+           class="quick-action">
+
+            <div class="quick-icon">✓</div>
+
+            <div>
+                <strong>Marcar asistencia</strong>
+                <span>Registrar entrada o salida</span>
+            </div>
+
+        </a>
+
+
+        <a href="{{ url_for('nuevo_alumno') }}"
+           class="quick-action">
+
+            <div class="quick-icon">+</div>
+
+            <div>
+                <strong>Nuevo alumno</strong>
+                <span>Registrar alumno</span>
+            </div>
+
+        </a>
+
+
+        <a href="{{ url_for('horarios') }}"
+           class="quick-action">
+
+            <div class="quick-icon">🕒</div>
+
+            <div>
+                <strong>Horarios</strong>
+                <span>Configurar jornada</span>
+            </div>
+
+        </a>
+
+
+        <a href="{{ url_for('nomina') }}"
+           class="quick-action">
+
+            <div class="quick-icon">$</div>
+
+            <div>
+                <strong>Nómina</strong>
+                <span>Calcular remuneración</span>
+            </div>
+
+        </a>
+
+
+        <a href="{{ url_for('reportes') }}"
+           class="quick-action">
+
+            <div class="quick-icon">📊</div>
+
+            <div>
+                <strong>Reportes</strong>
+                <span>Consultar información</span>
+            </div>
+
+        </a>
+
+
+        <a href="{{ url_for('configuracion') }}"
+           class="quick-action">
+
+            <div class="quick-icon">⚙</div>
+
+            <div>
+                <strong>Configuración</strong>
+                <span>Parámetros del sistema</span>
+            </div>
+
+        </a>
+
+    </div>
+
+</div>
+
+
+</div>
+
+{% endblock %}

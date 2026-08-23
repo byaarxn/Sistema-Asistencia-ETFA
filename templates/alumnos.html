@@ -1,0 +1,297 @@
+{% extends "base.html" %}
+
+{% block title %}
+Alumnos | ETFA
+{% endblock %}
+
+{% block page_title %}
+Alumnos
+{% endblock %}
+
+{% block page_description %}
+Administración de alumnos del Primer Año Militar
+{% endblock %}
+
+{% block content %}
+
+<div class="page-header-card">
+
+    <div>
+
+        <span class="panel-label">
+            PERSONAL
+        </span>
+
+        <h2>
+            Registro de alumnos
+        </h2>
+
+        <p>
+            Primer Año Militar · Paralelo C · ETFA
+        </p>
+
+    </div>
+
+    <a
+        href="{{ url_for('nuevo_alumno') }}"
+        class="btn-primary"
+    >
+        + Nuevo alumno
+    </a>
+
+</div>
+
+
+<div class="panel">
+
+    <div class="students-toolbar">
+
+        <form
+            method="GET"
+            action="{{ url_for('alumnos') }}"
+            class="search-form"
+        >
+
+            <input
+                type="text"
+                name="buscar"
+                value="{{ buscar }}"
+                placeholder="Buscar por N°, cédula, nombre, apellido o especialidad"
+            >
+
+            <button
+                type="submit"
+                class="btn-search"
+            >
+                Buscar
+            </button>
+
+            {% if buscar %}
+
+            <a
+                href="{{ url_for('alumnos') }}"
+                class="btn-clear"
+            >
+                Limpiar
+            </a>
+
+            {% endif %}
+
+        </form>
+
+
+        <div class="result-counter">
+            {{ alumnos|length }} resultado(s)
+        </div>
+
+    </div>
+
+
+    <div class="table-container">
+
+        <table>
+
+            <thead>
+
+                <tr>
+
+                    <th>N°</th>
+                    <th>Cédula</th>
+                    <th>Alumno</th>
+                    <th>Curso</th>
+                    <th>Paralelo</th>
+                    <th>Especialidad</th>
+                    <th>Condición</th>
+                    <th>Acciones</th>
+
+                </tr>
+
+            </thead>
+
+
+            <tbody>
+
+            {% if alumnos %}
+
+                {% for alumno in alumnos %}
+
+                <tr>
+
+                    <td>
+
+                        <div class="nomina-number">
+
+                            {% if alumno.numero_lista %}
+
+                                {{ "%02d"|format(alumno.numero_lista) }}
+
+                            {% else %}
+
+                                --
+
+                            {% endif %}
+
+                        </div>
+
+                    </td>
+
+
+                    <td>
+
+                        <strong>
+                            {{ alumno.cedula }}
+                        </strong>
+
+                    </td>
+
+
+                    <td>
+
+                        <div class="student-cell">
+
+                            <div class="student-avatar">
+
+                                {{ alumno.nombres[0] }}
+
+                            </div>
+
+                            <div>
+
+                                <strong>
+                                    {{ alumno.apellidos }}
+                                    {{ alumno.nombres }}
+                                </strong>
+
+                                <span>
+                                    ID {{ alumno.id_alumno }}
+                                </span>
+
+                            </div>
+
+                        </div>
+
+                    </td>
+
+
+                    <td>
+                        {{ alumno.curso }}
+                    </td>
+
+
+                    <td>
+                        {{ alumno.paralelo }}
+                    </td>
+
+
+                    <td>
+
+                        {{ alumno.especialidad or "Especialidad por asignar" }}
+
+                    </td>
+
+
+                    <td>
+
+                        {% if alumno.estado == "DISPONIBLE" %}
+
+                            <span class="badge badge-success">
+                                Disponible
+                            </span>
+
+                        {% elif alumno.estado == "DESCANSO MÉDICO" %}
+
+                            <span class="badge badge-info">
+                                Descanso médico
+                            </span>
+
+                        {% endif %}
+
+                    </td>
+
+
+                    <td>
+
+                        <div class="action-buttons">
+
+                            <a
+                                href="{{ url_for(
+                                    'editar_alumno',
+                                    id_alumno=alumno.id_alumno
+                                ) }}"
+                                class="btn-action edit"
+                            >
+                                Editar
+                            </a>
+
+
+                            {% if session.get('rol') == 'ADMINISTRADOR' %}
+
+                                <a
+                                    href="{{ url_for(
+                                        'cambiar_estado_alumno',
+                                        id_alumno=alumno.id_alumno
+                                    ) }}"
+                                    class="btn-action status"
+                                >
+
+                                    {% if alumno.estado == "DISPONIBLE" %}
+
+                                        Descanso médico
+
+                                    {% else %}
+
+                                        Disponible
+
+                                    {% endif %}
+
+                                </a>
+
+
+                                <a
+                                    href="{{ url_for(
+                                        'eliminar_alumno',
+                                        id_alumno=alumno.id_alumno
+                                    ) }}"
+                                    class="btn-action delete"
+                                    onclick="return confirm(
+                                        '¿Seguro que deseas eliminar este alumno?'
+                                    );"
+                                >
+                                    Eliminar
+                                </a>
+
+                            {% endif %}
+
+                        </div>
+
+                    </td>
+
+                </tr>
+
+                {% endfor %}
+
+
+            {% else %}
+
+                <tr>
+
+                    <td
+                        colspan="8"
+                        class="empty-table"
+                    >
+                        No existen alumnos registrados.
+                    </td>
+
+                </tr>
+
+            {% endif %}
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>
+
+{% endblock %}

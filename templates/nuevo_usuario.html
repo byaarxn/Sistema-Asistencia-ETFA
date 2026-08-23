@@ -1,0 +1,259 @@
+{% extends "base.html" %}
+
+
+{% block title %}
+Nuevo Usuario | ETFA
+{% endblock %}
+
+
+{% block page_title %}
+Nuevo usuario
+{% endblock %}
+
+
+{% block page_description %}
+Registrar una nueva cuenta de acceso
+{% endblock %}
+
+
+{% block content %}
+
+
+<div class="page-header-card">
+
+
+    <div>
+
+        <span class="panel-label">
+            SEGURIDAD
+        </span>
+
+        <h2>
+            Registrar usuario
+        </h2>
+
+        <p>
+            Cree las credenciales
+            de acceso al sistema.
+        </p>
+
+    </div>
+
+
+    <a
+        href="{{ url_for(
+            'auth.usuarios'
+        ) }}"
+        class="btn-cancel"
+    >
+
+        ← Volver
+
+    </a>
+
+
+</div>
+
+
+
+<div class="form-card">
+
+
+    <div class="form-card-header">
+
+        <span class="panel-label">
+            CREDENCIALES
+        </span>
+
+        <h2>
+            Datos del usuario
+        </h2>
+
+        <p>
+            Complete toda la información.
+        </p>
+
+    </div>
+
+
+
+    {% if error %}
+
+    <div class="form-error-message">
+
+        {{ error }}
+
+    </div>
+
+    {% endif %}
+
+
+
+    <form
+        method="POST"
+        action="{{ url_for(
+            'auth.nuevo_usuario'
+        ) }}"
+        class="student-form"
+    >
+
+
+        <div class="form-grid">
+
+
+            <div class="form-group">
+
+                <label>
+                    Nombre completo
+                </label>
+
+                <input
+                    type="text"
+                    name="nombres"
+                    placeholder="Ej. Carlos Piguave"
+                    required
+                >
+
+            </div>
+
+
+
+            <div class="form-group">
+
+                <label>
+                    Usuario
+                </label>
+
+                <input
+                    type="text"
+                    name="usuario"
+                    placeholder="Ej. cpiguave"
+                    autocomplete="off"
+                    required
+                >
+
+            </div>
+
+
+
+            <div class="form-group">
+
+                <label>
+                    Contraseña
+                </label>
+
+                <input
+                    type="password"
+                    name="password"
+                    minlength="6"
+                    placeholder="Mínimo 6 caracteres"
+                    required
+                >
+
+            </div>
+
+
+
+            <div class="form-group">
+
+                <label>
+                    Confirmar contraseña
+                </label>
+
+                <input
+                    type="password"
+                    name="confirmar_password"
+                    minlength="6"
+                    placeholder="Repita la contraseña"
+                    required
+                >
+
+            </div>
+
+
+
+            <div class="form-group">
+
+                <label>
+                    Rol
+                </label>
+
+                <select
+                    name="rol"
+                    required
+                >
+
+                    <option value="USUARIO">
+
+                        Usuario
+
+                    </option>
+
+                    <option value="ADMINISTRADOR">
+
+                        Administrador
+
+                    </option>
+
+                </select>
+
+            </div>
+
+
+        </div>
+
+
+
+        <div class="schedule-info-box">
+
+            <strong>
+                Roles
+            </strong>
+
+            <p>
+                El Administrador puede gestionar
+                configuraciones, horarios, usuarios
+                y eliminar información. El Usuario
+                tiene acceso a las funciones
+                operativas del sistema.
+            </p>
+
+        </div>
+
+
+
+        <div class="form-actions">
+
+
+            <a
+                href="{{ url_for(
+                    'auth.usuarios'
+                ) }}"
+                class="btn-cancel"
+            >
+
+                Cancelar
+
+            </a>
+
+
+            <button
+                type="submit"
+                class="btn-primary"
+            >
+
+                Guardar usuario
+
+            </button>
+
+
+        </div>
+
+
+    </form>
+
+
+</div>
+
+
+{% endblock %}

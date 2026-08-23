@@ -1,0 +1,249 @@
+{% extends "base.html" %}
+
+{% block title %}
+Resultado Nómina | ETFA
+{% endblock %}
+
+{% block page_title %}
+Resultado de nómina
+{% endblock %}
+
+{% block page_description %}
+Resumen del cálculo realizado
+{% endblock %}
+
+{% block content %}
+
+<div class="page-header-card">
+
+    <div>
+
+        <span class="panel-label">
+            RESULTADO
+        </span>
+
+        <h2>
+            {{ resultado.alumno.nombres }}
+            {{ resultado.alumno.apellidos }}
+        </h2>
+
+        <p>
+            C.I. {{ resultado.alumno.cedula }}
+        </p>
+
+    </div>
+
+
+    <a href="{{ url_for('nomina') }}"
+       class="btn-cancel">
+
+        ← Volver a nómina
+
+    </a>
+
+</div>
+
+
+<div class="payroll-result-card">
+
+    <div class="payroll-result-header">
+
+        <div>
+
+            <span class="welcome-label">
+                NÓMINA CALCULADA
+            </span>
+
+            <h2>
+                Resumen del período
+            </h2>
+
+            <p>
+                {{ resultado.fecha_inicio }}
+                al
+                {{ resultado.fecha_fin }}
+            </p>
+
+        </div>
+
+
+        <div class="payroll-result-total">
+
+            <span>
+                TOTAL
+            </span>
+
+            <strong>
+                ${{ "%.2f"|format(resultado.total) }}
+            </strong>
+
+        </div>
+
+    </div>
+
+
+    <div class="payroll-result-grid">
+
+        <div class="payroll-result-item">
+
+            <span>
+                Días trabajados
+            </span>
+
+            <strong>
+                {{ resultado.dias_trabajados }}
+            </strong>
+
+        </div>
+
+
+        <div class="payroll-result-item">
+
+            <span>
+                Horas registradas
+            </span>
+
+            <strong>
+                {{ resultado.horas_trabajadas }} h
+            </strong>
+
+        </div>
+
+
+        <div class="payroll-result-item">
+
+            <span>
+                Horas normales
+            </span>
+
+            <strong>
+                {{ resultado.horas_normales }} h
+            </strong>
+
+        </div>
+
+
+        <div class="payroll-result-item">
+
+            <span>
+                Horas extra
+            </span>
+
+            <strong>
+                {{ resultado.horas_extra }} h
+            </strong>
+
+        </div>
+
+
+        <div class="payroll-result-item">
+
+            <span>
+                Valor hora
+            </span>
+
+            <strong>
+                ${{ "%.2f"|format(resultado.valor_hora) }}
+            </strong>
+
+        </div>
+
+
+        <div class="payroll-result-item">
+
+            <span>
+                Valor hora extra
+            </span>
+
+            <strong>
+                ${{ "%.2f"|format(resultado.valor_hora_extra) }}
+            </strong>
+
+        </div>
+
+    </div>
+
+
+    <div class="payroll-breakdown">
+
+        <div>
+
+            <span>
+                Pago horas normales
+            </span>
+
+            <strong>
+                ${{ "%.2f"|format(resultado.pago_horas_normales) }}
+            </strong>
+
+        </div>
+
+
+        <div>
+
+            <span>
+                Pago horas extra
+            </span>
+
+            <strong>
+                ${{ "%.2f"|format(resultado.pago_horas_extra) }}
+            </strong>
+
+        </div>
+
+
+        <div>
+
+            <span>
+                Subtotal
+            </span>
+
+            <strong>
+                ${{ "%.2f"|format(resultado.subtotal) }}
+            </strong>
+
+        </div>
+
+
+        <div>
+
+            <span>
+                Descuentos
+            </span>
+
+            <strong class="payroll-discount">
+                - ${{ "%.2f"|format(resultado.descuentos) }}
+            </strong>
+
+        </div>
+
+
+        <div class="payroll-final-row">
+
+            <span>
+                TOTAL A PAGAR
+            </span>
+
+            <strong>
+                ${{ "%.2f"|format(resultado.total) }}
+            </strong>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<div class="form-actions">
+
+    <a href="{{ url_for('nomina') }}"
+       class="btn-primary">
+
+        Realizar otro cálculo
+
+    </a>
+
+</div>
+
+{% endblock %}

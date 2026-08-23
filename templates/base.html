@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>
+        {% block title %}
+        Sistema ETFA
+        {% endblock %}
+    </title>
+
+
+    <link
+        rel="stylesheet"
+        href="{{ url_for(
+            'static',
+            filename='css/style.css'
+        ) }}"
+    >
+
+    {% block extra_css %}
+    {% endblock %}
+
+</head>
+
+
+<body>
+
+
+<aside class="sidebar">
+
+
+    <div class="sidebar-header">
+
+        <div class="logo">
+            ETFA
+        </div>
+
+        <div class="logo-text">
+
+            <h2>
+                Control
+            </h2>
+
+            <span>
+                Asistencia
+            </span>
+
+        </div>
+
+    </div>
+
+
+
+    <nav class="menu">
+
+
+        <a
+            href="{{ url_for('inicio') }}"
+            class="menu-item
+            {% if request.endpoint == 'inicio' %}
+            active
+            {% endif %}"
+        >
+
+            <span class="menu-icon">
+                ▦
+            </span>
+
+            Dashboard
+
+        </a>
+
+
+
+        <a
+            href="{{ url_for('alumnos') }}"
+            class="menu-item
+            {% if request.endpoint in [
+                'alumnos',
+                'nuevo_alumno',
+                'editar_alumno'
+            ] %}
+            active
+            {% endif %}"
+        >
+
+            <span class="menu-icon">
+                👥
+            </span>
+
+            Alumnos
+
+        </a>
+
+
+
+        <a
+            href="{{ url_for('asistencia') }}"
+            class="menu-item
+            {% if request.endpoint in [
+                'asistencia',
+                'marcar_entrada',
+                'marcar_salida'
+            ] %}
+            active
+            {% endif %}"
+        >
+
+            <span class="menu-icon">
+                ✓
+            </span>
+
+            Asistencia
+
+        </a>
+
+
+
+        <a
+            href="{{ url_for('historial') }}"
+            class="menu-item
+            {% if request.endpoint == 'historial' %}
+            active
+            {% endif %}"
+        >
+
+            <span class="menu-icon">
+                ◷
+            </span>
+
+            Historial
+
+        </a>
+
+
+
+        <a
+            href="{{ url_for('horarios') }}"
+            class="menu-item
+            {% if request.endpoint in [
+                'horarios',
+                'nuevo_horario',
+                'editar_horario'
+            ] %}
+            active
+            {% endif %}"
+        >
+
+            <span class="menu-icon">
+                🕒
+            </span>
+
+            Horarios
+
+        </a>
+
+
+
+        <a
+            href="{{ url_for('nomina') }}"
+            class="menu-item
+            {% if request.endpoint in [
+                'nomina',
+                'calcular_nomina'
+            ] %}
+            active
+            {% endif %}"
+        >
+
+            <span class="menu-icon">
+                $
+            </span>
+
+            Nómina
+
+        </a>
+
+
+
+        <a
+            href="{{ url_for('reportes') }}"
+            class="menu-item
+            {% if request.endpoint == 'reportes' %}
+            active
+            {% endif %}"
+        >
+
+            <span class="menu-icon">
+                📊
+            </span>
+
+            Reportes
+
+        </a>
+
+
+
+        {% if session.get('rol') == 'ADMINISTRADOR' %}
+
+        <a
+            href="{{ url_for('configuracion') }}"
+            class="menu-item
+            {% if request.endpoint in [
+                'configuracion',
+                'guardar_configuracion'
+            ] %}
+            active
+            {% endif %}"
+        >
+
+            <span class="menu-icon">
+                ⚙
+            </span>
+
+            Configuración
+
+        </a>
+
+
+
+        <a
+            href="{{ url_for('auth.usuarios') }}"
+            class="menu-item
+            {% if request.endpoint in [
+                'auth.usuarios',
+                'auth.nuevo_usuario',
+                'auth.editar_usuario'
+            ] %}
+            active
+            {% endif %}"
+        >
+
+            <span class="menu-icon">
+                ♙
+            </span>
+
+            Usuarios
+
+        </a>
+
+        {% endif %}
+
+
+    </nav>
+
+
+
+    <div class="sidebar-footer">
+
+        <span>
+            Sistema ETFA
+        </span>
+
+        <span>
+            v1.0
+        </span>
+
+    </div>
+
+
+</aside>
+
+
+
+<main class="main-content">
+
+
+<header class="topbar">
+
+
+    <div>
+
+        <h1>
+
+            {% block page_title %}
+            Sistema ETFA
+            {% endblock %}
+
+        </h1>
+
+
+        <p>
+
+            {% block page_description %}
+            Sistema de Control de Asistencia, Horarios y Nómina
+            {% endblock %}
+
+        </p>
+
+    </div>
+
+
+
+    <div class="topbar-user-area">
+
+
+        <div class="user-box">
+
+
+            <div class="user-info">
+
+                <strong>
+
+                    {{ session.get(
+                        'nombres',
+                        'Usuario'
+                    ) }}
+
+                </strong>
+
+
+                <span>
+
+                    {% if session.get('rol') == 'ADMINISTRADOR' %}
+
+                        Administrador
+
+                    {% else %}
+
+                        Usuario
+
+                    {% endif %}
+
+                </span>
+
+            </div>
+
+
+
+            <div class="avatar">
+
+                {{ session.get(
+                    'nombres',
+                    'U'
+                )[0]|upper }}
+
+            </div>
+
+
+        </div>
+
+
+
+        <a
+            href="{{ url_for('auth.logout') }}"
+            class="logout-button"
+        >
+
+            Salir
+
+        </a>
+
+
+    </div>
+
+
+</header>
+
+
+
+<section class="dashboard-container">
+
+    {% block content %}
+    {% endblock %}
+
+</section>
+
+
+</main>
+
+
+{% block extra_js %}
+{% endblock %}
+
+
+</body>
+
+</html>

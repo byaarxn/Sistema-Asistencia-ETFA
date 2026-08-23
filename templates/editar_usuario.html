@@ -1,0 +1,297 @@
+{% extends "base.html" %}
+
+
+{% block title %}
+Editar Usuario | ETFA
+{% endblock %}
+
+
+{% block page_title %}
+Editar usuario
+{% endblock %}
+
+
+{% block page_description %}
+Modificar cuenta, permisos y estado
+{% endblock %}
+
+
+{% block content %}
+
+
+<div class="page-header-card">
+
+
+    <div>
+
+        <span class="panel-label">
+            SEGURIDAD
+        </span>
+
+        <h2>
+            {{ usuario.nombres }}
+        </h2>
+
+        <p>
+            Usuario:
+            {{ usuario.usuario }}
+        </p>
+
+    </div>
+
+
+    <a
+        href="{{ url_for(
+            'auth.usuarios'
+        ) }}"
+        class="btn-cancel"
+    >
+
+        ← Volver
+
+    </a>
+
+
+</div>
+
+
+
+<div class="form-card">
+
+
+    <div class="form-card-header">
+
+
+        <span class="panel-label">
+            EDICIÓN
+        </span>
+
+
+        <h2>
+            Información del usuario
+        </h2>
+
+
+        <p>
+            Deje la contraseña vacía
+            si no desea cambiarla.
+        </p>
+
+
+    </div>
+
+
+
+    {% if error %}
+
+    <div class="form-error-message">
+
+        {{ error }}
+
+    </div>
+
+    {% endif %}
+
+
+
+    <form
+        method="POST"
+        action="{{ url_for(
+            'auth.editar_usuario',
+            id_usuario=usuario.id_usuario
+        ) }}"
+        class="student-form"
+    >
+
+
+        <div class="form-grid">
+
+
+            <div class="form-group">
+
+
+                <label>
+                    Nombre completo
+                </label>
+
+
+                <input
+                    type="text"
+                    name="nombres"
+                    value="{{ usuario.nombres }}"
+                    required
+                >
+
+
+            </div>
+
+
+
+            <div class="form-group">
+
+
+                <label>
+                    Usuario
+                </label>
+
+
+                <input
+                    type="text"
+                    name="usuario"
+                    value="{{ usuario.usuario }}"
+                    required
+                >
+
+
+            </div>
+
+
+
+            <div class="form-group">
+
+
+                <label>
+                    Nueva contraseña
+                </label>
+
+
+                <input
+                    type="password"
+                    name="password"
+                    minlength="6"
+                    placeholder="Dejar vacío para mantener la actual"
+                >
+
+
+            </div>
+
+
+
+            <div class="form-group">
+
+
+                <label>
+                    Rol
+                </label>
+
+
+                <select
+                    name="rol"
+                    required
+                >
+
+
+                    <option
+                        value="USUARIO"
+                        {% if usuario.rol == "USUARIO" %}
+                        selected
+                        {% endif %}
+                    >
+
+                        Usuario
+
+                    </option>
+
+
+                    <option
+                        value="ADMINISTRADOR"
+                        {% if usuario.rol == "ADMINISTRADOR" %}
+                        selected
+                        {% endif %}
+                    >
+
+                        Administrador
+
+                    </option>
+
+
+                </select>
+
+
+            </div>
+
+
+
+            <div class="form-group">
+
+
+                <label>
+                    Estado
+                </label>
+
+
+                <select
+                    name="estado"
+                    required
+                >
+
+
+                    <option
+                        value="ACTIVO"
+                        {% if usuario.estado == "ACTIVO" %}
+                        selected
+                        {% endif %}
+                    >
+
+                        Activo
+
+                    </option>
+
+
+                    <option
+                        value="INACTIVO"
+                        {% if usuario.estado == "INACTIVO" %}
+                        selected
+                        {% endif %}
+                    >
+
+                        Inactivo
+
+                    </option>
+
+
+                </select>
+
+
+            </div>
+
+
+        </div>
+
+
+
+        <div class="form-actions">
+
+
+            <a
+                href="{{ url_for(
+                    'auth.usuarios'
+                ) }}"
+                class="btn-cancel"
+            >
+
+                Cancelar
+
+            </a>
+
+
+            <button
+                type="submit"
+                class="btn-primary"
+            >
+
+                Guardar cambios
+
+            </button>
+
+
+        </div>
+
+
+    </form>
+
+
+</div>
+
+
+{% endblock %}

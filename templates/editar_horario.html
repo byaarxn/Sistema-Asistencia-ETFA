@@ -1,0 +1,170 @@
+{% extends "base.html" %}
+
+{% block title %}
+Editar Horario | ETFA
+{% endblock %}
+
+{% block page_title %}
+Editar horario
+{% endblock %}
+
+{% block page_description %}
+Modificar configuración de jornada
+{% endblock %}
+
+{% block content %}
+
+<div class="page-header-card">
+
+    <div>
+
+        <span class="panel-label">
+            EDICIÓN
+        </span>
+
+        <h2>
+            {{ horario.nombre }}
+        </h2>
+
+        <p>
+            Modifique los valores necesarios.
+        </p>
+
+    </div>
+
+    <a href="{{ url_for('horarios') }}"
+       class="btn-cancel">
+
+        ← Volver
+
+    </a>
+
+</div>
+
+
+<div class="form-card">
+
+    <div class="form-card-header">
+
+        <span class="panel-label">
+            HORARIO
+        </span>
+
+        <h2>
+            Configuración
+        </h2>
+
+    </div>
+
+
+    <form method="POST"
+          action="{{ url_for(
+                'editar_horario',
+                id_horario=horario.id_horario
+          ) }}"
+          class="student-form">
+
+        <div class="form-grid">
+
+            <div class="form-group">
+
+                <label>
+                    Nombre del horario
+                </label>
+
+                <input
+                    type="text"
+                    name="nombre"
+                    value="{{ horario.nombre }}"
+                    required>
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label>
+                    Minutos de tolerancia
+                </label>
+
+                <input
+                    type="number"
+                    name="tolerancia_minutos"
+                    min="0"
+                    max="120"
+                    value="{{ horario.tolerancia_minutos }}"
+                    required>
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label>
+                    Hora de entrada
+                </label>
+
+                <input
+                    type="time"
+                    name="hora_entrada"
+                    value="{{ horario.hora_entrada_form }}"
+                    required>
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label>
+                    Hora de salida
+                </label>
+
+                <input
+                    type="time"
+                    name="hora_salida"
+                    value="{{ horario.hora_salida_form }}"
+                    required>
+
+            </div>
+
+        </div>
+
+
+        <div class="schedule-info-box">
+
+            <strong>
+                Importante
+            </strong>
+
+            <p>
+                Los cambios se aplicarán a las nuevas
+                marcaciones. Los registros históricos
+                anteriores no serán modificados.
+            </p>
+
+        </div>
+
+
+        <div class="form-actions">
+
+            <a href="{{ url_for('horarios') }}"
+               class="btn-cancel">
+
+                Cancelar
+
+            </a>
+
+            <button type="submit"
+                    class="btn-primary">
+
+                Guardar cambios
+
+            </button>
+
+        </div>
+
+    </form>
+
+</div>
+
+{% endblock %}
