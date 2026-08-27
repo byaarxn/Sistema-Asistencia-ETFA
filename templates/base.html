@@ -17,16 +17,48 @@
     </title>
 
 
+    <!-- =====================================================
+         ICONOS
+    ====================================================== -->
+
     <link
         rel="stylesheet"
-        href="{{ url_for(
-            'static',
-            filename='css/style.css'
-        ) }}"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
     >
 
-    {% block extra_css %}
-    {% endblock %}
+
+    <!-- =====================================================
+         CSS PRINCIPAL
+    ====================================================== -->
+
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='css/style.css') }}"
+    >
+
+
+    <!-- =====================================================
+         AJUSTE DEL ESCUDO ETFA
+    ====================================================== -->
+
+    <style>
+
+        .sidebar-logo-img {
+            width: 115px;
+            height: 115px;
+            object-fit: contain;
+            display: block;
+            margin: 0 auto;
+        }
+
+        .topbar-logo-img {
+            width: 42px;
+            height: 42px;
+            object-fit: contain;
+            display: block;
+        }
+
+    </style>
 
 </head>
 
@@ -34,24 +66,49 @@
 <body>
 
 
+<!-- =========================================================
+     SIDEBAR
+========================================================= -->
+
 <aside class="sidebar">
 
 
-    <div class="sidebar-header">
+    <!-- =====================================================
+         IDENTIDAD ETFA
+    ====================================================== -->
 
-        <div class="logo">
-            ETFA
+    <div class="sidebar-brand">
+
+
+        <div class="sidebar-logo-wrapper">
+
+            <img
+                src="{{ url_for('static', filename='img/etfa.png') }}"
+                alt="Escudo ETFA"
+                class="sidebar-logo sidebar-logo-img"
+            >
+
         </div>
 
-        <div class="logo-text">
 
-            <h2>
-                Control
-            </h2>
+        <h1 class="sidebar-etfa">
+            ETFA
+        </h1>
 
-            <span>
-                Asistencia
-            </span>
+
+        <p class="sidebar-school">
+            ESCUELA TÉCNICA<br>
+            DE LA FUERZA AÉREA
+        </p>
+
+
+        <div class="sidebar-motto">
+
+            <span>★</span>
+
+            HONOR - DISCIPLINA - LEALTAD
+
+            <span>★</span>
 
         </div>
 
@@ -59,30 +116,40 @@
 
 
 
-    <nav class="menu">
+    <!-- =====================================================
+         NAVEGACIÓN
+    ====================================================== -->
 
+    <nav class="sidebar-nav">
+
+
+        <!-- DASHBOARD -->
 
         <a
             href="{{ url_for('inicio') }}"
-            class="menu-item
+            class="sidebar-link
             {% if request.endpoint == 'inicio' %}
             active
             {% endif %}"
         >
 
-            <span class="menu-icon">
-                ▦
-            </span>
+            <div class="sidebar-link-icon">
+                <i class="fa-solid fa-house"></i>
+            </div>
 
-            Dashboard
+            <span>
+                Dashboard
+            </span>
 
         </a>
 
 
 
+        <!-- ALUMNOS -->
+
         <a
             href="{{ url_for('alumnos') }}"
-            class="menu-item
+            class="sidebar-link
             {% if request.endpoint in [
                 'alumnos',
                 'nuevo_alumno',
@@ -92,59 +159,78 @@
             {% endif %}"
         >
 
-            <span class="menu-icon">
-                👥
-            </span>
+            <div class="sidebar-link-icon">
 
-            Alumnos
+                <i class="fa-solid fa-users"></i>
+
+            </div>
+
+            <span>
+                Alumnos
+            </span>
 
         </a>
 
 
 
+        <!-- ASISTENCIA -->
+
         <a
             href="{{ url_for('asistencia') }}"
-            class="menu-item
+            class="sidebar-link
             {% if request.endpoint in [
                 'asistencia',
-                'marcar_entrada',
-                'marcar_salida'
+                'cambiar_asistencia_clase',
+                'guardar_observacion',
+                'cerrar_asistencia'
             ] %}
             active
             {% endif %}"
         >
 
-            <span class="menu-icon">
-                ✓
-            </span>
+            <div class="sidebar-link-icon">
 
-            Asistencia
+                <i class="fa-regular fa-square-check"></i>
+
+            </div>
+
+            <span>
+                Asistencia
+            </span>
 
         </a>
 
 
 
+        <!-- HISTORIAL -->
+
         <a
             href="{{ url_for('historial') }}"
-            class="menu-item
+            class="sidebar-link
             {% if request.endpoint == 'historial' %}
             active
             {% endif %}"
         >
 
-            <span class="menu-icon">
-                ◷
-            </span>
+            <div class="sidebar-link-icon">
 
-            Historial
+                <i class="fa-solid fa-clock-rotate-left"></i>
+
+            </div>
+
+            <span>
+                Historial
+            </span>
 
         </a>
 
 
 
+        <!-- HORARIOS -->
+
         <a
             href="{{ url_for('horarios') }}"
-            class="menu-item
+            class="sidebar-link
             {% if request.endpoint in [
                 'horarios',
                 'nuevo_horario',
@@ -154,81 +240,104 @@
             {% endif %}"
         >
 
-            <span class="menu-icon">
-                🕒
-            </span>
+            <div class="sidebar-link-icon">
 
-            Horarios
+                <i class="fa-regular fa-calendar-days"></i>
+
+            </div>
+
+            <span>
+                Horarios
+            </span>
 
         </a>
 
 
 
+        <!-- NÓMINA -->
+
         <a
             href="{{ url_for('nomina') }}"
-            class="menu-item
-            {% if request.endpoint in [
-                'nomina',
-                'calcular_nomina'
-            ] %}
+            class="sidebar-link
+            {% if request.endpoint == 'nomina' %}
             active
             {% endif %}"
         >
 
-            <span class="menu-icon">
-                $
-            </span>
+            <div class="sidebar-link-icon">
 
-            Nómina
+                <i class="fa-solid fa-list-ol"></i>
+
+            </div>
+
+            <span>
+                Nómina
+            </span>
 
         </a>
 
 
 
+        <!-- REPORTES -->
+
         <a
             href="{{ url_for('reportes') }}"
-            class="menu-item
+            class="sidebar-link
             {% if request.endpoint == 'reportes' %}
             active
             {% endif %}"
         >
 
-            <span class="menu-icon">
-                📊
-            </span>
+            <div class="sidebar-link-icon">
 
-            Reportes
+                <i class="fa-solid fa-chart-column"></i>
+
+            </div>
+
+            <span>
+                Reportes
+            </span>
 
         </a>
 
 
 
-        {% if session.get('rol') == 'ADMINISTRADOR' %}
+        <!-- =================================================
+             OPCIONES SOLO ADMINISTRADOR
+        ================================================== -->
+
+        {% if session.get("rol") == "ADMINISTRADOR" %}
+
+
+        <!-- CONFIGURACIÓN -->
 
         <a
             href="{{ url_for('configuracion') }}"
-            class="menu-item
-            {% if request.endpoint in [
-                'configuracion',
-                'guardar_configuracion'
-            ] %}
+            class="sidebar-link
+            {% if request.endpoint == 'configuracion' %}
             active
             {% endif %}"
         >
 
-            <span class="menu-icon">
-                ⚙
-            </span>
+            <div class="sidebar-link-icon">
 
-            Configuración
+                <i class="fa-solid fa-gear"></i>
+
+            </div>
+
+            <span>
+                Configuración
+            </span>
 
         </a>
 
 
 
+        <!-- USUARIOS -->
+
         <a
             href="{{ url_for('auth.usuarios') }}"
-            class="menu-item
+            class="sidebar-link
             {% if request.endpoint in [
                 'auth.usuarios',
                 'auth.nuevo_usuario',
@@ -238,13 +347,18 @@
             {% endif %}"
         >
 
-            <span class="menu-icon">
-                ♙
+            <div class="sidebar-link-icon">
+
+                <i class="fa-regular fa-user"></i>
+
+            </div>
+
+            <span>
+                Usuarios
             </span>
 
-            Usuarios
-
         </a>
+
 
         {% endif %}
 
@@ -253,15 +367,71 @@
 
 
 
-    <div class="sidebar-footer">
+    <!-- =====================================================
+         PANEL INSTITUCIONAL INFERIOR
+    ====================================================== -->
 
-        <span>
-            Sistema ETFA
+    <div class="sidebar-institution">
+
+
+        <div class="sidebar-institution-title">
+
+            ESCUELA TÉCNICA<br>
+            DE LA FUERZA AÉREA
+
+        </div>
+
+
+        <div class="sidebar-aircraft">
+
+            <i class="fa-solid fa-plane"></i>
+
+            <i class="fa-solid fa-plane"></i>
+
+        </div>
+
+
+        <div class="sidebar-institution-motto">
+
+            <span>★</span>
+
+            HONOR - DISCIPLINA - LEALTAD
+
+            <span>★</span>
+
+        </div>
+
+
+    </div>
+
+
+
+    <!-- =====================================================
+         ESTADO DEL SISTEMA
+    ====================================================== -->
+
+    <div class="sidebar-status">
+
+
+        <div class="system-status-title">
+
+            <span class="system-dot"></span>
+
+            SISTEMA ETFA
+
+            <small>
+                v1.0
+            </small>
+
+        </div>
+
+
+        <span class="system-status-text">
+
+            Sistema operativo
+
         </span>
 
-        <span>
-            v1.0
-        </span>
 
     </div>
 
@@ -270,39 +440,110 @@
 
 
 
-<main class="main-content">
+<!-- =========================================================
+     CONTENIDO GENERAL
+========================================================= -->
+
+<div class="main-wrapper">
 
 
-<header class="topbar">
+    <!-- =====================================================
+         TOPBAR
+    ====================================================== -->
+
+    <header class="topbar">
 
 
-    <div>
+        <!-- BIENVENIDA -->
 
-        <h1>
-
-            {% block page_title %}
-            Sistema ETFA
-            {% endblock %}
-
-        </h1>
+        <div class="topbar-welcome">
 
 
-        <p>
+            <h2>
 
-            {% block page_description %}
-            Sistema de Control de Asistencia, Horarios y Nómina
-            {% endblock %}
+                ¡Bienvenido,
+                {{ session.get('nombres', 'Usuario') }}!
 
-        </p>
-
-    </div>
+            </h2>
 
 
+            <div class="topbar-date">
 
-    <div class="topbar-user-area">
+                <span id="fechaSistema">
+                    --
+                </span>
+
+                <span class="topbar-separator">
+                    •
+                </span>
+
+                <span id="horaSistema">
+                    --:--:--
+                </span>
+
+            </div>
 
 
-        <div class="user-box">
+        </div>
+
+
+
+        <!-- =================================================
+             ACCIONES SUPERIORES
+        ================================================== -->
+
+        <div class="topbar-actions">
+
+
+            <!-- NOTIFICACIONES -->
+
+            <button
+                class="notification-button"
+                type="button"
+                title="Notificaciones"
+            >
+
+                <i class="fa-regular fa-bell"></i>
+
+                <span class="notification-counter">
+                    0
+                </span>
+
+            </button>
+
+
+
+            <div class="topbar-divider"></div>
+
+
+
+            <!-- =================================================
+                 MINI ESCUDO ETFA
+            ================================================== -->
+
+            <div class="topbar-logo">
+
+                <img
+                    src="{{ url_for('static', filename='img/etfa.png') }}"
+                    alt="ETFA"
+                    class="topbar-logo-img"
+                >
+
+            </div>
+
+
+
+            <div class="topbar-divider"></div>
+
+
+
+            <!-- USUARIO -->
+
+            <div class="user-avatar">
+
+                <i class="fa-solid fa-user"></i>
+
+            </div>
 
 
             <div class="user-info">
@@ -316,18 +557,13 @@
 
                 </strong>
 
-
                 <span>
 
-                    {% if session.get('rol') == 'ADMINISTRADOR' %}
-
-                        Administrador
-
-                    {% else %}
-
-                        Usuario
-
-                    {% endif %}
+                    Rol:
+                    {{ session.get(
+                        'rol',
+                        'USUARIO'
+                    )|title }}
 
                 </span>
 
@@ -335,46 +571,160 @@
 
 
 
-            <div class="avatar">
+            <!-- SALIR -->
 
-                {{ session.get(
-                    'nombres',
-                    'U'
-                )[0]|upper }}
+            <a
+                href="{{ url_for('auth.logout') }}"
+                class="logout-button"
+                title="Cerrar sesión"
+            >
 
-            </div>
+                <i class="fa-solid fa-arrow-right-from-bracket"></i>
+
+            </a>
 
 
         </div>
 
 
-
-        <a
-            href="{{ url_for('auth.logout') }}"
-            class="logout-button"
-        >
-
-            Salir
-
-        </a>
-
-
-    </div>
-
-
-</header>
+    </header>
 
 
 
-<section class="dashboard-container">
+    <!-- =====================================================
+         CONTENIDO DE CADA PÁGINA
+    ====================================================== -->
 
-    {% block content %}
-    {% endblock %}
-
-</section>
+    <main class="main-content">
 
 
-</main>
+        <!-- CABECERA INTERNA -->
+
+        {% if self.page_title()|trim %}
+
+        <div class="page-heading">
+
+            <div>
+
+                <h1>
+
+                    {% block page_title %}
+                    {% endblock %}
+
+                </h1>
+
+                <p>
+
+                    {% block page_description %}
+                    {% endblock %}
+
+                </p>
+
+            </div>
+
+        </div>
+
+        {% endif %}
+
+
+
+        <!-- CONTENIDO -->
+
+        {% block content %}
+        {% endblock %}
+
+
+    </main>
+
+
+</div>
+
+
+
+<!-- =========================================================
+     RELOJ DEL SISTEMA
+========================================================= -->
+
+<script>
+
+function actualizarRelojSistema() {
+
+    const ahora = new Date();
+
+
+    const opcionesFecha = {
+
+        weekday: "long",
+
+        day: "2-digit",
+
+        month: "long",
+
+        year: "numeric"
+
+    };
+
+
+    let fecha = ahora.toLocaleDateString(
+        "es-EC",
+        opcionesFecha
+    );
+
+
+    fecha =
+        fecha.charAt(0).toUpperCase()
+        +
+        fecha.slice(1);
+
+
+    const hora =
+        ahora.toLocaleTimeString(
+            "es-EC",
+            {
+                hour12: false
+            }
+        );
+
+
+    const elementoFecha =
+        document.getElementById(
+            "fechaSistema"
+        );
+
+
+    const elementoHora =
+        document.getElementById(
+            "horaSistema"
+        );
+
+
+    if (elementoFecha) {
+
+        elementoFecha.textContent =
+            fecha;
+
+    }
+
+
+    if (elementoHora) {
+
+        elementoHora.textContent =
+            hora;
+
+    }
+
+}
+
+
+actualizarRelojSistema();
+
+
+setInterval(
+    actualizarRelojSistema,
+    1000
+);
+
+</script>
 
 
 {% block extra_js %}

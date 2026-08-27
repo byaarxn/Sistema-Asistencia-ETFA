@@ -5,78 +5,222 @@ Editar Horario | ETFA
 {% endblock %}
 
 {% block page_title %}
-Editar horario
+Editar bloque académico
 {% endblock %}
 
 {% block page_description %}
-Modificar configuración de jornada
+Modificar una clase o actividad programada
 {% endblock %}
 
 {% block content %}
 
-<div class="page-header-card">
+<style>
 
-    <div>
+.form-panel {
+    max-width: 900px;
+    margin: auto;
+    padding: 22px;
+    background: white;
+    border: 1px solid #e4e7ec;
+    border-radius: 16px;
+}
 
-        <span class="panel-label">
-            EDICIÓN
-        </span>
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 15px;
+}
 
-        <h2>
-            {{ horario.nombre }}
-        </h2>
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
 
-        <p>
-            Modifique los valores necesarios.
-        </p>
+.form-group.full {
+    grid-column: 1 / -1;
+}
 
-    </div>
+.form-group label {
+    font-size: 11px;
+    font-weight: 700;
+    color: #344054;
+}
 
-    <a href="{{ url_for('horarios') }}"
-       class="btn-cancel">
+.form-group input,
+.form-group select {
+    min-height: 42px;
+    padding: 0 11px;
+    border: 1px solid #d0d5dd;
+    border-radius: 8px;
+}
 
-        ← Volver
+.form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+    margin-top: 20px;
+}
 
-    </a>
+.form-btn {
+    min-height: 40px;
+    padding: 0 16px;
+    border-radius: 8px;
+    border: none;
+    text-decoration: none;
+    font-weight: 700;
+    display: inline-flex;
+    align-items: center;
+}
 
-</div>
+.cancel {
+    background: #f2f4f7;
+    color: #344054;
+}
+
+.save {
+    background: #2563eb;
+    color: white;
+}
+
+</style>
 
 
-<div class="form-card">
+<div class="form-panel">
 
-    <div class="form-card-header">
-
-        <span class="panel-label">
-            HORARIO
-        </span>
-
-        <h2>
-            Configuración
-        </h2>
-
-    </div>
-
-
-    <form method="POST"
-          action="{{ url_for(
-                'editar_horario',
-                id_horario=horario.id_horario
-          ) }}"
-          class="student-form">
+    <form method="POST">
 
         <div class="form-grid">
 
             <div class="form-group">
 
                 <label>
-                    Nombre del horario
+                    Fecha
+                </label>
+
+                <input
+                    type="date"
+                    name="fecha"
+                    value="{{ horario.fecha }}"
+                    required
+                >
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label>
+                    Día
+                </label>
+
+                <select
+                    name="dia_semana"
+                    required
+                >
+
+                    {% for dia in [
+                        'LUNES',
+                        'MARTES',
+                        'MIÉRCOLES',
+                        'JUEVES',
+                        'VIERNES',
+                        'SÁBADO',
+                        'DOMINGO'
+                    ] %}
+
+                    <option
+                        value="{{ dia }}"
+                        {% if horario.dia_semana == dia %}
+                        selected
+                        {% endif %}
+                    >
+                        {{ dia }}
+                    </option>
+
+                    {% endfor %}
+
+                </select>
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label>
+                    Inicio
+                </label>
+
+                <input
+                    type="time"
+                    name="hora_inicio"
+                    value="{{ horario.hora_entrada_form }}"
+                    required
+                >
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label>
+                    Fin
+                </label>
+
+                <input
+                    type="time"
+                    name="hora_fin"
+                    value="{{ horario.hora_salida_form }}"
+                    required
+                >
+
+            </div>
+
+
+            <div class="form-group full">
+
+                <label>
+                    Materia
+                </label>
+
+                <select
+                    name="id_materia"
+                    required
+                >
+
+                    {% for materia in materias %}
+
+                    <option
+                        value="{{ materia.id_materia }}"
+                        {% if materia.id_materia == horario.id_materia %}
+                        selected
+                        {% endif %}
+                    >
+                        {% if materia.codigo %}
+                            {{ materia.codigo }} -
+                        {% endif %}
+
+                        {{ materia.nombre }}
+                    </option>
+
+                    {% endfor %}
+
+                </select>
+
+            </div>
+
+
+            <div class="form-group full">
+
+                <label>
+                    Docente
                 </label>
 
                 <input
                     type="text"
-                    name="nombre"
-                    value="{{ horario.nombre }}"
-                    required>
+                    name="docente"
+                    value="{{ horario.docente or '' }}"
+                >
 
             </div>
 
@@ -84,16 +228,14 @@ Modificar configuración de jornada
             <div class="form-group">
 
                 <label>
-                    Minutos de tolerancia
+                    Lugar
                 </label>
 
                 <input
-                    type="number"
-                    name="tolerancia_minutos"
-                    min="0"
-                    max="120"
-                    value="{{ horario.tolerancia_minutos }}"
-                    required>
+                    type="text"
+                    name="lugar"
+                    value="{{ horario.lugar or '' }}"
+                >
 
             </div>
 
@@ -101,64 +243,50 @@ Modificar configuración de jornada
             <div class="form-group">
 
                 <label>
-                    Hora de entrada
+                    Estado
                 </label>
 
-                <input
-                    type="time"
-                    name="hora_entrada"
-                    value="{{ horario.hora_entrada_form }}"
-                    required>
+                <select name="estado">
+
+                    {% for valor in [
+                        'PROGRAMADA',
+                        'EN_CURSO',
+                        'FINALIZADA',
+                        'CANCELADA'
+                    ] %}
+
+                    <option
+                        value="{{ valor }}"
+                        {% if horario.estado == valor %}
+                        selected
+                        {% endif %}
+                    >
+                        {{ valor }}
+                    </option>
+
+                    {% endfor %}
+
+                </select>
 
             </div>
-
-
-            <div class="form-group">
-
-                <label>
-                    Hora de salida
-                </label>
-
-                <input
-                    type="time"
-                    name="hora_salida"
-                    value="{{ horario.hora_salida_form }}"
-                    required>
-
-            </div>
-
-        </div>
-
-
-        <div class="schedule-info-box">
-
-            <strong>
-                Importante
-            </strong>
-
-            <p>
-                Los cambios se aplicarán a las nuevas
-                marcaciones. Los registros históricos
-                anteriores no serán modificados.
-            </p>
 
         </div>
 
 
         <div class="form-actions">
 
-            <a href="{{ url_for('horarios') }}"
-               class="btn-cancel">
-
+            <a
+                href="{{ url_for('horarios') }}"
+                class="form-btn cancel"
+            >
                 Cancelar
-
             </a>
 
-            <button type="submit"
-                    class="btn-primary">
-
+            <button
+                type="submit"
+                class="form-btn save"
+            >
                 Guardar cambios
-
             </button>
 
         </div>

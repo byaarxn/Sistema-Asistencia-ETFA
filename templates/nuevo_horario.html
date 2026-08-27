@@ -1,83 +1,243 @@
 {% extends "base.html" %}
 
 {% block title %}
-Nuevo Horario | ETFA
+Nuevo Bloque Académico | ETFA
 {% endblock %}
 
 {% block page_title %}
-Nuevo horario
+Nuevo bloque académico
 {% endblock %}
 
 {% block page_description %}
-Crear una nueva configuración de jornada
+Agregar una clase o actividad al horario
 {% endblock %}
 
 {% block content %}
 
-<div class="page-header-card">
+<style>
 
-    <div>
+.form-panel {
+    max-width: 900px;
 
-        <span class="panel-label">
-            NUEVO HORARIO
-        </span>
+    margin: auto;
 
-        <h2>
-            Configuración de jornada
-        </h2>
+    padding: 22px;
 
-        <p>
-            El nuevo horario quedará activo automáticamente.
-        </p>
+    background: white;
 
-    </div>
+    border:
+        1px solid #e4e7ec;
 
-    <a href="{{ url_for('horarios') }}"
-       class="btn-cancel">
+    border-radius: 16px;
+}
 
-        ← Volver
+.form-grid {
+    display: grid;
 
-    </a>
+    grid-template-columns:
+        repeat(2, 1fr);
 
-</div>
+    gap: 15px;
+}
+
+.form-group {
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 6px;
+}
+
+.form-group.full {
+    grid-column: 1 / -1;
+}
+
+.form-group label {
+    color: #344054;
+
+    font-size: 11px;
+
+    font-weight: 700;
+}
+
+.form-group input,
+.form-group select {
+    min-height: 42px;
+
+    padding: 0 11px;
+
+    border:
+        1px solid #d0d5dd;
+
+    border-radius: 8px;
+
+    outline: none;
+}
+
+.form-actions {
+    margin-top: 20px;
+
+    display: flex;
+
+    justify-content: flex-end;
+
+    gap: 8px;
+}
+
+.form-btn {
+    min-height: 40px;
+
+    padding: 0 16px;
+
+    display: inline-flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    border-radius: 8px;
+
+    border: none;
+
+    text-decoration: none;
+
+    font-weight: 700;
+
+    cursor: pointer;
+}
+
+.form-btn.cancel {
+    background: #f2f4f7;
+    color: #344054;
+}
+
+.form-btn.save {
+    background: #2563eb;
+    color: white;
+}
+
+</style>
 
 
-<div class="form-card">
+<div class="form-panel">
 
-    <div class="form-card-header">
-
-        <span class="panel-label">
-            DATOS
-        </span>
-
-        <h2>
-            Información del horario
-        </h2>
-
-        <p>
-            Configure las horas utilizadas para asistencia.
-        </p>
-
-    </div>
-
-
-    <form method="POST"
-          action="{{ url_for('nuevo_horario') }}"
-          class="student-form">
+    <form method="POST">
 
         <div class="form-grid">
 
             <div class="form-group">
 
                 <label>
-                    Nombre del horario
+                    Fecha
+                </label>
+
+                <input
+                    type="date"
+                    name="fecha"
+                    required
+                >
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label>
+                    Día de la semana
+                </label>
+
+                <select
+                    name="dia_semana"
+                    required
+                >
+                    <option value="">Seleccione</option>
+                    <option>LUNES</option>
+                    <option>MARTES</option>
+                    <option>MIÉRCOLES</option>
+                    <option>JUEVES</option>
+                    <option>VIERNES</option>
+                    <option>SÁBADO</option>
+                    <option>DOMINGO</option>
+                </select>
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label>
+                    Hora de inicio
+                </label>
+
+                <input
+                    type="time"
+                    name="hora_inicio"
+                    required
+                >
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label>
+                    Hora de finalización
+                </label>
+
+                <input
+                    type="time"
+                    name="hora_fin"
+                    required
+                >
+
+            </div>
+
+
+            <div class="form-group full">
+
+                <label>
+                    Materia / Actividad
+                </label>
+
+                <select
+                    name="id_materia"
+                    required
+                >
+
+                    <option value="">
+                        Seleccione una materia
+                    </option>
+
+                    {% for materia in materias %}
+
+                    <option value="{{ materia.id_materia }}">
+
+                        {% if materia.codigo %}
+                            {{ materia.codigo }} -
+                        {% endif %}
+
+                        {{ materia.nombre }}
+
+                    </option>
+
+                    {% endfor %}
+
+                </select>
+
+            </div>
+
+
+            <div class="form-group full">
+
+                <label>
+                    Docente / Responsable
                 </label>
 
                 <input
                     type="text"
-                    name="nombre"
-                    placeholder="Ej. Horario General ETFA"
-                    required>
+                    name="docente"
+                    placeholder="Nombre del docente o Instructor de Guardia"
+                >
 
             </div>
 
@@ -85,16 +245,29 @@ Crear una nueva configuración de jornada
             <div class="form-group">
 
                 <label>
-                    Minutos de tolerancia
+                    Lugar
+                </label>
+
+                <input
+                    type="text"
+                    name="lugar"
+                    placeholder="Aulas ETFA"
+                >
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label>
+                    N° de hora
                 </label>
 
                 <input
                     type="number"
-                    name="tolerancia_minutos"
-                    min="0"
-                    max="120"
-                    value="5"
-                    required>
+                    name="numero_hora"
+                    min="1"
+                >
 
             </div>
 
@@ -102,14 +275,15 @@ Crear una nueva configuración de jornada
             <div class="form-group">
 
                 <label>
-                    Hora de entrada
+                    Curso
                 </label>
 
                 <input
-                    type="time"
-                    name="hora_entrada"
-                    value="07:00"
-                    required>
+                    type="text"
+                    name="curso"
+                    value="Primer Año Militar"
+                    required
+                >
 
             </div>
 
@@ -117,49 +291,35 @@ Crear una nueva configuración de jornada
             <div class="form-group">
 
                 <label>
-                    Hora de salida
+                    Paralelo
                 </label>
 
                 <input
-                    type="time"
-                    name="hora_salida"
-                    value="16:00"
-                    required>
+                    type="text"
+                    name="paralelo"
+                    value="C"
+                    required
+                >
 
             </div>
-
-        </div>
-
-
-        <div class="schedule-info-box">
-
-            <strong>
-                Ejemplo de tolerancia
-            </strong>
-
-            <p>
-                Si la entrada es 07:00 y la tolerancia es de
-                5 minutos, el alumno será puntual hasta las
-                07:05. Desde las 07:06 será atrasado.
-            </p>
 
         </div>
 
 
         <div class="form-actions">
 
-            <a href="{{ url_for('horarios') }}"
-               class="btn-cancel">
-
+            <a
+                href="{{ url_for('horarios') }}"
+                class="form-btn cancel"
+            >
                 Cancelar
-
             </a>
 
-            <button type="submit"
-                    class="btn-primary">
-
-                Guardar y activar
-
+            <button
+                type="submit"
+                class="form-btn save"
+            >
+                Guardar bloque
             </button>
 
         </div>

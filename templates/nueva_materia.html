@@ -1,0 +1,231 @@
+{% extends "base.html" %}
+
+{% block title %}
+Nueva Materia | ETFA
+{% endblock %}
+
+{% block page_title %}
+Nueva materia o actividad
+{% endblock %}
+
+{% block page_description %}
+Agregar un elemento al catálogo académico
+{% endblock %}
+
+{% block content %}
+
+<style>
+
+.materia-form {
+    max-width: 700px;
+
+    margin: auto;
+
+    padding: 22px;
+
+    background: white;
+
+    border:
+        1px solid #e4e7ec;
+
+    border-radius: 15px;
+}
+
+.materia-group {
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 6px;
+
+    margin-bottom: 15px;
+}
+
+.materia-group label {
+    font-size: 11px;
+
+    font-weight: 700;
+
+    color: #344054;
+}
+
+.materia-group input,
+.materia-group select {
+    min-height: 42px;
+
+    padding: 0 11px;
+
+    border:
+        1px solid #d0d5dd;
+
+    border-radius: 8px;
+}
+
+.materia-actions {
+    display: flex;
+
+    justify-content: flex-end;
+
+    gap: 8px;
+}
+
+.materia-btn {
+    padding: 10px 14px;
+
+    border-radius: 8px;
+
+    border: none;
+
+    text-decoration: none;
+
+    font-weight: 700;
+
+    cursor: pointer;
+}
+
+.cancel {
+    background: #f2f4f7;
+    color: #344054;
+}
+
+.save {
+    background: #2563eb;
+    color: white;
+}
+
+</style>
+
+
+<div class="materia-form">
+
+    <form method="POST">
+
+        <div class="materia-group">
+
+            <label>
+                Código
+            </label>
+
+            <input
+                type="text"
+                name="codigo"
+                placeholder="Ej. 4.C"
+            >
+
+        </div>
+
+
+        <div class="materia-group">
+
+            <label>
+                Nombre
+            </label>
+
+            <input
+                type="text"
+                name="nombre"
+                required
+            >
+
+        </div>
+
+
+        <div class="materia-group">
+
+            <label>
+                Tipo
+            </label>
+
+            <select
+                name="tipo"
+                required
+            >
+
+                <option value="MATERIA">
+                    Materia
+                </option>
+
+                <option value="EXAMEN">
+                    Examen
+                </option>
+
+                <option value="REGIMEN_INTERNO">
+                    Régimen interno
+                </option>
+
+                <option value="ENTRENAMIENTO_FISICO">
+                    Entrenamiento físico
+                </option>
+
+                <option value="TRABAJO_AUTONOMO">
+                    Trabajo autónomo
+                </option>
+
+                <option value="ACTO_CIVICO">
+                    Acto cívico
+                </option>
+
+                <option value="ALIMENTACION">
+                    Alimentación
+                </option>
+
+                <option value="RECESO">
+                    Receso
+                </option>
+
+                <option value="OTRO">
+                    Otro
+                </option>
+
+            </select>
+
+        </div>
+
+
+        <div class="materia-group">
+
+            <label>
+                ¿Contabiliza asistencia?
+            </label>
+
+            <select
+                name="contabiliza_asistencia"
+                required
+            >
+
+                <option value="1">
+                    Sí
+                </option>
+
+                <option value="0">
+                    No
+                </option>
+
+            </select>
+
+        </div>
+
+
+        <div class="materia-actions">
+
+            <a
+                href="{{ url_for('materias') }}"
+                class="materia-btn cancel"
+            >
+                Cancelar
+            </a>
+
+            <button
+                type="submit"
+                class="materia-btn save"
+            >
+                Guardar
+            </button>
+
+        </div>
+
+    </form>
+
+</div>
+
+{% endblock %}

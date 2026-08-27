@@ -1,0 +1,203 @@
+{% extends "base.html" %}
+
+{% block title %}
+Materias | ETFA
+{% endblock %}
+
+{% block page_title %}
+Materias y actividades
+{% endblock %}
+
+{% block page_description %}
+Catálogo académico del Primer Año Militar
+{% endblock %}
+
+{% block content %}
+
+<style>
+
+.catalog-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 15px;
+
+    margin-bottom: 15px;
+
+    padding: 18px;
+
+    background: white;
+
+    border:
+        1px solid #e4e7ec;
+
+    border-radius: 14px;
+}
+
+.catalog-btn {
+    padding: 10px 14px;
+
+    border-radius: 8px;
+
+    background: #2563eb;
+
+    color: white;
+
+    text-decoration: none;
+
+    font-size: 11px;
+
+    font-weight: 700;
+}
+
+.catalog-panel {
+    background: white;
+
+    border:
+        1px solid #e4e7ec;
+
+    border-radius: 14px;
+
+    overflow: hidden;
+}
+
+.catalog-table {
+    width: 100%;
+
+    border-collapse: collapse;
+}
+
+.catalog-table th {
+    padding: 11px;
+
+    background: #f8fafc;
+
+    color: #667085;
+
+    font-size: 9px;
+
+    text-transform: uppercase;
+
+    text-align: left;
+}
+
+.catalog-table td {
+    padding: 12px;
+
+    border-top:
+        1px solid #f2f4f7;
+
+    font-size: 11px;
+}
+
+</style>
+
+
+<div class="catalog-header">
+
+    <div>
+
+        <h2 style="margin:0 0 5px;">
+            Catálogo de materias
+        </h2>
+
+        <p style="margin:0;color:#667085;">
+            Materias y actividades utilizadas en el horario académico.
+        </p>
+
+    </div>
+
+
+    <a
+        href="{{ url_for('nueva_materia') }}"
+        class="catalog-btn"
+    >
+        + Nueva materia
+    </a>
+
+</div>
+
+
+<div class="catalog-panel">
+
+    <table class="catalog-table">
+
+        <thead>
+
+            <tr>
+                <th>Código</th>
+                <th>Nombre</th>
+                <th>Tipo</th>
+                <th>Control de asistencia</th>
+                <th>Estado</th>
+            </tr>
+
+        </thead>
+
+
+        <tbody>
+
+        {% for materia in materias %}
+
+            <tr>
+
+                <td>
+                    {{ materia.codigo or "--" }}
+                </td>
+
+                <td>
+                    <strong>
+                        {{ materia.nombre }}
+                    </strong>
+                </td>
+
+                <td>
+                    {{ materia.tipo }}
+                </td>
+
+                <td>
+
+                    {% if materia.contabiliza_asistencia %}
+
+                        <span style="color:#027a48;font-weight:700;">
+                            Sí
+                        </span>
+
+                    {% else %}
+
+                        <span style="color:#667085;">
+                            No
+                        </span>
+
+                    {% endif %}
+
+                </td>
+
+                <td>
+                    {{ materia.estado }}
+                </td>
+
+            </tr>
+
+        {% else %}
+
+            <tr>
+
+                <td
+                    colspan="5"
+                    style="text-align:center;padding:30px;"
+                >
+                    No existen materias registradas.
+                </td>
+
+            </tr>
+
+        {% endfor %}
+
+        </tbody>
+
+    </table>
+
+</div>
+
+{% endblock %}

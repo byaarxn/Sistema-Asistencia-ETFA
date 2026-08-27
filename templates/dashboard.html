@@ -1,445 +1,119 @@
 {% extends "base.html" %}
 
-{% block title %}
-Dashboard | ETFA
-{% endblock %}
-
-{% block page_title %}
-Dashboard
-{% endblock %}
-
-{% block page_description %}
-Sistema de Control de Asistencia, Horarios y Nómina
-{% endblock %}
+{% block title %}Dashboard | ETFA{% endblock %}
+{% block page_header %}{% endblock %}
 
 {% block content %}
+<style>
+.etfa-dashboard{display:flex;flex-direction:column;gap:18px}
+.etfa-hero{min-height:170px;padding:26px 30px;border-radius:18px;color:#fff;display:flex;align-items:center;justify-content:space-between;gap:24px;background:linear-gradient(115deg,#001d45 0%,#06377c 58%,#0a3d87 100%);box-shadow:0 14px 35px rgba(0,31,70,.14)}
+.etfa-hero-left{display:flex;align-items:center;gap:22px}
+.etfa-hero-mark{width:76px;height:76px;border-radius:20px;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,.12);font-size:34px}
+.etfa-hero h1{margin:0;font-size:28px;font-weight:800}
+.etfa-hero h2{margin:7px 0 0;font-size:15px;font-weight:600}
+.etfa-hero p{margin:7px 0 0;font-size:12px;color:rgba(255,255,255,.78)}
+.hero-status{display:flex;align-items:center;gap:8px;padding:10px 14px;border:1px solid rgba(255,255,255,.18);border-radius:999px;background:rgba(255,255,255,.08);font-size:10px;font-weight:700}
+.hero-dot{width:9px;height:9px;border-radius:50%;background:#12d878;box-shadow:0 0 10px rgba(18,216,120,.8)}
+.stats{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:13px}
+.stat{background:#fff;border:1px solid #e4e7ec;border-radius:15px;padding:18px;display:flex;align-items:center;gap:13px;min-height:112px;box-shadow:0 4px 14px rgba(16,24,40,.035)}
+.stat-icon{width:48px;height:48px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:19px;flex-shrink:0}
+.blue{background:#eaf2ff;color:#1769e8}.green{background:#dcfae6;color:#12a95f}.red{background:#fee4e2;color:#f04438}.orange{background:#fff2df;color:#f79009}.purple{background:#f0eaff;color:#7f56d9}
+.stat label{font-size:10px;color:#667085}.stat strong{display:block;font-size:25px;margin-top:4px}.stat small{display:block;font-size:9px;color:#98a2b3;margin-top:6px}
+.grid2{display:grid;grid-template-columns:minmax(0,2fr) minmax(300px,.95fr);gap:14px}
+.panel{background:#fff;border:1px solid #e4e7ec;border-radius:15px;box-shadow:0 4px 14px rgba(16,24,40,.035);overflow:hidden}
+.panel-body{padding:20px}
+.panel-title{color:#175cd3;font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.4px}
+.class-body{display:grid;grid-template-columns:auto 1fr auto;gap:20px;align-items:center;margin-top:18px}
+.class-icon{width:92px;height:92px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:#eaf2ff;color:#1769e8;font-size:36px}
+.class-info h3{font-size:20px;margin:8px 0}.class-info p{margin:6px 0;font-size:11px;color:#475467}.pill{display:inline-flex;padding:5px 9px;border-radius:999px;background:#dcfae6;color:#067647;font-size:9px;font-weight:800}
+.circle{width:118px;height:118px;border-radius:50%;display:flex;align-items:center;justify-content:center;position:relative;background:conic-gradient(#12b76a calc(var(--p)*1%),#edf0f5 0)}
+.circle:before{content:"";position:absolute;inset:10px;background:#fff;border-radius:50%}
+.circle-inner{position:relative;text-align:center}.circle-inner strong{display:block;font-size:24px}.circle-inner span{display:block;width:70px;font-size:9px;color:#667085;margin-top:3px}
+.next{padding:20px}.next-box{margin-top:18px;display:flex;gap:15px;align-items:center}.next-icon{width:76px;height:76px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:#eef4ff;color:#1769e8;font-size:30px}.next h3{font-size:16px;margin:0 0 8px}.next p{font-size:10px;color:#667085;margin:5px 0}
+.panel-head{height:58px;padding:0 18px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #eaecf0}.panel-head h3{font-size:11px;color:#175cd3;text-transform:uppercase}.panel-head a{font-size:9px;text-decoration:none;padding:7px 11px;border:1px solid #d0d5dd;border-radius:999px}
+.table-wrap{overflow:auto}.tbl{width:100%;min-width:700px;border-collapse:collapse}.tbl th{padding:10px 14px;text-align:left;font-size:8px;color:#667085;text-transform:uppercase;background:#f8fafc}.tbl td{padding:11px 14px;border-top:1px solid #f2f4f7;font-size:9px;color:#344054}.badge{display:inline-flex;padding:5px 8px;border-radius:999px;font-size:8px;font-weight:800}.ok{background:#dcfae6;color:#067647}.bad{background:#fee4e2;color:#b42318}.just{background:#fef0c7;color:#b54708}
+.quick{padding:10px 14px}.quick a{display:flex;align-items:center;gap:12px;min-height:58px;border-bottom:1px solid #f2f4f7;text-decoration:none}.qicon{width:40px;height:40px;border-radius:9px;display:flex;align-items:center;justify-content:center;color:#fff}.quick strong{display:block;font-size:10px}.quick span{display:block;font-size:8px;color:#667085;margin-top:3px}
+.empty{padding:35px 15px;text-align:center;color:#667085}
+@media(max-width:1200px){.stats{grid-template-columns:repeat(3,1fr)}.grid2{grid-template-columns:1fr}}
+@media(max-width:800px){.stats{grid-template-columns:repeat(2,1fr)}.etfa-hero{align-items:flex-start;flex-direction:column}.class-body{grid-template-columns:1fr}.circle{margin:auto}}
+</style>
 
-<div class="welcome-card">
+<div class="etfa-dashboard">
+  <section class="etfa-hero">
+    <div class="etfa-hero-left">
+      <div class="etfa-hero-mark"><i class="fa-solid fa-shield-halved"></i></div>
+      <div>
+        <h1>Control de asistencia académica</h1>
+        <h2>Primer Año Militar · Paralelo C</h2>
+        <p>Escuela Técnica de la Fuerza Aérea</p>
+      </div>
+    </div>
+    <div class="hero-status"><span class="hero-dot"></span>Sistema operativo</div>
+  </section>
 
-    <div>
+  <section class="stats">
+    <div class="stat"><div class="stat-icon blue"><i class="fa-solid fa-users"></i></div><div><label>Total alumnos</label><strong>{{ total_alumnos }}</strong><small>Registrados</small></div></div>
+    <div class="stat"><div class="stat-icon green"><i class="fa-solid fa-check"></i></div><div><label>Presentes</label><strong>{{ presentes }}</strong><small>Clase actual</small></div></div>
+    <div class="stat"><div class="stat-icon red"><i class="fa-solid fa-xmark"></i></div><div><label>No asisten</label><strong>{{ ausentes }}</strong><small>Clase actual</small></div></div>
+    <div class="stat"><div class="stat-icon orange"><i class="fa-regular fa-clock"></i></div><div><label>Justificados</label><strong>{{ justificados }}</strong><small>Registros</small></div></div>
+    <div class="stat"><div class="stat-icon purple"><i class="fa-regular fa-calendar-days"></i></div><div><label>Clases hoy</label><strong>{{ clases_hoy }}</strong><small>{{ horas_hoy }} h programadas</small></div></div>
+  </section>
 
-        <span class="welcome-label">
-            PANEL GENERAL
-        </span>
+  <section class="grid2">
+    <div class="panel"><div class="panel-body"><div class="panel-title">Clase actual</div>
+      {% if clase_actual %}
+      <div class="class-body">
+        <div class="class-icon"><i class="fa-solid fa-book-open"></i></div>
+        <div class="class-info">
+          <span class="pill">{% if clase_actual.contabiliza_asistencia %}EN CURSO{% else %}ACTIVIDAD{% endif %}</span>
+          <h3>{{ clase_actual.materia }}</h3>
+          <p><i class="fa-regular fa-clock"></i> {{ clase_actual.hora_inicio }} - {{ clase_actual.hora_fin }}</p>
+          <p><strong>Docente:</strong> {{ clase_actual.docente or "No registrado" }}</p>
+          <p><strong>Lugar:</strong> {{ clase_actual.lugar or "ETFA" }}</p>
+        </div>
+        {% if clase_actual.contabiliza_asistencia %}
+        <div class="circle" style="--p:{{ porcentaje_asistencia }}"><div class="circle-inner"><strong>{{ porcentaje_asistencia }}%</strong><span>Asistencia del bloque</span></div></div>
+        {% endif %}
+      </div>
+      {% else %}
+      <div class="empty"><i class="fa-regular fa-calendar-xmark"></i><br><br>No existe una actividad en curso.</div>
+      {% endif %}
+    </div></div>
 
-        <h2>
-            Control de asistencia
-        </h2>
+    <div class="panel next"><div class="panel-title">Próxima clase</div>
+      {% if proxima_clase %}
+      <div class="next-box"><div class="next-icon"><i class="fa-solid fa-flask"></i></div><div><h3>{{ proxima_clase.materia }}</h3><p><i class="fa-regular fa-clock"></i> {{ proxima_clase.hora_inicio }} - {{ proxima_clase.hora_fin }}</p><p><strong>Docente:</strong> {{ proxima_clase.docente or "No registrado" }}</p><p><strong>Lugar:</strong> {{ proxima_clase.lugar or "ETFA" }}</p></div></div>
+      {% else %}
+      <div class="empty">No existen más actividades programadas para hoy.</div>
+      {% endif %}
+    </div>
+  </section>
 
-        <p>
-            Primer Año Militar · Paralelo C · ETFA
-        </p>
-
+  <section class="grid2">
+    <div class="panel">
+      <div class="panel-head"><h3>Últimos registros</h3><a href="{{ url_for('historial') }}">Ver historial</a></div>
+      <div class="table-wrap"><table class="tbl"><thead><tr><th>Alumno</th><th>Fecha</th><th>Materia</th><th>Estado</th><th>Horas</th></tr></thead><tbody>
+      {% for r in registros %}
+        <tr><td><strong>{{ r.apellidos }} {{ r.nombres }}</strong></td><td>{{ r.fecha }}</td><td>{{ r.materia }}</td><td>
+        {% if r.estado_asistencia == "ASISTE" %}<span class="badge ok">ASISTE</span>
+        {% elif r.estado_asistencia == "NO_ASISTE" %}<span class="badge bad">NO ASISTE</span>
+        {% else %}<span class="badge just">JUSTIFICADO</span>{% endif %}
+        </td><td>{{ r.horas_asistidas }} h</td></tr>
+      {% else %}
+        <tr><td colspan="5" class="empty">Todavía no existen registros de asistencia académica.</td></tr>
+      {% endfor %}
+      </tbody></table></div>
     </div>
 
-
-    <div class="welcome-status">
-
-        <span class="status-dot"></span>
-
-        Sistema operativo
-
+    <div class="panel">
+      <div class="panel-head"><h3>Acciones rápidas</h3></div>
+      <div class="quick">
+        <a href="{{ url_for('asistencia') }}"><div class="qicon" style="background:#1769e8"><i class="fa-solid fa-check"></i></div><div><strong>Marcar asistencia</strong><span>Control por bloque académico</span></div></a>
+        <a href="{{ url_for('nuevo_alumno') }}"><div class="qicon" style="background:#12b76a"><i class="fa-solid fa-user-plus"></i></div><div><strong>Nuevo alumno</strong><span>Registrar alumno</span></div></a>
+        <a href="{{ url_for('horarios') }}"><div class="qicon" style="background:#7f56d9"><i class="fa-regular fa-calendar-days"></i></div><div><strong>Horarios</strong><span>Gestionar horario académico</span></div></a>
+        <a href="{{ url_for('nomina') }}"><div class="qicon" style="background:#f79009"><i class="fa-solid fa-list-ol"></i></div><div><strong>Nómina</strong><span>Ver alumnos en orden de lista</span></div></a>
+      </div>
     </div>
-
+  </section>
 </div>
-
-
-<div class="stats-grid">
-
-
-    <div class="stat-card">
-
-        <div class="stat-icon">
-            👥
-        </div>
-
-        <div class="stat-content">
-
-            <span class="stat-title">
-                Total alumnos
-            </span>
-
-            <h3>
-                {{ total_alumnos }}
-            </h3>
-
-            <span class="stat-detail">
-                Alumnos activos
-            </span>
-
-        </div>
-
-    </div>
-
-
-    <div class="stat-card">
-
-        <div class="stat-icon">
-            ✓
-        </div>
-
-        <div class="stat-content">
-
-            <span class="stat-title">
-                Presentes
-            </span>
-
-            <h3>
-                {{ presentes }}
-            </h3>
-
-            <span class="stat-detail success">
-                Registrados hoy
-            </span>
-
-        </div>
-
-    </div>
-
-
-    <div class="stat-card">
-
-        <div class="stat-icon">
-            ◷
-        </div>
-
-        <div class="stat-content">
-
-            <span class="stat-title">
-                Atrasados
-            </span>
-
-            <h3>
-                {{ atrasados }}
-            </h3>
-
-            <span class="stat-detail warning">
-                Fuera de horario
-            </span>
-
-        </div>
-
-    </div>
-
-
-    <div class="stat-card">
-
-        <div class="stat-icon">
-            ✕
-        </div>
-
-        <div class="stat-content">
-
-            <span class="stat-title">
-                Ausentes
-            </span>
-
-            <h3>
-                {{ ausentes }}
-            </h3>
-
-            <span class="stat-detail danger">
-                Sin registro
-            </span>
-
-        </div>
-
-    </div>
-
-</div>
-
-
-<div class="content-grid">
-
-
-<div class="panel registros-panel">
-
-    <div class="panel-header">
-
-        <div>
-
-            <span class="panel-label">
-                ACTIVIDAD
-            </span>
-
-            <h2>
-                Últimas marcaciones
-            </h2>
-
-        </div>
-
-
-        <a href="{{ url_for('historial') }}"
-           class="button-secondary"
-           style="text-decoration:none;">
-
-            Ver historial
-
-        </a>
-
-    </div>
-
-
-    <div class="table-container">
-
-        <table>
-
-            <thead>
-
-                <tr>
-                    <th>Alumno</th>
-                    <th>Fecha</th>
-                    <th>Entrada</th>
-                    <th>Salida</th>
-                    <th>Estado</th>
-                    <th>Horas</th>
-                </tr>
-
-            </thead>
-
-
-            <tbody>
-
-            {% if registros %}
-
-                {% for registro in registros %}
-
-                <tr>
-
-                    <td>
-
-                        <div class="student-cell">
-
-                            <div class="student-avatar">
-                                {{ registro.nombres[0] }}
-                            </div>
-
-                            <div>
-
-                                <strong>
-                                    {{ registro.apellidos }}
-                                    {{ registro.nombres }}
-                                </strong>
-
-                                <span>
-                                    Primer Año Militar · C
-                                </span>
-
-                            </div>
-
-                        </div>
-
-                    </td>
-
-
-                    <td>
-                        {{ registro.fecha }}
-                    </td>
-
-
-                    <td>
-
-                        {% if registro.hora_entrada %}
-
-                            {{ registro.hora_entrada }}
-
-                        {% else %}
-
-                            --
-
-                        {% endif %}
-
-                    </td>
-
-
-                    <td>
-
-                        {% if registro.hora_salida %}
-
-                            {{ registro.hora_salida }}
-
-                        {% else %}
-
-                            --
-
-                        {% endif %}
-
-                    </td>
-
-
-                    <td>
-
-                        {% if registro.estado == "PUNTUAL" %}
-
-                            <span class="badge badge-success">
-                                Puntual
-                            </span>
-
-                        {% elif registro.estado == "ATRASADO" %}
-
-                            <span class="badge badge-warning">
-                                Atrasado
-                            </span>
-
-                        {% elif registro.estado == "AUSENTE" %}
-
-                            <span class="badge badge-danger">
-                                Ausente
-                            </span>
-
-                        {% elif registro.estado == "JUSTIFICADO" %}
-
-                            <span class="badge badge-info">
-                                Justificado
-                            </span>
-
-                        {% else %}
-
-                            <span class="badge badge-neutral">
-                                {{ registro.estado }}
-                            </span>
-
-                        {% endif %}
-
-                    </td>
-
-
-                    <td>
-                        {{ registro.horas_trabajadas or 0 }} h
-                    </td>
-
-                </tr>
-
-                {% endfor %}
-
-
-            {% else %}
-
-                <tr>
-
-                    <td colspan="6"
-                        class="empty-table">
-
-                        No existen registros de asistencia.
-
-                    </td>
-
-                </tr>
-
-            {% endif %}
-
-            </tbody>
-
-        </table>
-
-    </div>
-
-</div>
-
-
-<div class="panel quick-panel">
-
-    <div class="panel-header">
-
-        <div>
-
-            <span class="panel-label">
-                ACCESOS
-            </span>
-
-            <h2>
-                Acciones rápidas
-            </h2>
-
-        </div>
-
-    </div>
-
-
-    <div class="quick-actions">
-
-        <a href="{{ url_for('asistencia') }}"
-           class="quick-action">
-
-            <div class="quick-icon">✓</div>
-
-            <div>
-                <strong>Marcar asistencia</strong>
-                <span>Registrar entrada o salida</span>
-            </div>
-
-        </a>
-
-
-        <a href="{{ url_for('nuevo_alumno') }}"
-           class="quick-action">
-
-            <div class="quick-icon">+</div>
-
-            <div>
-                <strong>Nuevo alumno</strong>
-                <span>Registrar alumno</span>
-            </div>
-
-        </a>
-
-
-        <a href="{{ url_for('horarios') }}"
-           class="quick-action">
-
-            <div class="quick-icon">🕒</div>
-
-            <div>
-                <strong>Horarios</strong>
-                <span>Configurar jornada</span>
-            </div>
-
-        </a>
-
-
-        <a href="{{ url_for('nomina') }}"
-           class="quick-action">
-
-            <div class="quick-icon">$</div>
-
-            <div>
-                <strong>Nómina</strong>
-                <span>Calcular remuneración</span>
-            </div>
-
-        </a>
-
-
-        <a href="{{ url_for('reportes') }}"
-           class="quick-action">
-
-            <div class="quick-icon">📊</div>
-
-            <div>
-                <strong>Reportes</strong>
-                <span>Consultar información</span>
-            </div>
-
-        </a>
-
-
-        <a href="{{ url_for('configuracion') }}"
-           class="quick-action">
-
-            <div class="quick-icon">⚙</div>
-
-            <div>
-                <strong>Configuración</strong>
-                <span>Parámetros del sistema</span>
-            </div>
-
-        </a>
-
-    </div>
-
-</div>
-
-
-</div>
-
 {% endblock %}

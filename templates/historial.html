@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 
 {% block title %}
-Historial | ETFA
+Historial Académico | ETFA
 {% endblock %}
 
 {% block page_title %}
@@ -9,43 +9,139 @@ Historial de asistencia
 {% endblock %}
 
 {% block page_description %}
-Entradas, salidas, atrasos y horas trabajadas
+Registro académico por alumno, materia y hora
 {% endblock %}
 
 {% block content %}
 
-<div class="page-header-card">
+<style>
 
-    <div>
+.history-summary {
+    display: grid;
 
-        <span class="panel-label">
-            REGISTROS
-        </span>
+    grid-template-columns:
+        repeat(4, 1fr);
 
-        <h2>
-            Control histórico de asistencia
-        </h2>
+    gap: 12px;
 
-        <p>
-            Primer Año Militar · Paralelo C · ETFA
-        </p>
+    margin-bottom: 15px;
+}
 
-    </div>
+.history-card {
+    padding: 15px;
+
+    background: white;
+
+    border:
+        1px solid #e4e7ec;
+
+    border-radius: 12px;
+}
+
+.history-card span {
+    font-size: 10px;
+    color: #667085;
+}
+
+.history-card strong {
+    display: block;
+
+    margin-top: 5px;
+
+    font-size: 20px;
+}
+
+.history-panel {
+    background: white;
+
+    border:
+        1px solid #e4e7ec;
+
+    border-radius: 14px;
+
+    overflow: hidden;
+}
+
+.history-filter {
+    display: flex;
+
+    gap: 7px;
+
+    padding: 14px;
+
+    border-bottom:
+        1px solid #eaecf0;
+
+    flex-wrap: wrap;
+}
+
+.history-filter input,
+.history-filter select {
+    min-height: 38px;
+
+    padding: 0 9px;
+
+    border:
+        1px solid #d0d5dd;
+
+    border-radius: 7px;
+}
+
+.history-filter button {
+    border: none;
+
+    padding: 0 14px;
+
+    border-radius: 7px;
+
+    background: #2563eb;
+
+    color: white;
+
+    font-weight: 700;
+}
+
+.history-table-wrapper {
+    overflow-x: auto;
+}
+
+.history-table {
+    width: 100%;
+
+    min-width: 1100px;
+
+    border-collapse: collapse;
+}
+
+.history-table th {
+    padding: 10px;
+
+    background: #f8fafc;
+
+    font-size: 9px;
+
+    color: #667085;
+
+    text-transform: uppercase;
+
+    text-align: left;
+}
+
+.history-table td {
+    padding: 11px;
+
+    border-top:
+        1px solid #f2f4f7;
+
+    font-size: 10px;
+}
+
+</style>
 
 
-    <a href="{{ url_for('asistencia') }}"
-       class="btn-primary">
+<div class="history-summary">
 
-        + Marcar asistencia
-
-    </a>
-
-</div>
-
-
-<div class="history-stats-grid">
-
-    <div class="history-stat">
+    <div class="history-card">
 
         <span>
             Registros
@@ -58,49 +154,36 @@ Entradas, salidas, atrasos y horas trabajadas
     </div>
 
 
-    <div class="history-stat">
+    <div class="history-card">
 
         <span>
-            Puntuales
+            Asiste
         </span>
 
-        <strong class="history-green">
+        <strong style="color:#039855;">
             {{ puntuales }}
         </strong>
 
     </div>
 
 
-    <div class="history-stat">
+    <div class="history-card">
 
         <span>
-            Atrasados
+            No asiste
         </span>
 
-        <strong class="history-orange">
-            {{ atrasados }}
+        <strong style="color:#d92d20;">
+            {{ ausentes }}
         </strong>
 
     </div>
 
 
-    <div class="history-stat">
+    <div class="history-card">
 
         <span>
-            Justificados
-        </span>
-
-        <strong class="history-blue">
-            {{ justificados }}
-        </strong>
-
-    </div>
-
-
-    <div class="history-stat">
-
-        <span>
-            Horas
+            Horas asistidas
         </span>
 
         <strong>
@@ -112,250 +195,204 @@ Entradas, salidas, atrasos y horas trabajadas
 </div>
 
 
-<div class="panel">
+<div class="history-panel">
 
-
-<div class="history-filter-container">
-
-<form method="GET"
-      action="{{ url_for('historial') }}"
-      class="history-filter-form">
-
-    <div class="history-filter-group">
-
-        <label>
-            Alumno
-        </label>
+    <form
+        method="GET"
+        class="history-filter"
+    >
 
         <input
             type="text"
             name="buscar"
             value="{{ buscar }}"
-            placeholder="Cédula, nombre o apellido">
-
-    </div>
-
-
-    <div class="history-filter-group">
-
-        <label>
-            Fecha
-        </label>
+            placeholder="Buscar alumno"
+        >
 
         <input
             type="date"
             name="fecha"
-            value="{{ fecha }}">
+            value="{{ fecha }}"
+        >
 
-    </div>
 
+        <select name="materia">
 
-    <div class="history-filter-group">
+            <option value="">
+                Todas las materias
+            </option>
 
-        <label>
-            Estado
-        </label>
+            {% for m in materias %}
+
+            <option
+                value="{{ m.id_materia }}"
+                {% if materia == m.id_materia|string %}
+                selected
+                {% endif %}
+            >
+                {{ m.nombre }}
+            </option>
+
+            {% endfor %}
+
+        </select>
+
 
         <select name="estado">
 
             <option value="">
-                Todos
+                Todos los estados
             </option>
 
-            <option value="PUNTUAL"
-                {% if estado == "PUNTUAL" %}selected{% endif %}>
-                Puntual
+            <option
+                value="ASISTE"
+                {% if estado == "ASISTE" %}
+                selected
+                {% endif %}
+            >
+                Asiste
             </option>
 
-            <option value="ATRASADO"
-                {% if estado == "ATRASADO" %}selected{% endif %}>
-                Atrasado
+            <option
+                value="NO_ASISTE"
+                {% if estado == "NO_ASISTE" %}
+                selected
+                {% endif %}
+            >
+                No asiste
             </option>
 
-            <option value="AUSENTE"
-                {% if estado == "AUSENTE" %}selected{% endif %}>
-                Ausente
-            </option>
-
-            <option value="JUSTIFICADO"
-                {% if estado == "JUSTIFICADO" %}selected{% endif %}>
+            <option
+                value="JUSTIFICADO"
+                {% if estado == "JUSTIFICADO" %}
+                selected
+                {% endif %}
+            >
                 Justificado
             </option>
 
         </select>
 
-    </div>
 
-
-    <div class="history-filter-buttons">
-
-        <button type="submit"
-                class="btn-primary">
-
-            Filtrar
-
+        <button type="submit">
+            Buscar
         </button>
 
+    </form>
 
-        <a href="{{ url_for('historial') }}"
-           class="btn-cancel">
 
-            Limpiar
+    <div class="history-table-wrapper">
 
-        </a>
+        <table class="history-table">
+
+            <thead>
+
+                <tr>
+                    <th>Fecha</th>
+                    <th>N°</th>
+                    <th>Alumno</th>
+                    <th>Materia</th>
+                    <th>Horario</th>
+                    <th>Condición</th>
+                    <th>Asistencia</th>
+                    <th>Horas</th>
+                    <th>Observación</th>
+                </tr>
+
+            </thead>
+
+
+            <tbody>
+
+            {% for r in registros %}
+
+                <tr>
+
+                    <td>
+                        {{ r.fecha }}
+                    </td>
+
+                    <td>
+                        {{ r.numero_lista or "--" }}
+                    </td>
+
+                    <td>
+                        <strong>
+                            {{ r.apellidos }}
+                            {{ r.nombres }}
+                        </strong>
+                    </td>
+
+                    <td>
+                        {{ r.materia }}
+                    </td>
+
+                    <td>
+                        {{ r.hora_inicio }}
+                        -
+                        {{ r.hora_fin }}
+                    </td>
+
+                    <td>
+                        {{ r.estado_alumno }}
+                    </td>
+
+                    <td>
+
+                        {% if r.estado_asistencia == "ASISTE" %}
+
+                            <strong style="color:#039855;">
+                                ASISTE
+                            </strong>
+
+                        {% elif r.estado_asistencia == "NO_ASISTE" %}
+
+                            <strong style="color:#d92d20;">
+                                NO ASISTE
+                            </strong>
+
+                        {% else %}
+
+                            <strong style="color:#dc6803;">
+                                JUSTIFICADO
+                            </strong>
+
+                        {% endif %}
+
+                    </td>
+
+                    <td>
+                        {{ r.horas_asistidas }}
+                        /
+                        {{ r.horas_programadas }}
+                    </td>
+
+                    <td>
+                        {{ r.observacion or "--" }}
+                    </td>
+
+                </tr>
+
+            {% else %}
+
+                <tr>
+
+                    <td
+                        colspan="9"
+                        style="padding:30px;text-align:center;"
+                    >
+                        No existen registros.
+                    </td>
+
+                </tr>
+
+            {% endfor %}
+
+            </tbody>
+
+        </table>
 
     </div>
-
-</form>
-
-</div>
-
-
-<div class="table-container">
-
-<table class="history-table">
-
-<thead>
-
-<tr>
-    <th>Alumno</th>
-    <th>Cédula</th>
-    <th>Fecha</th>
-    <th>Entrada</th>
-    <th>Salida</th>
-    <th>Estado</th>
-    <th>Atraso</th>
-    <th>Horas</th>
-</tr>
-
-</thead>
-
-
-<tbody>
-
-{% if registros %}
-
-{% for registro in registros %}
-
-<tr>
-
-    <td>
-
-        <div class="student-cell">
-
-            <div class="student-avatar">
-                {{ registro.nombres[0] }}
-            </div>
-
-            <div>
-
-                <strong>
-                    {{ registro.apellidos }}
-                    {{ registro.nombres }}
-                </strong>
-
-                <span>
-                    {{ registro.especialidad or "Sin especialidad" }}
-                </span>
-
-            </div>
-
-        </div>
-
-    </td>
-
-
-    <td>
-        {{ registro.cedula }}
-    </td>
-
-
-    <td>
-        {{ registro.fecha }}
-    </td>
-
-
-    <td>
-        {{ registro.hora_entrada or "--" }}
-    </td>
-
-
-    <td>
-        {{ registro.hora_salida or "--" }}
-    </td>
-
-
-    <td>
-
-        {% if registro.estado == "PUNTUAL" %}
-
-            <span class="badge badge-success">
-                Puntual
-            </span>
-
-        {% elif registro.estado == "ATRASADO" %}
-
-            <span class="badge badge-warning">
-                Atrasado
-            </span>
-
-        {% elif registro.estado == "AUSENTE" %}
-
-            <span class="badge badge-danger">
-                Ausente
-            </span>
-
-        {% elif registro.estado == "JUSTIFICADO" %}
-
-            <span class="badge badge-info">
-                Justificado
-            </span>
-
-        {% else %}
-
-            <span class="badge badge-neutral">
-                {{ registro.estado }}
-            </span>
-
-        {% endif %}
-
-    </td>
-
-
-    <td>
-        {{ registro.minutos_atraso or 0 }} min
-    </td>
-
-
-    <td>
-        {{ registro.horas_trabajadas or 0 }} h
-    </td>
-
-</tr>
-
-{% endfor %}
-
-
-{% else %}
-
-<tr>
-
-    <td colspan="8"
-        class="empty-table">
-
-        No existen registros.
-
-    </td>
-
-</tr>
-
-{% endif %}
-
-</tbody>
-
-</table>
-
-</div>
 
 </div>
 

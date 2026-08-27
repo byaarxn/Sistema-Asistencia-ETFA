@@ -1,277 +1,1075 @@
 {% extends "base.html" %}
 
-
 {% block title %}
 Usuarios | ETFA
 {% endblock %}
-
 
 {% block page_title %}
 Usuarios
 {% endblock %}
 
-
 {% block page_description %}
 Administración de usuarios y permisos del sistema
 {% endblock %}
 
-
 {% block content %}
 
+<style>
 
-<div class="page-header-card">
+/* =========================================================
+   USUARIOS ETFA
+========================================================= */
 
+.usuarios-page {
 
-    <div>
+    display: flex;
 
-        <span class="panel-label">
-            SEGURIDAD
-        </span>
+    flex-direction: column;
 
-        <h2>
-            Usuarios del sistema
-        </h2>
+    gap: 14px;
 
-        <p>
-            Administre las cuentas que pueden
-            ingresar al sistema ETFA.
-        </p>
-
-    </div>
+}
 
 
-    <a
-        href="{{ url_for(
-            'auth.nuevo_usuario'
-        ) }}"
-        class="btn-primary"
-    >
+/* =========================================================
+   BANNER
+========================================================= */
 
-        + Nuevo usuario
+.usuarios-hero {
 
-    </a>
+    padding: 18px 20px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    gap: 15px;
+
+    background:
+
+        linear-gradient(
+            120deg,
+            #001d45,
+            #06377c
+        );
+
+    border-radius: 14px;
+
+    color: white;
+
+}
 
 
-</div>
+.usuarios-hero-left {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 14px;
+
+}
 
 
+.usuarios-hero-icon {
 
-<div class="panel">
+    width: 48px;
+    height: 48px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    border-radius: 12px;
+
+    background:
+        rgba(255,255,255,.10);
+
+    font-size: 20px;
+
+}
 
 
-    <div class="panel-header">
+.usuarios-hero h2 {
+
+    margin: 0;
+
+    font-size: 18px;
+
+}
 
 
-        <div>
+.usuarios-hero p {
 
-            <span class="panel-label">
-                ACCESOS
-            </span>
+    margin-top: 5px;
 
-            <h2>
-                Usuarios registrados
-            </h2>
+    color:
+        rgba(255,255,255,.75);
+
+    font-size: 9px;
+
+}
+
+
+.usuarios-hero-status {
+
+    padding: 8px 11px;
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 7px;
+
+    border-radius: 999px;
+
+    border:
+        1px solid
+        rgba(255,255,255,.18);
+
+    background:
+        rgba(255,255,255,.08);
+
+    font-size: 8px;
+
+    font-weight: 700;
+
+}
+
+
+.usuarios-status-dot {
+
+    width: 7px;
+    height: 7px;
+
+    border-radius: 50%;
+
+    background: #12d878;
+
+}
+
+
+/* =========================================================
+   RESUMEN
+========================================================= */
+
+.usuarios-summary {
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(3, 1fr);
+
+    gap: 10px;
+
+}
+
+
+.usuarios-summary-card {
+
+    padding: 13px 15px;
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 11px;
+
+    background: white;
+
+    border:
+        1px solid #e4e7ec;
+
+    border-radius: 12px;
+
+}
+
+
+.usuarios-summary-icon {
+
+    width: 38px;
+    height: 38px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    border-radius: 50%;
+
+    font-size: 15px;
+
+}
+
+
+.sum-blue {
+
+    background: #eef4ff;
+    color: #1769e8;
+
+}
+
+
+.sum-green {
+
+    background: #dcfae6;
+    color: #067647;
+
+}
+
+
+.sum-purple {
+
+    background: #f0eaff;
+    color: #7f56d9;
+
+}
+
+
+.usuarios-summary-card span {
+
+    color: #667085;
+
+    font-size: 8px;
+
+}
+
+
+.usuarios-summary-card strong {
+
+    display: block;
+
+    margin-top: 3px;
+
+    font-size: 18px;
+
+}
+
+
+/* =========================================================
+   PANEL
+========================================================= */
+
+.usuarios-panel {
+
+    background: white;
+
+    border:
+        1px solid #e4e7ec;
+
+    border-radius: 14px;
+
+    overflow: hidden;
+
+    box-shadow:
+        0 4px 14px
+        rgba(16,24,40,.035);
+
+}
+
+
+.usuarios-panel-header {
+
+    padding: 14px 16px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    gap: 12px;
+
+    border-bottom:
+        1px solid #eaecf0;
+
+}
+
+
+.usuarios-panel-header h3 {
+
+    margin: 0;
+
+    font-size: 14px;
+
+}
+
+
+.usuarios-panel-header p {
+
+    margin-top: 4px;
+
+    color: #667085;
+
+    font-size: 8px;
+
+}
+
+
+.usuarios-btn {
+
+    display: inline-flex;
+
+    align-items: center;
+
+    gap: 6px;
+
+    padding:
+        8px
+        11px;
+
+    border-radius: 7px;
+
+    background: #1769e8;
+
+    color: white;
+
+    text-decoration: none;
+
+    font-size: 8px;
+
+    font-weight: 800;
+
+}
+
+
+/* =========================================================
+   TABLA
+========================================================= */
+
+.usuarios-table-wrapper {
+
+    overflow-x: auto;
+
+}
+
+
+.usuarios-table {
+
+    width: 100%;
+
+    min-width: 820px;
+
+    border-collapse: collapse;
+
+}
+
+
+.usuarios-table th {
+
+    padding: 9px 10px;
+
+    background: #f8fafc;
+
+    color: #667085;
+
+    font-size: 7px !important;
+
+    text-transform: uppercase;
+
+    text-align: left;
+
+    white-space: nowrap;
+
+}
+
+
+.usuarios-table td {
+
+    padding: 10px;
+
+    border-top:
+        1px solid #f2f4f7;
+
+    font-size: 8px !important;
+
+    vertical-align: middle;
+
+}
+
+
+.usuario-cell {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 9px;
+
+}
+
+
+.usuario-avatar {
+
+    width: 30px;
+    height: 30px;
+
+    flex-shrink: 0;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    border-radius: 50%;
+
+    background: #eef4ff;
+
+    color: #1769e8;
+
+    font-weight: 800;
+
+    font-size: 9px;
+
+}
+
+
+.usuario-name strong {
+
+    display: block;
+
+    font-size: 8px;
+
+}
+
+
+.usuario-name small {
+
+    display: block;
+
+    margin-top: 2px;
+
+    color: #98a2b3;
+
+    font-size: 7px;
+
+}
+
+
+/* =========================================================
+   BADGES
+========================================================= */
+
+.usuario-badge {
+
+    display: inline-flex;
+
+    align-items: center;
+
+    padding:
+        4px
+        7px;
+
+    border-radius: 999px;
+
+    font-size: 7px;
+
+    font-weight: 800;
+
+}
+
+
+.usuario-admin {
+
+    background: #f0eaff;
+
+    color: #6941c6;
+
+}
+
+
+.usuario-user {
+
+    background: #eef4ff;
+
+    color: #175cd3;
+
+}
+
+
+.usuario-active {
+
+    background: #dcfae6;
+
+    color: #067647;
+
+}
+
+
+.usuario-inactive {
+
+    background: #fee4e2;
+
+    color: #b42318;
+
+}
+
+
+/* =========================================================
+   ACCIONES
+========================================================= */
+
+.usuario-actions {
+
+    display: flex;
+
+    gap: 5px;
+
+    flex-wrap: wrap;
+
+}
+
+
+.usuario-action {
+
+    padding:
+        5px
+        7px;
+
+    border-radius: 6px;
+
+    text-decoration: none;
+
+    font-size: 7px;
+
+    font-weight: 700;
+
+}
+
+
+.usuario-edit {
+
+    background: #eef4ff;
+
+    color: #175cd3;
+
+}
+
+
+.usuario-state {
+
+    background: #fff6ed;
+
+    color: #b54708;
+
+}
+
+
+/* =========================================================
+   VACÍO
+========================================================= */
+
+.usuarios-empty {
+
+    padding: 28px;
+
+    text-align: center;
+
+    color: #667085;
+
+    font-size: 9px;
+
+}
+
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media (max-width: 850px) {
+
+    .usuarios-summary {
+
+        grid-template-columns: 1fr;
+
+    }
+
+
+    .usuarios-hero {
+
+        flex-direction: column;
+
+        align-items: flex-start;
+
+    }
+
+}
+
+</style>
+
+
+<div class="usuarios-page">
+
+
+    <!-- =====================================================
+         BANNER
+    ====================================================== -->
+
+    <section class="usuarios-hero">
+
+
+        <div class="usuarios-hero-left">
+
+
+            <div class="usuarios-hero-icon">
+
+                <i class="fa-solid fa-user-shield"></i>
+
+            </div>
+
+
+            <div>
+
+                <h2>
+                    Usuarios del sistema
+                </h2>
+
+                <p>
+                    Administra las cuentas que pueden ingresar al sistema ETFA
+                </p>
+
+            </div>
+
 
         </div>
 
 
-        <span class="result-counter">
+        <div class="usuarios-hero-status">
 
-            {{ usuarios|length }}
-            usuario(s)
+            <span class="usuarios-status-dot"></span>
 
-        </span>
+            Control de acceso activo
 
-
-    </div>
+        </div>
 
 
-
-    <div class="table-container">
-
-
-        <table>
-
-
-            <thead>
-
-                <tr>
-
-                    <th>
-                        Usuario
-                    </th>
-
-                    <th>
-                        Nombre
-                    </th>
-
-                    <th>
-                        Rol
-                    </th>
-
-                    <th>
-                        Estado
-                    </th>
-
-                    <th>
-                        Creación
-                    </th>
-
-                    <th>
-                        Acción
-                    </th>
-
-                </tr>
-
-            </thead>
+    </section>
 
 
 
-            <tbody>
+    <!-- =====================================================
+         RESUMEN
+    ====================================================== -->
+
+    <section class="usuarios-summary">
 
 
-            {% if usuarios %}
+        <div class="usuarios-summary-card">
+
+            <div class="usuarios-summary-icon sum-blue">
+
+                <i class="fa-solid fa-users"></i>
+
+            </div>
+
+            <div>
+
+                <span>
+                    Total usuarios
+                </span>
+
+                <strong>
+                    {{ usuarios|length }}
+                </strong>
+
+            </div>
+
+        </div>
 
 
-                {% for usuario in usuarios %}
+
+        <div class="usuarios-summary-card">
+
+            <div class="usuarios-summary-icon sum-green">
+
+                <i class="fa-solid fa-user-check"></i>
+
+            </div>
+
+            <div>
+
+                <span>
+                    Usuarios activos
+                </span>
+
+                <strong>
+
+                    {{
+                        usuarios
+                        |selectattr(
+                            "estado",
+                            "equalto",
+                            "ACTIVO"
+                        )
+                        |list
+                        |length
+                    }}
+
+                </strong>
+
+            </div>
+
+        </div>
 
 
-                <tr>
+
+        <div class="usuarios-summary-card">
+
+            <div class="usuarios-summary-icon sum-purple">
+
+                <i class="fa-solid fa-user-lock"></i>
+
+            </div>
+
+            <div>
+
+                <span>
+                    Administradores
+                </span>
+
+                <strong>
+
+                    {{
+                        usuarios
+                        |selectattr(
+                            "rol",
+                            "equalto",
+                            "ADMINISTRADOR"
+                        )
+                        |list
+                        |length
+                    }}
+
+                </strong>
+
+            </div>
+
+        </div>
 
 
-                    <td>
-
-                        <strong>
-                            {{ usuario.usuario }}
-                        </strong>
-
-                    </td>
+    </section>
 
 
-                    <td>
 
-                        {{ usuario.nombres }}
+    <!-- =====================================================
+         LISTADO
+    ====================================================== -->
 
-                    </td>
-
-
-                    <td>
+    <section class="usuarios-panel">
 
 
-                        {% if usuario.rol == "ADMINISTRADOR" %}
-
-                        <span class="badge badge-info">
-
-                            Administrador
-
-                        </span>
+        <div class="usuarios-panel-header">
 
 
-                        {% else %}
+            <div>
+
+                <h3>
+                    Usuarios registrados
+                </h3>
+
+                <p>
+                    Cuentas autorizadas para acceder al sistema
+                </p>
+
+            </div>
 
 
-                        <span class="badge badge-neutral">
+            <a
+                href="{{ url_for('auth.nuevo_usuario') }}"
+                class="usuarios-btn"
+            >
 
+                <i class="fa-solid fa-user-plus"></i>
+
+                Nuevo usuario
+
+            </a>
+
+
+        </div>
+
+
+
+        <div class="usuarios-table-wrapper">
+
+
+            <table class="usuarios-table">
+
+
+                <thead>
+
+                    <tr>
+
+                        <th>
                             Usuario
+                        </th>
 
-                        </span>
+                        <th>
+                            Nombre
+                        </th>
 
+                        <th>
+                            Rol
+                        </th>
 
-                        {% endif %}
+                        <th>
+                            Estado
+                        </th>
 
+                        <th>
+                            Creación
+                        </th>
 
-                    </td>
+                        <th>
+                            Acciones
+                        </th>
 
+                    </tr>
 
-                    <td>
-
-
-                        {% if usuario.estado == "ACTIVO" %}
-
-
-                        <span class="badge badge-success">
-
-                            Activo
-
-                        </span>
-
-
-                        {% else %}
-
-
-                        <span class="badge badge-danger">
-
-                            Inactivo
-
-                        </span>
+                </thead>
 
 
-                        {% endif %}
+                <tbody>
 
 
-                    </td>
+                    {% for usuario in usuarios %}
 
 
-                    <td>
-
-                        {{ usuario.fecha_creacion }}
-
-                    </td>
+                        <tr>
 
 
-                    <td>
+                            <!-- USUARIO -->
+
+                            <td>
+
+                                <div class="usuario-cell">
 
 
-                        <a
-                            href="{{ url_for(
-                                'auth.editar_usuario',
-                                id_usuario=usuario.id_usuario
-                            ) }}"
-                            class="btn-action edit"
-                        >
+                                    <div class="usuario-avatar">
 
-                            Editar
+                                        {% if usuario.usuario %}
 
-                        </a>
+                                            {{ usuario.usuario[0]|upper }}
 
+                                        {% else %}
 
-                    </td>
+                                            U
 
+                                        {% endif %}
 
-                </tr>
+                                    </div>
 
 
-                {% endfor %}
+                                    <div class="usuario-name">
+
+                                        <strong>
+
+                                            {{ usuario.usuario }}
+
+                                        </strong>
+
+                                        <small>
+
+                                            ID {{ usuario.id_usuario }}
+
+                                        </small>
+
+                                    </div>
 
 
-            {% else %}
+                                </div>
+
+                            </td>
 
 
-                <tr>
 
-                    <td
-                        colspan="6"
-                        class="empty-table"
-                    >
+                            <!-- NOMBRE -->
 
-                        No existen usuarios
-                        registrados.
+                            <td>
 
-                    </td>
+                                {{ usuario.nombre }}
 
-                </tr>
+                            </td>
 
 
-            {% endif %}
+
+                            <!-- ROL -->
+
+                            <td>
 
 
-            </tbody>
+                                {% if usuario.rol == "ADMINISTRADOR" %}
+
+                                    <span
+                                        class="
+                                            usuario-badge
+                                            usuario-admin
+                                        "
+                                    >
+                                        ADMINISTRADOR
+                                    </span>
+
+                                {% else %}
+
+                                    <span
+                                        class="
+                                            usuario-badge
+                                            usuario-user
+                                        "
+                                    >
+                                        USUARIO
+                                    </span>
+
+                                {% endif %}
 
 
-        </table>
+                            </td>
 
 
-    </div>
+
+                            <!-- ESTADO -->
+
+                            <td>
+
+
+                                {% if usuario.estado == "ACTIVO" %}
+
+                                    <span
+                                        class="
+                                            usuario-badge
+                                            usuario-active
+                                        "
+                                    >
+                                        ACTIVO
+                                    </span>
+
+                                {% else %}
+
+                                    <span
+                                        class="
+                                            usuario-badge
+                                            usuario-inactive
+                                        "
+                                    >
+                                        INACTIVO
+                                    </span>
+
+                                {% endif %}
+
+
+                            </td>
+
+
+
+                            <!-- CREACIÓN -->
+
+                            <td>
+
+                                {{ usuario.fecha_creacion }}
+
+                            </td>
+
+
+
+                            <!-- ACCIONES -->
+
+                            <td>
+
+
+                                <div class="usuario-actions">
+
+
+                                    <a
+                                        href="{{ url_for(
+                                            'auth.editar_usuario',
+                                            id_usuario=usuario.id_usuario
+                                        ) }}"
+                                        class="
+                                            usuario-action
+                                            usuario-edit
+                                        "
+                                    >
+
+                                        <i class="fa-solid fa-pen"></i>
+
+                                        Editar
+
+                                    </a>
+
+
+                                    {% if usuario.id_usuario != session.get("id_usuario") %}
+
+                                        <a
+                                            href="{{ url_for(
+                                                'auth.cambiar_estado_usuario',
+                                                id_usuario=usuario.id_usuario
+                                            ) }}"
+                                            class="
+                                                usuario-action
+                                                usuario-state
+                                            "
+                                        >
+
+                                            {% if usuario.estado == "ACTIVO" %}
+
+                                                Desactivar
+
+                                            {% else %}
+
+                                                Activar
+
+                                            {% endif %}
+
+                                        </a>
+
+                                    {% endif %}
+
+
+                                </div>
+
+
+                            </td>
+
+
+                        </tr>
+
+
+                    {% else %}
+
+
+                        <tr>
+
+                            <td
+                                colspan="6"
+                                class="usuarios-empty"
+                            >
+
+                                No existen usuarios registrados.
+
+                            </td>
+
+                        </tr>
+
+
+                    {% endfor %}
+
+
+                </tbody>
+
+
+            </table>
+
+
+        </div>
+
+
+    </section>
 
 
 </div>

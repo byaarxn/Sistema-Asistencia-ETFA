@@ -1,297 +1,696 @@
 {% extends "base.html" %}
 
-
 {% block title %}
 Editar Usuario | ETFA
 {% endblock %}
-
 
 {% block page_title %}
 Editar usuario
 {% endblock %}
 
-
 {% block page_description %}
-Modificar cuenta, permisos y estado
+Modificar cuenta, permisos y estado del usuario
 {% endblock %}
-
 
 {% block content %}
 
+<style>
 
-<div class="page-header-card">
+.edit-user-page {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.edit-user-hero {
+    padding: 18px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 15px;
+    border-radius: 14px;
+    background: linear-gradient(
+        120deg,
+        #001d45,
+        #06377c
+    );
+    color: white;
+}
+
+.edit-user-hero-left {
+    display: flex;
+    align-items: center;
+    gap: 13px;
+}
+
+.edit-user-hero-icon {
+    width: 46px;
+    height: 46px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 12px;
+    background: rgba(255,255,255,.10);
+    font-size: 18px;
+}
+
+.edit-user-hero h2 {
+    margin: 0;
+    font-size: 17px;
+}
+
+.edit-user-hero p {
+    margin-top: 4px;
+    color: rgba(255,255,255,.75);
+    font-size: 8px;
+}
+
+.back-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 11px;
+    border-radius: 8px;
+    border: 1px solid rgba(255,255,255,.18);
+    background: rgba(255,255,255,.08);
+    color: white;
+    text-decoration: none;
+    font-size: 8px;
+    font-weight: 700;
+}
+
+.edit-user-panel {
+    max-width: 860px;
+    width: 100%;
+    margin: 0 auto;
+    background: white;
+    border: 1px solid #e4e7ec;
+    border-radius: 14px;
+    overflow: hidden;
+    box-shadow: 0 4px 14px rgba(16,24,40,.035);
+}
+
+.edit-user-panel-header {
+    padding: 15px 18px;
+    border-bottom: 1px solid #eaecf0;
+}
+
+.edit-user-panel-header span {
+    color: #1769e8;
+    font-size: 7px;
+    font-weight: 800;
+    letter-spacing: .8px;
+    text-transform: uppercase;
+}
+
+.edit-user-panel-header h3 {
+    margin: 5px 0 0;
+    font-size: 15px;
+}
+
+.edit-user-panel-header p {
+    margin-top: 4px;
+    color: #667085;
+    font-size: 8px;
+}
+
+.edit-user-form {
+    padding: 18px;
+}
+
+.user-summary {
+    margin-bottom: 15px;
+    padding: 12px 14px;
+    display: flex;
+    align-items: center;
+    gap: 11px;
+    border: 1px solid #e4e7ec;
+    border-radius: 10px;
+    background: #f8fafc;
+}
+
+.user-avatar-large {
+    width: 38px;
+    height: 38px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background: #eaf2ff;
+    color: #1769e8;
+    font-size: 12px;
+    font-weight: 800;
+}
+
+.user-summary strong {
+    display: block;
+    font-size: 9px;
+}
+
+.user-summary span {
+    display: block;
+    margin-top: 3px;
+    color: #667085;
+    font-size: 7px;
+}
+
+.form-grid {
+    display: grid;
+    grid-template-columns:
+        repeat(2, minmax(0, 1fr));
+    gap: 13px 14px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.form-group.full {
+    grid-column: 1 / -1;
+}
+
+.form-group label {
+    color: #344054;
+    font-size: 8px;
+    font-weight: 700;
+}
+
+.form-control {
+    width: 100%;
+    height: 36px;
+    padding: 0 10px;
+    border: 1px solid #d0d5dd;
+    border-radius: 8px;
+    background: white;
+    color: #101828;
+    font-size: 8px;
+    outline: none;
+    transition: .15s;
+}
+
+.form-control:focus {
+    border-color: #1769e8;
+    box-shadow:
+        0 0 0 3px
+        rgba(23,105,232,.08);
+}
+
+.form-help {
+    color: #98a2b3;
+    font-size: 7px;
+    margin-top: 1px;
+}
+
+.password-wrapper {
+    position: relative;
+}
+
+.password-wrapper .form-control {
+    padding-right: 38px;
+}
+
+.password-toggle {
+    position: absolute;
+    right: 4px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 28px;
+    height: 28px;
+    border: none;
+    border-radius: 6px;
+    background: #f2f4f7;
+    color: #475467;
+    cursor: pointer;
+    font-size: 9px;
+}
+
+.permissions-info {
+    margin-top: 16px;
+    padding: 13px;
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+    border: 1px solid #dbeafe;
+    border-radius: 10px;
+    background: #f8fbff;
+}
+
+.permissions-info-icon {
+    width: 32px;
+    height: 32px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+    background: #eaf2ff;
+    color: #1769e8;
+    font-size: 12px;
+}
+
+.permissions-info strong {
+    display: block;
+    font-size: 8px;
+    color: #101828;
+}
+
+.permissions-info p {
+    margin-top: 4px;
+    color: #667085;
+    font-size: 7px;
+    line-height: 1.5;
+}
+
+.form-actions {
+    margin-top: 18px;
+    padding-top: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 8px;
+    border-top: 1px solid #eaecf0;
+}
+
+.btn-cancel {
+    min-height: 34px;
+    padding: 0 12px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid #d0d5dd;
+    border-radius: 8px;
+    background: white;
+    color: #344054;
+    text-decoration: none;
+    font-size: 8px;
+    font-weight: 700;
+}
+
+.btn-save {
+    min-height: 34px;
+    padding: 0 14px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    border: none;
+    border-radius: 8px;
+    background: linear-gradient(
+        135deg,
+        #1769e8,
+        #0e55c7
+    );
+    color: white;
+    font-size: 8px;
+    font-weight: 800;
+    cursor: pointer;
+}
+
+@media (max-width: 700px) {
+
+    .form-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .form-group.full {
+        grid-column: auto;
+    }
+
+    .edit-user-hero {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .form-actions {
+        flex-direction: column-reverse;
+        align-items: stretch;
+    }
+
+    .btn-cancel,
+    .btn-save {
+        width: 100%;
+    }
+
+}
+
+</style>
 
 
-    <div>
+<div class="edit-user-page">
 
-        <span class="panel-label">
-            SEGURIDAD
-        </span>
+    <section class="edit-user-hero">
 
-        <h2>
-            {{ usuario.nombres }}
-        </h2>
+        <div class="edit-user-hero-left">
 
-        <p>
-            Usuario:
-            {{ usuario.usuario }}
-        </p>
+            <div class="edit-user-hero-icon">
+                <i class="fa-solid fa-user-pen"></i>
+            </div>
 
-    </div>
+            <div>
 
+                <h2>
+                    Editar usuario
+                </h2>
 
-    <a
-        href="{{ url_for(
-            'auth.usuarios'
-        ) }}"
-        class="btn-cancel"
-    >
+                <p>
+                    Modificar información, permisos y estado de la cuenta
+                </p>
 
-        ← Volver
+            </div>
 
-    </a>
+        </div>
 
 
-</div>
+        <a
+            href="{{ url_for('auth.usuarios') }}"
+            class="back-button"
+        >
+
+            <i class="fa-solid fa-arrow-left"></i>
+
+            Volver a usuarios
+
+        </a>
+
+    </section>
 
 
+    <section class="edit-user-panel">
 
-<div class="form-card">
+        <div class="edit-user-panel-header">
 
+            <span>
+                Edición
+            </span>
 
-    <div class="form-card-header">
+            <h3>
+                Información del usuario
+            </h3>
 
+            <p>
+                Modifique solamente los datos que sean necesarios.
+            </p>
 
-        <span class="panel-label">
-            EDICIÓN
-        </span>
-
-
-        <h2>
-            Información del usuario
-        </h2>
-
-
-        <p>
-            Deje la contraseña vacía
-            si no desea cambiarla.
-        </p>
+        </div>
 
 
-    </div>
+        <form
+            method="POST"
+            class="edit-user-form"
+            autocomplete="off"
+        >
 
+            <div class="user-summary">
 
+                <div class="user-avatar-large">
 
-    {% if error %}
+                    {% if usuario.nombre %}
+                        {{ usuario.nombre[0]|upper }}
+                    {% else %}
+                        U
+                    {% endif %}
 
-    <div class="form-error-message">
+                </div>
 
-        {{ error }}
+                <div>
 
-    </div>
+                    <strong>
+                        {{ usuario.nombre }}
+                    </strong>
 
-    {% endif %}
+                    <span>
+                        Usuario:
+                        {{ usuario.usuario }}
+                        ·
+                        ID:
+                        {{ usuario.id_usuario }}
+                    </span>
 
-
-
-    <form
-        method="POST"
-        action="{{ url_for(
-            'auth.editar_usuario',
-            id_usuario=usuario.id_usuario
-        ) }}"
-        class="student-form"
-    >
-
-
-        <div class="form-grid">
-
-
-            <div class="form-group">
-
-
-                <label>
-                    Nombre completo
-                </label>
-
-
-                <input
-                    type="text"
-                    name="nombres"
-                    value="{{ usuario.nombres }}"
-                    required
-                >
-
+                </div>
 
             </div>
 
 
+            <div class="form-grid">
 
-            <div class="form-group">
+                <!-- NOMBRE -->
 
+                <div class="form-group full">
 
-                <label>
-                    Usuario
-                </label>
+                    <label for="nombre">
+                        Nombre completo
+                    </label>
 
-
-                <input
-                    type="text"
-                    name="usuario"
-                    value="{{ usuario.usuario }}"
-                    required
-                >
-
-
-            </div>
-
-
-
-            <div class="form-group">
-
-
-                <label>
-                    Nueva contraseña
-                </label>
-
-
-                <input
-                    type="password"
-                    name="password"
-                    minlength="6"
-                    placeholder="Dejar vacío para mantener la actual"
-                >
-
-
-            </div>
-
-
-
-            <div class="form-group">
-
-
-                <label>
-                    Rol
-                </label>
-
-
-                <select
-                    name="rol"
-                    required
-                >
-
-
-                    <option
-                        value="USUARIO"
-                        {% if usuario.rol == "USUARIO" %}
-                        selected
-                        {% endif %}
+                    <input
+                        type="text"
+                        id="nombre"
+                        name="nombre"
+                        class="form-control"
+                        value="{{ usuario.nombre }}"
+                        required
                     >
 
+                </div>
+
+
+                <!-- USUARIO -->
+
+                <div class="form-group">
+
+                    <label for="usuario">
                         Usuario
+                    </label>
 
-                    </option>
-
-
-                    <option
-                        value="ADMINISTRADOR"
-                        {% if usuario.rol == "ADMINISTRADOR" %}
-                        selected
-                        {% endif %}
+                    <input
+                        type="text"
+                        id="usuario"
+                        name="usuario"
+                        class="form-control"
+                        value="{{ usuario.usuario }}"
+                        required
+                        autocomplete="off"
                     >
 
-                        Administrador
-
-                    </option>
+                </div>
 
 
-                </select>
+                <!-- ROL -->
 
+                <div class="form-group">
+
+                    <label for="rol">
+                        Rol
+                    </label>
+
+                    <select
+                        id="rol"
+                        name="rol"
+                        class="form-control"
+                        required
+                    >
+
+                        <option
+                            value="USUARIO"
+                            {% if usuario.rol == "USUARIO" %}
+                            selected
+                            {% endif %}
+                        >
+                            Usuario
+                        </option>
+
+                        <option
+                            value="ADMINISTRADOR"
+                            {% if usuario.rol == "ADMINISTRADOR" %}
+                            selected
+                            {% endif %}
+                        >
+                            Administrador
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <!-- NUEVA CONTRASEÑA -->
+
+                <div class="form-group">
+
+                    <label for="password">
+                        Nueva contraseña
+                    </label>
+
+                    <div class="password-wrapper">
+
+                        <input
+                            type="password"
+                            id="password"
+                            name="password"
+                            class="form-control"
+                            placeholder="Dejar vacío para mantener"
+                            autocomplete="new-password"
+                        >
+
+                        <button
+                            type="button"
+                            class="password-toggle"
+                            onclick="alternarPassword()"
+                            title="Mostrar contraseña"
+                        >
+
+                            <i
+                                id="iconPassword"
+                                class="fa-regular fa-eye"
+                            ></i>
+
+                        </button>
+
+                    </div>
+
+                    <span class="form-help">
+                        Si no desea cambiarla, deje este campo vacío.
+                    </span>
+
+                </div>
+
+
+                <!-- ESTADO -->
+
+                <div class="form-group">
+
+                    <label for="estado">
+                        Estado
+                    </label>
+
+                    <select
+                        id="estado"
+                        name="estado"
+                        class="form-control"
+                        required
+                    >
+
+                        <option
+                            value="ACTIVO"
+                            {% if usuario.estado == "ACTIVO" %}
+                            selected
+                            {% endif %}
+                        >
+                            Activo
+                        </option>
+
+                        <option
+                            value="INACTIVO"
+                            {% if usuario.estado == "INACTIVO" %}
+                            selected
+                            {% endif %}
+                        >
+                            Inactivo
+                        </option>
+
+                    </select>
+
+                </div>
 
             </div>
 
 
+            <div class="permissions-info">
 
-            <div class="form-group">
+                <div class="permissions-info-icon">
+
+                    <i class="fa-solid fa-shield-halved"></i>
+
+                </div>
+
+                <div>
+
+                    <strong>
+                        Permisos y seguridad
+                    </strong>
+
+                    <p>
+                        El Administrador puede gestionar usuarios,
+                        configuraciones, alumnos y horarios.
+                        El Usuario utiliza las funciones operativas
+                        habilitadas. Si la cuenta se establece como
+                        Inactiva, no podrá iniciar sesión.
+                    </p>
+
+                </div>
+
+            </div>
 
 
-                <label>
-                    Estado
-                </label>
+            <div class="form-actions">
 
+                <a
+                    href="{{ url_for('auth.usuarios') }}"
+                    class="btn-cancel"
+                >
+                    Cancelar
+                </a>
 
-                <select
-                    name="estado"
-                    required
+                <button
+                    type="submit"
+                    class="btn-save"
                 >
 
+                    <i class="fa-solid fa-floppy-disk"></i>
 
-                    <option
-                        value="ACTIVO"
-                        {% if usuario.estado == "ACTIVO" %}
-                        selected
-                        {% endif %}
-                    >
+                    Guardar cambios
 
-                        Activo
-
-                    </option>
-
-
-                    <option
-                        value="INACTIVO"
-                        {% if usuario.estado == "INACTIVO" %}
-                        selected
-                        {% endif %}
-                    >
-
-                        Inactivo
-
-                    </option>
-
-
-                </select>
-
+                </button>
 
             </div>
 
+        </form>
 
-        </div>
-
-
-
-        <div class="form-actions">
-
-
-            <a
-                href="{{ url_for(
-                    'auth.usuarios'
-                ) }}"
-                class="btn-cancel"
-            >
-
-                Cancelar
-
-            </a>
-
-
-            <button
-                type="submit"
-                class="btn-primary"
-            >
-
-                Guardar cambios
-
-            </button>
-
-
-        </div>
-
-
-    </form>
-
+    </section>
 
 </div>
 
+
+<script>
+
+function alternarPassword() {
+
+    const password =
+        document.getElementById(
+            "password"
+        );
+
+    const icono =
+        document.getElementById(
+            "iconPassword"
+        );
+
+    if (
+        password.type === "password"
+    ) {
+
+        password.type =
+            "text";
+
+        icono.className =
+            "fa-regular fa-eye-slash";
+
+    }
+
+    else {
+
+        password.type =
+            "password";
+
+        icono.className =
+            "fa-regular fa-eye";
+
+    }
+
+}
+
+</script>
 
 {% endblock %}

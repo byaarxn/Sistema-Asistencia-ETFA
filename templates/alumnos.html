@@ -1,297 +1,42 @@
 {% extends "base.html" %}
-
-{% block title %}
-Alumnos | ETFA
-{% endblock %}
-
-{% block page_title %}
-Alumnos
-{% endblock %}
-
-{% block page_description %}
-Administración de alumnos del Primer Año Militar
-{% endblock %}
-
+{% block title %}Alumnos | ETFA{% endblock %}
+{% block page_title %}Alumnos{% endblock %}
+{% block page_description %}Administración de alumnos del Primer Año Militar{% endblock %}
 {% block content %}
-
-<div class="page-header-card">
-
-    <div>
-
-        <span class="panel-label">
-            PERSONAL
-        </span>
-
-        <h2>
-            Registro de alumnos
-        </h2>
-
-        <p>
-            Primer Año Militar · Paralelo C · ETFA
-        </p>
-
-    </div>
-
-    <a
-        href="{{ url_for('nuevo_alumno') }}"
-        class="btn-primary"
-    >
-        + Nuevo alumno
-    </a>
-
+<style>
+.page-card{background:#fff;border:1px solid #e4e7ec;border-radius:16px;overflow:hidden;box-shadow:0 4px 14px rgba(16,24,40,.035)}
+.hero-mini{display:flex;align-items:center;justify-content:space-between;gap:20px;padding:20px 22px;border-bottom:1px solid #eaecf0}
+.hero-mini h2{margin:0;font-size:20px}.hero-mini p{margin:5px 0 0;color:#667085;font-size:11px}.btn-main{display:inline-flex;align-items:center;gap:7px;padding:11px 14px;background:#1769e8;color:#fff;border-radius:9px;text-decoration:none;font-size:10px;font-weight:800}
+.toolbar{padding:14px 16px;display:flex;align-items:center;justify-content:space-between;gap:12px;border-bottom:1px solid #eaecf0;background:#fbfcfe}
+.search{display:flex;gap:8px;flex:1}.search input{width:100%;max-width:470px;height:40px;padding:0 12px;border:1px solid #d0d5dd;border-radius:8px}.search button{height:40px;padding:0 14px;border:none;border-radius:8px;background:#1769e8;color:#fff;font-weight:700}
+.count{font-size:10px;color:#667085}.wrap{overflow:auto}.tbl{width:100%;min-width:1050px;border-collapse:collapse}.tbl th{background:#f8fafc;color:#667085;padding:11px 12px;text-align:left;font-size:9px;text-transform:uppercase}.tbl td{padding:12px;border-top:1px solid #f2f4f7;font-size:10px;vertical-align:middle}.num{width:34px;height:34px;border-radius:9px;background:#eef4ff;color:#1769e8;display:flex;align-items:center;justify-content:center;font-weight:800}.student strong{display:block;font-size:10px}.student small{display:block;color:#98a2b3;margin-top:3px}.status{display:inline-flex;padding:5px 8px;border-radius:999px;font-size:8px;font-weight:800}.available{background:#dcfae6;color:#067647}.medical{background:#eaf2ff;color:#175cd3}.actions{display:flex;gap:5px;flex-wrap:wrap}.action{padding:6px 8px;border-radius:6px;text-decoration:none;font-size:8px;font-weight:700}.edit{background:#eef4ff;color:#175cd3}.med{background:#fff6ed;color:#b54708}.delete{background:#fef3f2;color:#b42318}
+</style>
+<div class="page-card">
+  <div class="hero-mini">
+    <div><h2>Registro de alumnos</h2><p>Primer Año Militar · Paralelo C · ETFA</p></div>
+    <a class="btn-main" href="{{ url_for('nuevo_alumno') }}"><i class="fa-solid fa-user-plus"></i> Nuevo alumno</a>
+  </div>
+  <div class="toolbar">
+    <form class="search" method="GET"><input name="buscar" value="{{ buscar }}" placeholder="Buscar por N°, cédula, nombre, apellido o especialidad"><button>Buscar</button></form>
+    <div class="count">{{ alumnos|length }} resultado(s)</div>
+  </div>
+  <div class="wrap"><table class="tbl"><thead><tr><th>N°</th><th>Cédula</th><th>Alumno</th><th>Curso</th><th>Paralelo</th><th>Especialidad</th><th>Condición</th><th>Acciones</th></tr></thead><tbody>
+  {% for a in alumnos %}
+    <tr>
+      <td><div class="num">{% if a.numero_lista %}{{ "%02d"|format(a.numero_lista) }}{% else %}--{% endif %}</div></td>
+      <td><strong>{{ a.cedula }}</strong></td>
+      <td class="student"><strong>{{ a.apellidos }} {{ a.nombres }}</strong><small>ID {{ a.id_alumno }}</small></td>
+      <td>{{ a.curso }}</td><td>{{ a.paralelo }}</td><td>{{ a.especialidad or "Especialidad por asignar" }}</td>
+      <td>{% if a.estado == "DESCANSO MÉDICO" %}<span class="status medical">Descanso médico</span>{% else %}<span class="status available">Disponible</span>{% endif %}</td>
+      <td><div class="actions">
+        <a class="action edit" href="{{ url_for('editar_alumno', id_alumno=a.id_alumno) }}">Editar</a>
+        <a class="action med" href="{{ url_for('cambiar_estado_alumno', id_alumno=a.id_alumno) }}">{% if a.estado == "DESCANSO MÉDICO" %}Disponible{% else %}Descanso médico{% endif %}</a>
+        <a class="action delete" href="{{ url_for('eliminar_alumno', id_alumno=a.id_alumno) }}" onclick="return confirm('¿Eliminar este alumno?')">Eliminar</a>
+      </div></td>
+    </tr>
+  {% else %}
+    <tr><td colspan="8" style="padding:30px;text-align:center;color:#667085">No existen alumnos registrados.</td></tr>
+  {% endfor %}
+  </tbody></table></div>
 </div>
-
-
-<div class="panel">
-
-    <div class="students-toolbar">
-
-        <form
-            method="GET"
-            action="{{ url_for('alumnos') }}"
-            class="search-form"
-        >
-
-            <input
-                type="text"
-                name="buscar"
-                value="{{ buscar }}"
-                placeholder="Buscar por N°, cédula, nombre, apellido o especialidad"
-            >
-
-            <button
-                type="submit"
-                class="btn-search"
-            >
-                Buscar
-            </button>
-
-            {% if buscar %}
-
-            <a
-                href="{{ url_for('alumnos') }}"
-                class="btn-clear"
-            >
-                Limpiar
-            </a>
-
-            {% endif %}
-
-        </form>
-
-
-        <div class="result-counter">
-            {{ alumnos|length }} resultado(s)
-        </div>
-
-    </div>
-
-
-    <div class="table-container">
-
-        <table>
-
-            <thead>
-
-                <tr>
-
-                    <th>N°</th>
-                    <th>Cédula</th>
-                    <th>Alumno</th>
-                    <th>Curso</th>
-                    <th>Paralelo</th>
-                    <th>Especialidad</th>
-                    <th>Condición</th>
-                    <th>Acciones</th>
-
-                </tr>
-
-            </thead>
-
-
-            <tbody>
-
-            {% if alumnos %}
-
-                {% for alumno in alumnos %}
-
-                <tr>
-
-                    <td>
-
-                        <div class="nomina-number">
-
-                            {% if alumno.numero_lista %}
-
-                                {{ "%02d"|format(alumno.numero_lista) }}
-
-                            {% else %}
-
-                                --
-
-                            {% endif %}
-
-                        </div>
-
-                    </td>
-
-
-                    <td>
-
-                        <strong>
-                            {{ alumno.cedula }}
-                        </strong>
-
-                    </td>
-
-
-                    <td>
-
-                        <div class="student-cell">
-
-                            <div class="student-avatar">
-
-                                {{ alumno.nombres[0] }}
-
-                            </div>
-
-                            <div>
-
-                                <strong>
-                                    {{ alumno.apellidos }}
-                                    {{ alumno.nombres }}
-                                </strong>
-
-                                <span>
-                                    ID {{ alumno.id_alumno }}
-                                </span>
-
-                            </div>
-
-                        </div>
-
-                    </td>
-
-
-                    <td>
-                        {{ alumno.curso }}
-                    </td>
-
-
-                    <td>
-                        {{ alumno.paralelo }}
-                    </td>
-
-
-                    <td>
-
-                        {{ alumno.especialidad or "Especialidad por asignar" }}
-
-                    </td>
-
-
-                    <td>
-
-                        {% if alumno.estado == "DISPONIBLE" %}
-
-                            <span class="badge badge-success">
-                                Disponible
-                            </span>
-
-                        {% elif alumno.estado == "DESCANSO MÉDICO" %}
-
-                            <span class="badge badge-info">
-                                Descanso médico
-                            </span>
-
-                        {% endif %}
-
-                    </td>
-
-
-                    <td>
-
-                        <div class="action-buttons">
-
-                            <a
-                                href="{{ url_for(
-                                    'editar_alumno',
-                                    id_alumno=alumno.id_alumno
-                                ) }}"
-                                class="btn-action edit"
-                            >
-                                Editar
-                            </a>
-
-
-                            {% if session.get('rol') == 'ADMINISTRADOR' %}
-
-                                <a
-                                    href="{{ url_for(
-                                        'cambiar_estado_alumno',
-                                        id_alumno=alumno.id_alumno
-                                    ) }}"
-                                    class="btn-action status"
-                                >
-
-                                    {% if alumno.estado == "DISPONIBLE" %}
-
-                                        Descanso médico
-
-                                    {% else %}
-
-                                        Disponible
-
-                                    {% endif %}
-
-                                </a>
-
-
-                                <a
-                                    href="{{ url_for(
-                                        'eliminar_alumno',
-                                        id_alumno=alumno.id_alumno
-                                    ) }}"
-                                    class="btn-action delete"
-                                    onclick="return confirm(
-                                        '¿Seguro que deseas eliminar este alumno?'
-                                    );"
-                                >
-                                    Eliminar
-                                </a>
-
-                            {% endif %}
-
-                        </div>
-
-                    </td>
-
-                </tr>
-
-                {% endfor %}
-
-
-            {% else %}
-
-                <tr>
-
-                    <td
-                        colspan="8"
-                        class="empty-table"
-                    >
-                        No existen alumnos registrados.
-                    </td>
-
-                </tr>
-
-            {% endif %}
-
-            </tbody>
-
-        </table>
-
-    </div>
-
-</div>
-
 {% endblock %}

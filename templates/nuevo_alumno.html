@@ -14,292 +14,941 @@ Registro de alumnos del Primer Año Militar
 
 {% block content %}
 
-<div class="page-header-card">
+<style>
 
-    <div>
+/* =========================================================
+   NUEVO ALUMNO - ETFA
+========================================================= */
 
-        <span class="panel-label">
-            NUEVO REGISTRO
-        </span>
+.student-form-page {
 
-        <h2>
-            Registrar alumno
-        </h2>
+    display: flex;
 
-        <p>
-            Primer Año Militar · Paralelo C · ETFA
-        </p>
+    flex-direction: column;
 
-    </div>
+    gap: 14px;
 
-    <a
-        href="{{ url_for('alumnos') }}"
-        class="btn-cancel"
-    >
-        ← Volver
-    </a>
-
-</div>
+}
 
 
-<div class="form-card">
+/* =========================================================
+   BANNER
+========================================================= */
 
-    <div class="form-card-header">
+.student-form-hero {
 
-        <span class="panel-label">
-            INFORMACIÓN
-        </span>
+    padding: 18px 20px;
 
-        <h2>
-            Datos del alumno
-        </h2>
+    display: flex;
 
-        <p>
-            Complete la información solicitada.
-        </p>
+    align-items: center;
 
-    </div>
+    justify-content: space-between;
+
+    gap: 15px;
+
+    border-radius: 14px;
+
+    background:
+
+        linear-gradient(
+            120deg,
+            #001d45,
+            #06377c
+        );
+
+    color: white;
+
+}
 
 
-    <form
-        method="POST"
-        action="{{ url_for('nuevo_alumno') }}"
-        class="student-form"
-    >
+.student-form-hero-left {
 
-        <div class="form-grid">
+    display: flex;
 
-            <div class="form-group">
+    align-items: center;
 
-                <label>
-                    Número de lista
-                </label>
+    gap: 13px;
 
-                <input
-                    type="number"
-                    name="numero_lista"
-                    min="1"
-                    placeholder="Ej. 1"
-                    required
-                >
+}
+
+
+.student-form-hero-icon {
+
+    width: 46px;
+    height: 46px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    border-radius: 12px;
+
+    background:
+        rgba(255,255,255,.10);
+
+    font-size: 18px;
+
+}
+
+
+.student-form-hero h2 {
+
+    margin: 0;
+
+    font-size: 17px;
+
+}
+
+
+.student-form-hero p {
+
+    margin-top: 4px;
+
+    color:
+        rgba(255,255,255,.75);
+
+    font-size: 8px;
+
+}
+
+
+.back-button {
+
+    display: inline-flex;
+
+    align-items: center;
+
+    gap: 6px;
+
+    padding:
+        8px
+        11px;
+
+    border-radius: 8px;
+
+    border:
+        1px solid
+        rgba(255,255,255,.18);
+
+    background:
+        rgba(255,255,255,.08);
+
+    color: white;
+
+    text-decoration: none;
+
+    font-size: 8px;
+
+    font-weight: 700;
+
+}
+
+
+/* =========================================================
+   PANEL
+========================================================= */
+
+.student-form-panel {
+
+    max-width: 920px;
+
+    width: 100%;
+
+    margin: 0 auto;
+
+    background: white;
+
+    border:
+        1px solid #e4e7ec;
+
+    border-radius: 14px;
+
+    overflow: hidden;
+
+    box-shadow:
+        0 4px 14px
+        rgba(16,24,40,.035);
+
+}
+
+
+.student-form-panel-header {
+
+    padding: 15px 18px;
+
+    border-bottom:
+        1px solid #eaecf0;
+
+}
+
+
+.student-form-panel-header span {
+
+    color: #1769e8;
+
+    font-size: 7px;
+
+    font-weight: 800;
+
+    letter-spacing: .8px;
+
+    text-transform: uppercase;
+
+}
+
+
+.student-form-panel-header h3 {
+
+    margin: 5px 0 0;
+
+    font-size: 15px;
+
+}
+
+
+.student-form-panel-header p {
+
+    margin-top: 4px;
+
+    color: #667085;
+
+    font-size: 8px;
+
+}
+
+
+/* =========================================================
+   FORMULARIO
+========================================================= */
+
+.student-form {
+
+    padding: 18px;
+
+}
+
+
+.form-grid {
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(2, minmax(0, 1fr));
+
+    gap: 13px 14px;
+
+}
+
+
+.form-group {
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 5px;
+
+}
+
+
+.form-group.full {
+
+    grid-column:
+        1 / -1;
+
+}
+
+
+.form-group label {
+
+    color: #344054;
+
+    font-size: 8px;
+
+    font-weight: 700;
+
+}
+
+
+.form-control {
+
+    width: 100%;
+
+    height: 36px;
+
+    padding:
+        0 10px;
+
+    border:
+        1px solid #d0d5dd;
+
+    border-radius: 8px;
+
+    background: #ffffff;
+
+    color: #101828;
+
+    font-size: 8px;
+
+    outline: none;
+
+    transition: .15s;
+
+}
+
+
+.form-control:focus {
+
+    border-color: #1769e8;
+
+    box-shadow:
+        0 0 0 3px
+        rgba(23,105,232,.08);
+
+}
+
+
+.form-help {
+
+    color: #98a2b3;
+
+    font-size: 7px;
+
+    margin-top: 1px;
+
+}
+
+
+/* =========================================================
+   CONDICIÓN
+========================================================= */
+
+.condition-info {
+
+    margin-top: 16px;
+
+    padding: 13px;
+
+    display: flex;
+
+    gap: 10px;
+
+    align-items: flex-start;
+
+    border:
+        1px solid #dbeafe;
+
+    border-radius: 10px;
+
+    background: #f8fbff;
+
+}
+
+
+.condition-info-icon {
+
+    width: 32px;
+    height: 32px;
+
+    flex-shrink: 0;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    border-radius: 8px;
+
+    background: #eaf2ff;
+
+    color: #1769e8;
+
+    font-size: 12px;
+
+}
+
+
+.condition-info strong {
+
+    display: block;
+
+    font-size: 8px;
+
+    color: #101828;
+
+}
+
+
+.condition-info p {
+
+    margin-top: 4px;
+
+    color: #667085;
+
+    font-size: 7px;
+
+    line-height: 1.5;
+
+}
+
+
+/* =========================================================
+   BOTONES
+========================================================= */
+
+.form-actions {
+
+    margin-top: 18px;
+
+    padding-top: 14px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: flex-end;
+
+    gap: 8px;
+
+    border-top:
+        1px solid #eaecf0;
+
+}
+
+
+.btn-cancel {
+
+    min-height: 34px;
+
+    padding:
+        0 12px;
+
+    display: inline-flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    border:
+        1px solid #d0d5dd;
+
+    border-radius: 8px;
+
+    background: white;
+
+    color: #344054;
+
+    text-decoration: none;
+
+    font-size: 8px;
+
+    font-weight: 700;
+
+}
+
+
+.btn-save {
+
+    min-height: 34px;
+
+    padding:
+        0 14px;
+
+    display: inline-flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    gap: 6px;
+
+    border: none;
+
+    border-radius: 8px;
+
+    background:
+
+        linear-gradient(
+            135deg,
+            #1769e8,
+            #0e55c7
+        );
+
+    color: white;
+
+    font-size: 8px;
+
+    font-weight: 800;
+
+    cursor: pointer;
+
+}
+
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media (max-width: 700px) {
+
+    .form-grid {
+
+        grid-template-columns:
+            1fr;
+
+    }
+
+
+    .form-group.full {
+
+        grid-column:
+            auto;
+
+    }
+
+
+    .student-form-hero {
+
+        flex-direction: column;
+
+        align-items: flex-start;
+
+    }
+
+
+    .form-actions {
+
+        flex-direction: column-reverse;
+
+        align-items: stretch;
+
+    }
+
+
+    .btn-cancel,
+    .btn-save {
+
+        width: 100%;
+
+    }
+
+}
+
+</style>
+
+
+<div class="student-form-page">
+
+
+    <!-- =====================================================
+         BANNER
+    ====================================================== -->
+
+    <section class="student-form-hero">
+
+
+        <div class="student-form-hero-left">
+
+
+            <div class="student-form-hero-icon">
+
+                <i class="fa-solid fa-user-plus"></i>
 
             </div>
 
 
-            <div class="form-group">
+            <div>
 
-                <label>
-                    Cédula
-                </label>
+                <h2>
+                    Registrar alumno
+                </h2>
 
-                <input
-                    type="text"
-                    name="cedula"
-                    maxlength="10"
-                    minlength="10"
-                    pattern="[0-9]{10}"
-                    inputmode="numeric"
-                    placeholder="Ej. 1750000000"
-                    required
-                >
+                <p>
+                    Primer Año Militar · Paralelo C · Escuela Técnica de la Fuerza Aérea
+                </p>
 
             </div>
 
-
-            <div class="form-group">
-
-                <label>
-                    Nombres
-                </label>
-
-                <input
-                    type="text"
-                    name="nombres"
-                    placeholder="Ingrese los nombres"
-                    required
-                >
-
-            </div>
-
-
-            <div class="form-group">
-
-                <label>
-                    Apellidos
-                </label>
-
-                <input
-                    type="text"
-                    name="apellidos"
-                    placeholder="Ingrese los apellidos"
-                    required
-                >
-
-            </div>
-
-
-            <div class="form-group">
-
-                <label>
-                    Curso
-                </label>
-
-                <input
-                    type="text"
-                    name="curso"
-                    value="Primer Año Militar"
-                    required
-                >
-
-            </div>
-
-
-            <div class="form-group">
-
-                <label>
-                    Paralelo
-                </label>
-
-                <input
-                    type="text"
-                    name="paralelo"
-                    value="C"
-                    required
-                >
-
-            </div>
-
-
-            <div class="form-group">
-
-                <label>
-                    Especialidad
-                </label>
-
-                <select
-                    name="especialidad"
-                    required
-                >
-
-                    <option value="">
-                        Seleccione una especialidad
-                    </option>
-
-                    <option value="Especialidad por asignar">
-                        Especialidad por asignar
-                    </option>
-
-                    <option value="Tránsito Aéreo">
-                        Tránsito Aéreo
-                    </option>
-
-                    <option value="Meteorología">
-                        Meteorología
-                    </option>
-
-                    <option value="Defensa Aérea">
-                        Defensa Aérea
-                    </option>
-
-                    <option value="Despachador de Vuelo">
-                        Despachador de Vuelo
-                    </option>
-
-                    <option value="Abastecimientos">
-                        Abastecimientos
-                    </option>
-
-                    <option value="Comunicaciones">
-                        Comunicaciones
-                    </option>
-
-                    <option value="Mantenimiento">
-                        Mantenimiento
-                    </option>
-
-                    <option value="Electrónica">
-                        Electrónica
-                    </option>
-
-                    <option value="Informática">
-                        Informática
-                    </option>
-
-                    <option value="Personal">
-                        Personal
-                    </option>
-
-                    <option value="Inteligencia">
-                        Inteligencia
-                    </option>
-
-                </select>
-
-            </div>
-
-
-            <div class="form-group">
-
-                <label>
-                    Condición
-                </label>
-
-                <select
-                    name="estado"
-                    required
-                >
-
-                    <option value="DISPONIBLE">
-                        Disponible
-                    </option>
-
-                    <option value="DESCANSO MÉDICO">
-                        Descanso médico
-                    </option>
-
-                </select>
-
-            </div>
 
         </div>
 
 
-        <div class="schedule-info-box">
+        <a
+            href="{{ url_for('alumnos') }}"
+            class="back-button"
+        >
 
-            <strong>
-                Estado del alumno
-            </strong>
+            <i class="fa-solid fa-arrow-left"></i>
+
+            Volver a alumnos
+
+        </a>
+
+
+    </section>
+
+
+
+    <!-- =====================================================
+         FORMULARIO
+    ====================================================== -->
+
+    <section class="student-form-panel">
+
+
+        <div class="student-form-panel-header">
+
+            <span>
+                Información
+            </span>
+
+            <h3>
+                Datos del alumno
+            </h3>
 
             <p>
-                Los alumnos disponibles participan normalmente
-                en el control de asistencia. Un alumno en
-                descanso médico no será considerado ausente
-                mientras mantenga dicha condición.
+                Complete la información requerida para registrar al alumno.
             </p>
 
         </div>
 
 
-        <div class="form-actions">
 
-            <a
-                href="{{ url_for('alumnos') }}"
-                class="btn-cancel"
-            >
-                Cancelar
-            </a>
+        <form
+            method="POST"
+            class="student-form"
+            autocomplete="off"
+        >
 
-            <button
-                type="submit"
-                class="btn-primary"
-            >
-                Guardar alumno
-            </button>
 
-        </div>
+            <div class="form-grid">
 
-    </form>
+
+                <!-- NÚMERO DE LISTA -->
+
+                <div class="form-group">
+
+                    <label for="numero_lista">
+
+                        Número de lista
+
+                    </label>
+
+                    <input
+                        type="number"
+                        id="numero_lista"
+                        name="numero_lista"
+                        class="form-control"
+                        placeholder="Ej. 01"
+                        min="1"
+                    >
+
+                    <span class="form-help">
+
+                        Debe ser único dentro de la nómina.
+
+                    </span>
+
+                </div>
+
+
+
+                <!-- CÉDULA -->
+
+                <div class="form-group">
+
+                    <label for="cedula">
+
+                        Cédula
+
+                    </label>
+
+                    <input
+                        type="text"
+                        id="cedula"
+                        name="cedula"
+                        class="form-control"
+                        placeholder="Ej. 1750000000"
+                        maxlength="10"
+                        minlength="10"
+                        inputmode="numeric"
+                        pattern="[0-9]{10}"
+                        required
+                    >
+
+                    <span class="form-help">
+
+                        Ingrese exactamente 10 dígitos.
+
+                    </span>
+
+                </div>
+
+
+
+                <!-- NOMBRES -->
+
+                <div class="form-group">
+
+                    <label for="nombres">
+
+                        Nombres
+
+                    </label>
+
+                    <input
+                        type="text"
+                        id="nombres"
+                        name="nombres"
+                        class="form-control"
+                        placeholder="Ingrese los nombres"
+                        required
+                    >
+
+                </div>
+
+
+
+                <!-- APELLIDOS -->
+
+                <div class="form-group">
+
+                    <label for="apellidos">
+
+                        Apellidos
+
+                    </label>
+
+                    <input
+                        type="text"
+                        id="apellidos"
+                        name="apellidos"
+                        class="form-control"
+                        placeholder="Ingrese los apellidos"
+                        required
+                    >
+
+                </div>
+
+
+
+                <!-- CURSO -->
+
+                <div class="form-group">
+
+                    <label for="curso">
+
+                        Curso
+
+                    </label>
+
+                    <input
+                        type="text"
+                        id="curso"
+                        name="curso"
+                        class="form-control"
+                        value="Primer Año Militar"
+                        required
+                    >
+
+                </div>
+
+
+
+                <!-- PARALELO -->
+
+                <div class="form-group">
+
+                    <label for="paralelo">
+
+                        Paralelo
+
+                    </label>
+
+                    <input
+                        type="text"
+                        id="paralelo"
+                        name="paralelo"
+                        class="form-control"
+                        value="C"
+                        required
+                    >
+
+                </div>
+
+
+
+                <!-- ESPECIALIDAD -->
+
+                <div class="form-group">
+
+                    <label for="especialidad">
+
+                        Especialidad
+
+                    </label>
+
+                    <select
+                        id="especialidad"
+                        name="especialidad"
+                        class="form-control"
+                        required
+                    >
+
+                        <option value="">
+                            Seleccione una especialidad
+                        </option>
+
+                        <option value="Especialidad por asignar">
+                            Especialidad por asignar
+                        </option>
+
+                        <option value="Meteorología">
+                            Meteorología
+                        </option>
+
+                        <option value="Tránsito Aéreo">
+                            Tránsito Aéreo
+                        </option>
+
+                        <option value="Mantenimiento Aeronáutico">
+                            Mantenimiento Aeronáutico
+                        </option>
+
+                        <option value="Electrónica">
+                            Electrónica
+                        </option>
+
+                        <option value="Comunicaciones">
+                            Comunicaciones
+                        </option>
+
+                        <option value="Abastecimientos">
+                            Abastecimientos
+                        </option>
+
+                        <option value="Administración">
+                            Administración
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+
+                <!-- CONDICIÓN -->
+
+                <div class="form-group">
+
+                    <label for="estado">
+
+                        Condición
+
+                    </label>
+
+                    <select
+                        id="estado"
+                        name="estado"
+                        class="form-control"
+                        required
+                    >
+
+                        <option value="DISPONIBLE">
+                            Disponible
+                        </option>
+
+                        <option value="DESCANSO MÉDICO">
+                            Descanso médico
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+            </div>
+
+
+
+            <!-- =================================================
+                 INFORMACIÓN DE CONDICIÓN
+            ================================================== -->
+
+            <div class="condition-info">
+
+
+                <div class="condition-info-icon">
+
+                    <i class="fa-solid fa-circle-info"></i>
+
+                </div>
+
+
+                <div>
+
+                    <strong>
+                        Condición administrativa del alumno
+                    </strong>
+
+                    <p>
+                        La condición Disponible o Descanso médico es independiente
+                        del registro académico de asistencia. Un alumno en descanso
+                        médico puede asistir normalmente a clases y será registrado
+                        inicialmente como ASISTE. Solamente el docente cambiará su
+                        asistencia a NO ASISTE o JUSTIFICADO cuando corresponda.
+                    </p>
+
+                </div>
+
+
+            </div>
+
+
+
+            <!-- =================================================
+                 BOTONES
+            ================================================== -->
+
+            <div class="form-actions">
+
+
+                <a
+                    href="{{ url_for('alumnos') }}"
+                    class="btn-cancel"
+                >
+
+                    Cancelar
+
+                </a>
+
+
+                <button
+                    type="submit"
+                    class="btn-save"
+                >
+
+                    <i class="fa-solid fa-floppy-disk"></i>
+
+                    Guardar alumno
+
+                </button>
+
+
+            </div>
+
+
+        </form>
+
+
+    </section>
+
 
 </div>
+
 
 {% endblock %}

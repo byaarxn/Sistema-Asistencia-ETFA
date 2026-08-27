@@ -1,144 +1,297 @@
 {% extends "base.html" %}
 
 {% block title %}
-Horarios | ETFA
+Horario Académico | ETFA
 {% endblock %}
 
 {% block page_title %}
-Horarios
+Horario académico
 {% endblock %}
 
 {% block page_description %}
-Configuración de jornada y tolerancia
+Programación semanal de clases y actividades del Paralelo C
 {% endblock %}
 
 {% block content %}
 
-<div class="page-header-card">
+<style>
+
+.schedule-header {
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: center;
+
+    gap: 15px;
+
+    padding: 18px;
+
+    margin-bottom: 15px;
+
+    background: white;
+
+    border: 1px solid #e4e7ec;
+
+    border-radius: 14px;
+}
+
+.schedule-header h2 {
+    margin: 0 0 5px;
+}
+
+.schedule-header p {
+    margin: 0;
+    color: #667085;
+}
+
+.schedule-actions {
+    display: flex;
+    gap: 8px;
+}
+
+.schedule-btn {
+    min-height: 40px;
+
+    padding: 0 14px;
+
+    display: inline-flex;
+
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 8px;
+
+    background: #2563eb;
+
+    color: white;
+
+    text-decoration: none;
+
+    font-size: 11px;
+
+    font-weight: 700;
+
+    border: none;
+}
+
+.current-class {
+    padding: 17px;
+
+    margin-bottom: 15px;
+
+    border-radius: 14px;
+
+    background: #eff6ff;
+
+    border: 1px solid #bfdbfe;
+}
+
+.current-class span {
+    color: #2563eb;
+
+    font-size: 10px;
+
+    font-weight: 800;
+}
+
+.current-class h3 {
+    margin: 6px 0;
+
+    color: #1e3a8a;
+}
+
+.filter-box {
+    background: white;
+
+    border: 1px solid #e4e7ec;
+
+    border-radius: 14px;
+
+    padding: 14px;
+
+    margin-bottom: 15px;
+}
+
+.filter-box form {
+    display: flex;
+
+    gap: 8px;
+
+    align-items: center;
+}
+
+.filter-box input {
+    min-height: 38px;
+
+    padding: 0 10px;
+
+    border: 1px solid #d0d5dd;
+
+    border-radius: 8px;
+}
+
+.schedule-panel {
+    background: white;
+
+    border: 1px solid #e4e7ec;
+
+    border-radius: 14px;
+
+    overflow: hidden;
+}
+
+.schedule-table-wrapper {
+    overflow-x: auto;
+}
+
+.schedule-table {
+    width: 100%;
+
+    min-width: 1100px;
+
+    border-collapse: collapse;
+}
+
+.schedule-table th {
+    padding: 11px;
+
+    background: #f8fafc;
+
+    color: #667085;
+
+    font-size: 9px;
+
+    text-transform: uppercase;
+
+    text-align: left;
+
+    white-space: nowrap;
+}
+
+.schedule-table td {
+    padding: 11px;
+
+    border-top: 1px solid #f2f4f7;
+
+    font-size: 11px;
+
+    vertical-align: middle;
+}
+
+.type-badge {
+    display: inline-flex;
+
+    padding: 5px 8px;
+
+    border-radius: 999px;
+
+    background: #f2f4f7;
+
+    font-size: 9px;
+
+    font-weight: 700;
+}
+
+.schedule-row-actions {
+    display: flex;
+
+    gap: 5px;
+
+    flex-wrap: wrap;
+}
+
+.small-btn {
+    padding: 6px 8px;
+
+    border-radius: 6px;
+
+    text-decoration: none;
+
+    font-size: 9px;
+
+    font-weight: 700;
+
+    background: #eff6ff;
+
+    color: #2563eb;
+}
+
+.small-btn.delete {
+    background: #fef3f2;
+    color: #b42318;
+}
+
+.small-btn.attendance {
+    background: #ecfdf3;
+    color: #027a48;
+}
+
+</style>
+
+
+<div class="schedule-header">
 
     <div>
 
-        <span class="panel-label">
-            CONFIGURACIÓN
-        </span>
-
         <h2>
-            Horario de asistencia
+            Horario académico semanal
         </h2>
 
         <p>
-            Define la hora de entrada, salida y tolerancia.
+            Primer Año Militar · Paralelo C · ETFA
         </p>
 
     </div>
 
-    <a href="{{ url_for('nuevo_horario') }}"
-       class="btn-primary">
 
-        + Nuevo horario
+    <div class="schedule-actions">
 
-    </a>
+        <a
+            href="{{ url_for('materias') }}"
+            class="schedule-btn"
+            style="background:#475467;"
+        >
+            Materias
+        </a>
+
+        <a
+            href="{{ url_for('nuevo_horario') }}"
+            class="schedule-btn"
+        >
+            + Nuevo bloque
+        </a>
+
+    </div>
 
 </div>
 
 
 {% if horario_activo %}
 
-<div class="schedule-active-card">
+<div class="current-class">
 
-    <div class="schedule-active-header">
+    <span>
+        ACTIVIDAD EN CURSO
+    </span>
 
-        <div>
+    <h3>
+        {{ horario_activo.materia }}
+    </h3>
 
-            <span class="schedule-active-label">
-                HORARIO ACTIVO
-            </span>
+    <div>
 
-            <h2>
-                {{ horario_activo.nombre }}
-            </h2>
+        {{ horario_activo.hora_inicio }}
+        -
+        {{ horario_activo.hora_fin }}
 
-            <p>
-                Este horario se utiliza para calcular
-                puntualidad y atrasos.
-            </p>
+        ·
 
-        </div>
+        {{ horario_activo.docente or "Sin docente registrado" }}
 
-        <span class="badge badge-success">
-            Activo
-        </span>
+        ·
 
-    </div>
-
-
-    <div class="schedule-active-grid">
-
-        <div class="schedule-data">
-
-            <span>
-                Hora de entrada
-            </span>
-
-            <strong>
-                {{ horario_activo.hora_entrada }}
-            </strong>
-
-        </div>
-
-
-        <div class="schedule-data">
-
-            <span>
-                Hora de salida
-            </span>
-
-            <strong>
-                {{ horario_activo.hora_salida }}
-            </strong>
-
-        </div>
-
-
-        <div class="schedule-data">
-
-            <span>
-                Tolerancia
-            </span>
-
-            <strong>
-                {{ horario_activo.tolerancia_minutos }} min
-            </strong>
-
-        </div>
-
-
-        <div class="schedule-data">
-
-            <span>
-                Estado
-            </span>
-
-            <strong>
-                ACTIVO
-            </strong>
-
-        </div>
-
-    </div>
-
-
-    <div class="schedule-active-actions">
-
-        <a href="{{ url_for(
-                    'editar_horario',
-                    id_horario=horario_activo.id_horario
-                ) }}"
-           class="btn-primary">
-
-            Editar horario activo
-
-        </a>
+        {{ horario_activo.lugar or "ETFA" }}
 
     </div>
 
@@ -147,42 +300,65 @@ Configuración de jornada y tolerancia
 {% endif %}
 
 
-<div class="panel schedule-list-panel">
+<div class="filter-box">
 
-    <div class="panel-header">
+    <form
+        method="GET"
+        action="{{ url_for('horarios') }}"
+    >
 
-        <div>
+        <input
+            type="date"
+            name="fecha"
+            value="{{ fecha_busqueda }}"
+        >
 
-            <span class="panel-label">
-                HISTORIAL
-            </span>
+        <button
+            type="submit"
+            class="schedule-btn"
+        >
+            Filtrar
+        </button>
 
-            <h2>
-                Horarios registrados
-            </h2>
+        {% if fecha_busqueda %}
 
-        </div>
+        <a
+            href="{{ url_for('horarios') }}"
+            class="schedule-btn"
+            style="background:#667085;"
+        >
+            Ver todo
+        </a>
 
-        <span class="result-counter">
-            {{ horarios|length }} horario(s)
-        </span>
+        {% endif %}
 
-    </div>
+    </form>
+
+</div>
 
 
-    <div class="table-container">
+<div class="schedule-panel">
 
-        <table>
+    <div class="schedule-table-wrapper">
+
+        <table class="schedule-table">
 
             <thead>
 
                 <tr>
-                    <th>Nombre</th>
-                    <th>Entrada</th>
-                    <th>Salida</th>
-                    <th>Tolerancia</th>
+
+                    <th>Fecha</th>
+                    <th>Día</th>
+                    <th>Inicio</th>
+                    <th>Fin</th>
+                    <th>Materia / Actividad</th>
+                    <th>Docente</th>
+                    <th>Lugar</th>
+                    <th>Horas</th>
+                    <th>Tipo</th>
                     <th>Estado</th>
                     <th>Acciones</th>
+
                 </tr>
 
             </thead>
@@ -190,43 +366,43 @@ Configuración de jornada y tolerancia
 
             <tbody>
 
-            {% if horarios %}
-
-                {% for horario in horarios %}
+            {% for h in horarios %}
 
                 <tr>
 
                     <td>
+                        {{ h.fecha }}
+                    </td>
+
+
+                    <td>
                         <strong>
-                            {{ horario.nombre }}
+                            {{ h.dia_semana }}
                         </strong>
                     </td>
 
+
                     <td>
-                        {{ horario.hora_entrada }}
+                        {{ h.hora_inicio }}
                     </td>
 
+
                     <td>
-                        {{ horario.hora_salida }}
+                        {{ h.hora_fin }}
                     </td>
 
-                    <td>
-                        {{ horario.tolerancia_minutos }} min
-                    </td>
 
                     <td>
 
-                        {% if horario.estado == "ACTIVO" %}
+                        <strong>
+                            {{ h.materia }}
+                        </strong>
 
-                            <span class="badge badge-success">
-                                Activo
-                            </span>
+                        {% if h.codigo %}
 
-                        {% else %}
-
-                            <span class="badge badge-neutral">
-                                Inactivo
-                            </span>
+                            <div style="margin-top:3px;color:#98a2b3;">
+                                {{ h.codigo }}
+                            </div>
 
                         {% endif %}
 
@@ -234,47 +410,74 @@ Configuración de jornada y tolerancia
 
 
                     <td>
+                        {{ h.docente or "--" }}
+                    </td>
 
-                        <div class="action-buttons">
 
-                            <a href="{{ url_for(
-                                        'editar_horario',
-                                        id_horario=horario.id_horario
-                                    ) }}"
-                               class="btn-action edit">
+                    <td>
+                        {{ h.lugar or "--" }}
+                    </td>
 
+
+                    <td>
+                        {{ h.horas_clase }} h
+                    </td>
+
+
+                    <td>
+
+                        <span class="type-badge">
+                            {{ h.tipo }}
+                        </span>
+
+                    </td>
+
+
+                    <td>
+                        {{ h.estado }}
+                    </td>
+
+
+                    <td>
+
+                        <div class="schedule-row-actions">
+
+                            {% if h.contabiliza_asistencia %}
+
+                            <a
+                                href="{{ url_for(
+                                    'asistencia',
+                                    id_horario=h.id_horario_academico
+                                ) }}"
+                                class="small-btn attendance"
+                            >
+                                Asistencia
+                            </a>
+
+                            {% endif %}
+
+
+                            <a
+                                href="{{ url_for(
+                                    'editar_horario',
+                                    id_horario=h.id_horario_academico
+                                ) }}"
+                                class="small-btn"
+                            >
                                 Editar
-
                             </a>
 
 
-                            {% if horario.estado != "ACTIVO" %}
-
-                                <a href="{{ url_for(
-                                            'activar_horario',
-                                            id_horario=horario.id_horario
-                                        ) }}"
-                                   class="btn-action status">
-
-                                    Activar
-
-                                </a>
-
-
-                                <a href="{{ url_for(
-                                            'eliminar_horario',
-                                            id_horario=horario.id_horario
-                                        ) }}"
-                                   class="btn-action delete"
-                                   onclick="return confirm(
-                                       '¿Deseas eliminar este horario?'
-                                   );">
-
-                                    Eliminar
-
-                                </a>
-
-                            {% endif %}
+                            <a
+                                href="{{ url_for(
+                                    'eliminar_horario',
+                                    id_horario=h.id_horario_academico
+                                ) }}"
+                                class="small-btn delete"
+                                onclick="return confirm('¿Eliminar este bloque del horario?');"
+                            >
+                                Eliminar
+                            </a>
 
                         </div>
 
@@ -282,22 +485,20 @@ Configuración de jornada y tolerancia
 
                 </tr>
 
-                {% endfor %}
-
             {% else %}
 
                 <tr>
 
-                    <td colspan="6"
-                        class="empty-table">
-
-                        No existen horarios registrados.
-
+                    <td
+                        colspan="11"
+                        style="text-align:center;padding:35px;"
+                    >
+                        No existen bloques académicos registrados.
                     </td>
 
                 </tr>
 
-            {% endif %}
+            {% endfor %}
 
             </tbody>
 

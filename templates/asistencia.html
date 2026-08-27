@@ -1,522 +1,912 @@
 {% extends "base.html" %}
 
 {% block title %}
-Asistencia | ETFA
+Asistencia Académica | ETFA
 {% endblock %}
 
 {% block page_title %}
-Control de asistencia
+Control de asistencia académica
 {% endblock %}
 
 {% block page_description %}
-Registro diario de entrada y salida de alumnos
+Registro automático de asistencia por bloque de clase
 {% endblock %}
 
 {% block content %}
 
-<div class="attendance-hero">
+<style>
 
-    <div>
+.academic-page {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
 
-        <span class="welcome-label">
-            CONTROL DIARIO
-        </span>
+.class-card {
+    background: linear-gradient(
+        135deg,
+        #102a56,
+        #1d4ed8
+    );
+
+    color: white;
+
+    border-radius: 18px;
+
+    padding: 22px;
+
+    display: grid;
+
+    grid-template-columns:
+        1fr auto;
+
+    gap: 20px;
+
+    align-items: center;
+
+    box-shadow:
+        0 12px 30px
+        rgba(29, 78, 216, .18);
+}
+
+.class-label {
+    display: inline-block;
+
+    font-size: 10px;
+    font-weight: 800;
+
+    letter-spacing: 1.4px;
+
+    opacity: .75;
+
+    margin-bottom: 8px;
+}
+
+.class-card h2 {
+    margin: 0 0 6px;
+
+    font-size: 24px;
+}
+
+.class-card p {
+    margin: 4px 0;
+
+    opacity: .9;
+}
+
+.class-time {
+    text-align: center;
+
+    min-width: 150px;
+
+    padding: 16px;
+
+    border-radius: 14px;
+
+    background:
+        rgba(255,255,255,.12);
+
+    border:
+        1px solid
+        rgba(255,255,255,.18);
+}
+
+.class-time span {
+    display: block;
+
+    font-size: 10px;
+
+    opacity: .75;
+}
+
+.class-time strong {
+    display: block;
+
+    margin-top: 4px;
+
+    font-size: 20px;
+}
+
+.summary-grid {
+    display: grid;
+
+    grid-template-columns:
+        repeat(4, 1fr);
+
+    gap: 12px;
+}
+
+.summary-card {
+    padding: 16px;
+
+    background: white;
+
+    border: 1px solid #e4e7ec;
+
+    border-radius: 13px;
+}
+
+.summary-card span {
+    color: #667085;
+    font-size: 11px;
+}
+
+.summary-card strong {
+    display: block;
+
+    margin-top: 6px;
+
+    color: #101828;
+
+    font-size: 22px;
+}
+
+.summary-card.success strong {
+    color: #039855;
+}
+
+.summary-card.danger strong {
+    color: #d92d20;
+}
+
+.summary-card.warning strong {
+    color: #dc6803;
+}
+
+.academic-panel {
+    background: white;
+
+    border: 1px solid #e4e7ec;
+
+    border-radius: 16px;
+
+    overflow: hidden;
+}
+
+.academic-toolbar {
+    padding: 14px 16px;
+
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: center;
+
+    gap: 12px;
+
+    border-bottom: 1px solid #eaecf0;
+}
+
+.academic-search {
+    display: flex;
+
+    flex: 1;
+
+    gap: 8px;
+}
+
+.academic-search input {
+    width: 100%;
+
+    max-width: 500px;
+
+    min-height: 40px;
+
+    padding: 0 12px;
+
+    border: 1px solid #d0d5dd;
+
+    border-radius: 8px;
+
+    outline: none;
+}
+
+.academic-search button {
+    min-height: 40px;
+
+    padding: 0 16px;
+
+    border: none;
+
+    border-radius: 8px;
+
+    background: #2563eb;
+
+    color: white;
+
+    font-weight: 700;
+
+    cursor: pointer;
+}
+
+.academic-table-wrapper {
+    overflow-x: auto;
+}
+
+.academic-table {
+    width: 100%;
+
+    min-width: 1050px;
+
+    border-collapse: collapse;
+}
+
+.academic-table th {
+    padding: 11px 12px;
+
+    background: #f8fafc;
+
+    color: #667085;
+
+    font-size: 10px;
+
+    text-transform: uppercase;
+
+    text-align: left;
+
+    border-bottom: 1px solid #eaecf0;
+}
+
+.academic-table td {
+    padding: 12px;
+
+    border-bottom: 1px solid #f2f4f7;
+
+    font-size: 12px;
+
+    color: #344054;
+
+    vertical-align: middle;
+}
+
+.student-number {
+    width: 34px;
+    height: 34px;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 9px;
+
+    background: #eff6ff;
+
+    color: #2563eb;
+
+    font-weight: 800;
+}
+
+.condition {
+    display: inline-flex;
+
+    padding: 5px 9px;
+
+    border-radius: 999px;
+
+    font-size: 10px;
+
+    font-weight: 700;
+}
+
+.condition.available {
+    background: #ecfdf3;
+    color: #027a48;
+}
+
+.condition.medical {
+    background: #eff8ff;
+    color: #175cd3;
+}
+
+.status-buttons {
+    display: flex;
+
+    gap: 5px;
+
+    flex-wrap: wrap;
+}
+
+.status-btn {
+    padding: 7px 9px;
+
+    border-radius: 7px;
+
+    text-decoration: none;
+
+    font-size: 9px;
+
+    font-weight: 800;
+
+    border: 1px solid transparent;
+}
+
+.status-btn.present {
+    background: #ecfdf3;
+    color: #027a48;
+    border-color: #abefc6;
+}
+
+.status-btn.absent {
+    background: #fef3f2;
+    color: #b42318;
+    border-color: #fecdca;
+}
+
+.status-btn.justified {
+    background: #fff6ed;
+    color: #b54708;
+    border-color: #fedf89;
+}
+
+.status-btn.active {
+    box-shadow:
+        0 0 0 2px
+        rgba(37, 99, 235, .25);
+}
+
+.observation-form {
+    display: flex;
+    gap: 5px;
+}
+
+.observation-form input {
+    min-width: 150px;
+
+    height: 33px;
+
+    padding: 0 8px;
+
+    border: 1px solid #d0d5dd;
+
+    border-radius: 7px;
+}
+
+.observation-form button {
+    height: 33px;
+
+    border: none;
+
+    border-radius: 7px;
+
+    background: #f2f4f7;
+
+    cursor: pointer;
+}
+
+.empty-class {
+    padding: 35px;
+
+    background: white;
+
+    border: 1px solid #e4e7ec;
+
+    border-radius: 16px;
+
+    text-align: center;
+}
+
+.empty-class h2 {
+    margin-bottom: 8px;
+}
+
+.activity-box {
+    padding: 24px;
+
+    background: #fffaeb;
+
+    border: 1px solid #fedf89;
+
+    border-radius: 14px;
+}
+
+.close-box {
+    padding: 14px 16px;
+
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: center;
+
+    gap: 15px;
+
+    background: #f8fafc;
+
+    border-top: 1px solid #eaecf0;
+}
+
+.close-button {
+    padding: 10px 16px;
+
+    border-radius: 8px;
+
+    background: #101828;
+
+    color: white;
+
+    text-decoration: none;
+
+    font-size: 11px;
+
+    font-weight: 700;
+}
+
+@media (max-width: 800px) {
+
+    .class-card {
+        grid-template-columns: 1fr;
+    }
+
+    .summary-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+</style>
+
+
+<div class="academic-page">
+
+{% if not clase_actual %}
+
+    <div class="empty-class">
 
         <h2>
-            Asistencia del Paralelo C
+            No existe una clase activa en este momento
         </h2>
 
+        {% if proxima_clase %}
+
+            <p>
+                Próxima actividad:
+                <strong>
+                    {{ proxima_clase.materia }}
+                </strong>
+            </p>
+
+            <p>
+                {{ proxima_clase.hora_inicio }}
+                -
+                {{ proxima_clase.hora_fin }}
+            </p>
+
+        {% else %}
+
+            <p>
+                No existen más actividades programadas para hoy.
+            </p>
+
+        {% endif %}
+
+        <br>
+
+        <a
+            href="{{ url_for('horarios') }}"
+            class="close-button"
+        >
+            Ver horario académico
+        </a>
+
+    </div>
+
+
+{% elif not clase_actual.contabiliza_asistencia %}
+
+    <div class="class-card">
+
+        <div>
+
+            <span class="class-label">
+                ACTIVIDAD ACTUAL
+            </span>
+
+            <h2>
+                {{ clase_actual.materia }}
+            </h2>
+
+            <p>
+                <strong>Responsable:</strong>
+                {{ clase_actual.docente or "Instructor de Guardia" }}
+            </p>
+
+            <p>
+                <strong>Lugar:</strong>
+                {{ clase_actual.lugar or "ETFA" }}
+            </p>
+
+        </div>
+
+        <div class="class-time">
+
+            <span>HORARIO</span>
+
+            <strong>
+                {{ clase_actual.hora_inicio }}
+            </strong>
+
+            <span>hasta</span>
+
+            <strong>
+                {{ clase_actual.hora_fin }}
+            </strong>
+
+        </div>
+
+    </div>
+
+
+    <div class="activity-box">
+
+        <strong>
+            Esta actividad no contabiliza asistencia académica.
+        </strong>
+
         <p>
-            Primer Año Militar · ETFA
+            No se generan horas de asistencia para este bloque.
         </p>
 
     </div>
 
 
-    <div class="attendance-clock-box">
+{% else %}
 
-        <span>
-            Hora actual
-        </span>
-
-        <strong id="reloj">
-            00:00:00
-        </strong>
-
-        <small id="fechaActual"></small>
-
-    </div>
-
-</div>
-
-
-<div class="report-stats-grid">
-
-    <div class="report-stat-card">
-
-        <div class="report-stat-icon">
-            👥
-        </div>
+    <div class="class-card">
 
         <div>
 
-            <span>
-                Total alumnos
+            <span class="class-label">
+                CLASE ACTUAL
             </span>
+
+            <h2>
+                {{ clase_actual.materia }}
+            </h2>
+
+            <p>
+                <strong>Docente:</strong>
+                {{ clase_actual.docente or "No registrado" }}
+            </p>
+
+            <p>
+                <strong>Lugar:</strong>
+                {{ clase_actual.lugar or "No registrado" }}
+            </p>
+
+            <p>
+                <strong>Fecha:</strong>
+                {{ clase_actual.fecha }}
+            </p>
+
+        </div>
+
+
+        <div class="class-time">
+
+            <span>BLOQUE</span>
+
+            <strong>
+                {{ clase_actual.hora_inicio }}
+            </strong>
+
+            <span>hasta</span>
+
+            <strong>
+                {{ clase_actual.hora_fin }}
+            </strong>
+
+        </div>
+
+    </div>
+
+
+    <div class="summary-grid">
+
+        <div class="summary-card">
+
+            <span>Total alumnos</span>
 
             <strong>
                 {{ total }}
             </strong>
 
-            <small>
-                Registrados
-            </small>
-
         </div>
 
-    </div>
 
+        <div class="summary-card success">
 
-    <div class="report-stat-card">
+            <span>Asisten</span>
 
-        <div class="report-stat-icon">
-            ✓
-        </div>
-
-        <div>
-
-            <span>
-                Con entrada
-            </span>
-
-            <strong class="report-success">
-                {{ presentes }}
+            <strong>
+                {{ asisten }}
             </strong>
 
-            <small>
-                Ingreso registrado
-            </small>
-
         </div>
 
-    </div>
 
+        <div class="summary-card danger">
 
-    <div class="report-stat-card">
+            <span>No asisten</span>
 
-        <div class="report-stat-icon">
-            ◷
-        </div>
-
-        <div>
-
-            <span>
-                Atrasados
-            </span>
-
-            <strong class="report-warning">
-                {{ atrasados }}
+            <strong>
+                {{ no_asisten }}
             </strong>
 
-            <small>
-                Fuera de tolerancia
-            </small>
-
         </div>
 
-    </div>
 
+        <div class="summary-card warning">
 
-    <div class="report-stat-card">
+            <span>Justificados</span>
 
-        <div class="report-stat-icon">
-            —
-        </div>
-
-        <div>
-
-            <span>
-                Sin marcar
-            </span>
-
-            <strong class="report-danger">
-                {{ sin_marcar }}
+            <strong>
+                {{ justificados }}
             </strong>
 
-            <small>
-                Sin entrada
-            </small>
-
-        </div>
-
-    </div>
-
-</div>
-
-
-<div class="panel">
-
-    <div class="students-toolbar">
-
-        <form
-            method="GET"
-            action="{{ url_for('asistencia') }}"
-            class="search-form"
-        >
-
-            <input
-                type="text"
-                name="buscar"
-                value="{{ buscar }}"
-                placeholder="Buscar por N°, cédula, nombre, apellido o especialidad"
-            >
-
-            <button
-                type="submit"
-                class="btn-search"
-            >
-                Buscar
-            </button>
-
-            {% if buscar %}
-
-            <a
-                href="{{ url_for('asistencia') }}"
-                class="btn-clear"
-            >
-                Limpiar
-            </a>
-
-            {% endif %}
-
-        </form>
-
-
-        <div class="result-counter">
-            {{ alumnos|length }} alumno(s)
         </div>
 
     </div>
 
 
-    <div class="table-container">
+    <div class="academic-panel">
 
-        <table class="attendance-list-table">
+        <div class="academic-toolbar">
 
-            <thead>
+            <form
+                method="GET"
+                action="{{ url_for('asistencia') }}"
+                class="academic-search"
+            >
 
-                <tr>
-                    <th>N°</th>
-                    <th>Alumno</th>
-                    <th>Cédula</th>
-                    <th>Condición</th>
-                    <th>Entrada</th>
-                    <th>Salida</th>
-                    <th>Estado</th>
-                    <th>Horas</th>
-                    <th>Acción</th>
-                </tr>
+                <input
+                    type="hidden"
+                    name="id_horario"
+                    value="{{ clase_actual.id_horario_academico }}"
+                >
 
-            </thead>
+                <input
+                    type="text"
+                    name="buscar"
+                    value="{{ buscar }}"
+                    placeholder="Buscar alumno por nombre, cédula o N°..."
+                >
+
+                <button type="submit">
+                    Buscar
+                </button>
+
+            </form>
+
+            <strong>
+                {{ alumnos|length }} alumno(s)
+            </strong>
+
+        </div>
 
 
-            <tbody>
+        <div class="academic-table-wrapper">
 
-            {% if alumnos %}
+            <table class="academic-table">
+
+                <thead>
+
+                    <tr>
+                        <th>N°</th>
+                        <th>Alumno</th>
+                        <th>Cédula</th>
+                        <th>Condición</th>
+                        <th>Asistencia</th>
+                        <th>Horas</th>
+                        <th>Observación</th>
+                    </tr>
+
+                </thead>
+
+
+                <tbody>
 
                 {% for alumno in alumnos %}
 
-                <tr>
+                    <tr>
 
-                    <td>
+                        <td>
 
-                        <div class="nomina-number">
+                            <div class="student-number">
 
-                            {% if alumno.numero_lista %}
+                                {% if alumno.numero_lista %}
 
-                                {{ "%02d"|format(alumno.numero_lista) }}
+                                    {{ "%02d"|format(alumno.numero_lista) }}
 
-                            {% else %}
+                                {% else %}
 
-                                --
+                                    --
 
-                            {% endif %}
+                                {% endif %}
 
-                        </div>
-
-                    </td>
-
-
-                    <td>
-
-                        <div class="student-cell">
-
-                            <div class="student-avatar">
-                                {{ alumno.nombres[0] }}
                             </div>
 
-                            <div>
+                        </td>
 
-                                <strong>
-                                    {{ alumno.apellidos }}
-                                    {{ alumno.nombres }}
-                                </strong>
 
-                                <span>
-                                    {{ alumno.especialidad or "Especialidad por asignar" }}
+                        <td>
+
+                            <strong>
+                                {{ alumno.apellidos }}
+                                {{ alumno.nombres }}
+                            </strong>
+
+                            <div style="color:#98a2b3;margin-top:3px;">
+
+                                {{ alumno.especialidad or "Especialidad por asignar" }}
+
+                            </div>
+
+                        </td>
+
+
+                        <td>
+                            {{ alumno.cedula }}
+                        </td>
+
+
+                        <td>
+
+                            {% if alumno.condicion == "DESCANSO MÉDICO" %}
+
+                                <span class="condition medical">
+                                    Descanso médico
                                 </span>
 
-                            </div>
-
-                        </div>
-
-                    </td>
-
-
-                    <td>
-                        {{ alumno.cedula }}
-                    </td>
-
-
-                    <td>
-
-                        {% if alumno.condicion == "DISPONIBLE" %}
-
-                            <span class="badge badge-success">
-                                Disponible
-                            </span>
-
-                        {% elif alumno.condicion == "DESCANSO MÉDICO" %}
-
-                            <span class="badge badge-info">
-                                Descanso médico
-                            </span>
-
-                        {% else %}
-
-                            <span class="badge badge-neutral">
-                                {{ alumno.condicion }}
-                            </span>
-
-                        {% endif %}
-
-                    </td>
-
-
-                    <td>
-
-                        {% if alumno.hora_entrada %}
-
-                            <strong class="attendance-time">
-                                {{ alumno.hora_entrada }}
-                            </strong>
-
-                        {% else %}
-
-                            <span class="attendance-empty-value">
-                                --
-                            </span>
-
-                        {% endif %}
-
-                    </td>
-
-
-                    <td>
-
-                        {% if alumno.hora_salida %}
-
-                            <strong class="attendance-time">
-                                {{ alumno.hora_salida }}
-                            </strong>
-
-                        {% else %}
-
-                            <span class="attendance-empty-value">
-                                --
-                            </span>
-
-                        {% endif %}
-
-                    </td>
-
-
-                    <td>
-
-                        {% if alumno.estado_asistencia == "PUNTUAL" %}
-
-                            <span class="badge badge-success">
-                                Puntual
-                            </span>
-
-                        {% elif alumno.estado_asistencia == "ATRASADO" %}
-
-                            <span class="badge badge-warning">
-                                Atrasado
-                            </span>
-
-                        {% elif alumno.estado_asistencia == "AUSENTE" %}
-
-                            <span class="badge badge-danger">
-                                Ausente
-                            </span>
-
-                        {% elif alumno.estado_asistencia == "JUSTIFICADO" %}
-
-                            <span class="badge badge-info">
-                                Justificado
-                            </span>
-
-                        {% else %}
-
-                            <span class="badge badge-neutral">
-                                Sin marcar
-                            </span>
-
-                        {% endif %}
-
-                    </td>
-
-
-                    <td>
-
-                        {% if alumno.horas_trabajadas %}
-
-                            {{ alumno.horas_trabajadas }} h
-
-                        {% else %}
-
-                            0 h
-
-                        {% endif %}
-
-                    </td>
-
-
-                    <td>
-
-                        <div class="attendance-row-actions">
-
-                            {% if not alumno.hora_entrada %}
-
-                                <a
-                                    href="{{ url_for(
-                                        'marcar_entrada',
-                                        id_alumno=alumno.id_alumno
-                                    ) }}"
-                                    class="attendance-action-button entry"
-                                    onclick="return confirm(
-                                        '¿Registrar entrada de {{ alumno.nombres }} {{ alumno.apellidos }}?'
-                                    );"
-                                >
-                                    Entrada
-                                </a>
-
-                            {% elif not alumno.hora_salida %}
-
-                                <a
-                                    href="{{ url_for(
-                                        'marcar_salida',
-                                        id_alumno=alumno.id_alumno
-                                    ) }}"
-                                    class="attendance-action-button exit"
-                                    onclick="return confirm(
-                                        '¿Registrar salida de {{ alumno.nombres }} {{ alumno.apellidos }}?'
-                                    );"
-                                >
-                                    Salida
-                                </a>
-
                             {% else %}
 
-                                <span class="attendance-complete-label">
-                                    ✓ Completo
+                                <span class="condition available">
+                                    Disponible
                                 </span>
 
                             {% endif %}
 
-                        </div>
+                        </td>
 
-                    </td>
 
-                </tr>
+                        <td>
+
+                            <div class="status-buttons">
+
+                                <a
+                                    href="{{ url_for(
+                                        'cambiar_asistencia_clase',
+                                        id_asistencia_clase=alumno.id_asistencia_clase,
+                                        estado='ASISTE'
+                                    ) }}"
+                                    class="status-btn present {% if alumno.estado_asistencia == 'ASISTE' %}active{% endif %}"
+                                >
+                                    ASISTE
+                                </a>
+
+
+                                <a
+                                    href="{{ url_for(
+                                        'cambiar_asistencia_clase',
+                                        id_asistencia_clase=alumno.id_asistencia_clase,
+                                        estado='NO_ASISTE'
+                                    ) }}"
+                                    class="status-btn absent {% if alumno.estado_asistencia == 'NO_ASISTE' %}active{% endif %}"
+                                >
+                                    NO ASISTE
+                                </a>
+
+
+                                <a
+                                    href="{{ url_for(
+                                        'cambiar_asistencia_clase',
+                                        id_asistencia_clase=alumno.id_asistencia_clase,
+                                        estado='JUSTIFICADO'
+                                    ) }}"
+                                    class="status-btn justified {% if alumno.estado_asistencia == 'JUSTIFICADO' %}active{% endif %}"
+                                >
+                                    JUSTIFICADO
+                                </a>
+
+                            </div>
+
+                        </td>
+
+
+                        <td>
+
+                            <strong>
+                                {{ alumno.horas_asistidas }}
+                            </strong>
+
+                            /
+                            {{ alumno.horas_programadas }}
+
+                            h
+
+                        </td>
+
+
+                        <td>
+
+                            <form
+                                method="POST"
+                                action="{{ url_for(
+                                    'guardar_observacion',
+                                    id_asistencia_clase=alumno.id_asistencia_clase
+                                ) }}"
+                                class="observation-form"
+                            >
+
+                                <input
+                                    type="text"
+                                    name="observacion"
+                                    value="{{ alumno.observacion or '' }}"
+                                    placeholder="Observación"
+                                >
+
+                                <button type="submit">
+                                    ✓
+                                </button>
+
+                            </form>
+
+                        </td>
+
+                    </tr>
+
+                {% else %}
+
+                    <tr>
+
+                        <td
+                            colspan="7"
+                            style="text-align:center;padding:30px;"
+                        >
+                            No existen alumnos registrados.
+                        </td>
+
+                    </tr>
 
                 {% endfor %}
 
-            {% else %}
+                </tbody>
 
-                <tr>
+            </table>
 
-                    <td
-                        colspan="9"
-                        class="empty-table"
-                    >
-                        No existen alumnos registrados.
-                    </td>
+        </div>
 
-                </tr>
 
-            {% endif %}
+        <div class="close-box">
 
-            </tbody>
+            <div>
 
-        </table>
+                <strong>
+                    Asistencia del bloque
+                </strong>
+
+                <div style="color:#667085;font-size:11px;margin-top:4px;">
+                    Todos los alumnos comienzan automáticamente como ASISTE.
+                </div>
+
+            </div>
+
+            <a
+                href="{{ url_for(
+                    'cerrar_asistencia',
+                    id_horario=clase_actual.id_horario_academico
+                ) }}"
+                class="close-button"
+                onclick="return confirm('¿Cerrar la asistencia de esta clase?');"
+            >
+                Cerrar asistencia
+            </a>
+
+        </div>
 
     </div>
 
+{% endif %}
+
 </div>
-
-{% endblock %}
-
-
-{% block extra_js %}
-
-<script>
-
-function actualizarReloj() {
-
-    const ahora = new Date();
-
-    const hora = ahora.toLocaleTimeString(
-        "es-EC",
-        {
-            hour12: false,
-            hour: "2-digit",
-            minute: "2-digit",
-            second: "2-digit"
-        }
-    );
-
-    const fecha = ahora.toLocaleDateString(
-        "es-EC",
-        {
-            weekday: "long",
-            year: "numeric",
-            month: "long",
-            day: "numeric"
-        }
-    );
-
-    const reloj = document.getElementById("reloj");
-    const fechaActual = document.getElementById("fechaActual");
-
-    if (reloj) {
-        reloj.textContent = hora;
-    }
-
-    if (fechaActual) {
-        fechaActual.textContent = fecha;
-    }
-
-}
-
-actualizarReloj();
-
-setInterval(
-    actualizarReloj,
-    1000
-);
-
-</script>
 
 {% endblock %}

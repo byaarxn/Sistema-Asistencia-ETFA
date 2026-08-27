@@ -14,315 +14,723 @@ Actualizar información y condición del alumno
 
 {% block content %}
 
-<div class="page-header-card">
+<style>
 
-    <div>
+.student-form-page {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
 
-        <span class="panel-label">
-            MODIFICACIÓN
-        </span>
+.student-form-hero {
+    padding: 18px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 15px;
+    border-radius: 14px;
+    background: linear-gradient(
+        120deg,
+        #001d45,
+        #06377c
+    );
+    color: white;
+}
 
-        <h2>
-            Editar información
-        </h2>
+.student-form-hero-left {
+    display: flex;
+    align-items: center;
+    gap: 13px;
+}
 
-        <p>
-            {{ alumno.nombres }} {{ alumno.apellidos }}
-        </p>
+.student-form-hero-icon {
+    width: 46px;
+    height: 46px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 12px;
+    background: rgba(255,255,255,.10);
+    font-size: 18px;
+}
 
-    </div>
+.student-form-hero h2 {
+    margin: 0;
+    font-size: 17px;
+}
 
-    <a
-        href="{{ url_for('alumnos') }}"
-        class="btn-cancel"
-    >
-        ← Volver
-    </a>
+.student-form-hero p {
+    margin-top: 4px;
+    color: rgba(255,255,255,.75);
+    font-size: 8px;
+}
 
-</div>
+.back-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 11px;
+    border-radius: 8px;
+    border: 1px solid rgba(255,255,255,.18);
+    background: rgba(255,255,255,.08);
+    color: white;
+    text-decoration: none;
+    font-size: 8px;
+    font-weight: 700;
+}
+
+.student-form-panel {
+    max-width: 920px;
+    width: 100%;
+    margin: 0 auto;
+    background: white;
+    border: 1px solid #e4e7ec;
+    border-radius: 14px;
+    overflow: hidden;
+    box-shadow: 0 4px 14px rgba(16,24,40,.035);
+}
+
+.student-form-panel-header {
+    padding: 15px 18px;
+    border-bottom: 1px solid #eaecf0;
+}
+
+.student-form-panel-header span {
+    color: #1769e8;
+    font-size: 7px;
+    font-weight: 800;
+    letter-spacing: .8px;
+    text-transform: uppercase;
+}
+
+.student-form-panel-header h3 {
+    margin: 5px 0 0;
+    font-size: 15px;
+}
+
+.student-form-panel-header p {
+    margin-top: 4px;
+    color: #667085;
+    font-size: 8px;
+}
+
+.student-form {
+    padding: 18px;
+}
+
+.form-grid {
+    display: grid;
+    grid-template-columns:
+        repeat(2, minmax(0, 1fr));
+    gap: 13px 14px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.form-group.full {
+    grid-column: 1 / -1;
+}
+
+.form-group label {
+    color: #344054;
+    font-size: 8px;
+    font-weight: 700;
+}
+
+.form-control {
+    width: 100%;
+    height: 36px;
+    padding: 0 10px;
+    border: 1px solid #d0d5dd;
+    border-radius: 8px;
+    background: #ffffff;
+    color: #101828;
+    font-size: 8px;
+    outline: none;
+    transition: .15s;
+}
+
+.form-control:focus {
+    border-color: #1769e8;
+    box-shadow:
+        0 0 0 3px
+        rgba(23,105,232,.08);
+}
+
+.form-help {
+    color: #98a2b3;
+    font-size: 7px;
+    margin-top: 1px;
+}
+
+.student-summary {
+    margin-bottom: 15px;
+    padding: 12px 14px;
+    display: flex;
+    align-items: center;
+    gap: 11px;
+    border: 1px solid #e4e7ec;
+    border-radius: 10px;
+    background: #f8fafc;
+}
+
+.student-avatar {
+    width: 38px;
+    height: 38px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background: #eaf2ff;
+    color: #1769e8;
+    font-size: 12px;
+    font-weight: 800;
+}
+
+.student-summary strong {
+    display: block;
+    font-size: 9px;
+}
+
+.student-summary span {
+    display: block;
+    margin-top: 3px;
+    color: #667085;
+    font-size: 7px;
+}
+
+.condition-info {
+    margin-top: 16px;
+    padding: 13px;
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+    border: 1px solid #dbeafe;
+    border-radius: 10px;
+    background: #f8fbff;
+}
+
+.condition-info-icon {
+    width: 32px;
+    height: 32px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+    background: #eaf2ff;
+    color: #1769e8;
+    font-size: 12px;
+}
+
+.condition-info strong {
+    display: block;
+    font-size: 8px;
+    color: #101828;
+}
+
+.condition-info p {
+    margin-top: 4px;
+    color: #667085;
+    font-size: 7px;
+    line-height: 1.5;
+}
+
+.form-actions {
+    margin-top: 18px;
+    padding-top: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 8px;
+    border-top: 1px solid #eaecf0;
+}
+
+.btn-cancel {
+    min-height: 34px;
+    padding: 0 12px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid #d0d5dd;
+    border-radius: 8px;
+    background: white;
+    color: #344054;
+    text-decoration: none;
+    font-size: 8px;
+    font-weight: 700;
+}
+
+.btn-save {
+    min-height: 34px;
+    padding: 0 14px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    border: none;
+    border-radius: 8px;
+    background: linear-gradient(
+        135deg,
+        #1769e8,
+        #0e55c7
+    );
+    color: white;
+    font-size: 8px;
+    font-weight: 800;
+    cursor: pointer;
+}
+
+@media (max-width: 700px) {
+
+    .form-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .form-group.full {
+        grid-column: auto;
+    }
+
+    .student-form-hero {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .form-actions {
+        flex-direction: column-reverse;
+        align-items: stretch;
+    }
+
+    .btn-cancel,
+    .btn-save {
+        width: 100%;
+    }
+
+}
+
+</style>
 
 
-<div class="form-card">
+<div class="student-form-page">
 
-    <div class="form-card-header">
+    <section class="student-form-hero">
 
-        <span class="panel-label">
-            DATOS PERSONALES
-        </span>
+        <div class="student-form-hero-left">
 
-        <h2>
-            Información del alumno
-        </h2>
-
-        <p>
-            Modifique los datos necesarios.
-        </p>
-
-    </div>
-
-
-    <form
-        method="POST"
-        action="{{ url_for(
-            'editar_alumno',
-            id_alumno=alumno.id_alumno
-        ) }}"
-        class="student-form"
-    >
-
-        <div class="form-grid">
-
-            <div class="form-group">
-
-                <label>
-                    Número de lista
-                </label>
-
-                <input
-                    type="number"
-                    name="numero_lista"
-                    min="1"
-                    value="{{ alumno.numero_lista or '' }}"
-                    required
-                >
-
+            <div class="student-form-hero-icon">
+                <i class="fa-solid fa-user-pen"></i>
             </div>
 
+            <div>
 
-            <div class="form-group">
+                <h2>
+                    Editar información del alumno
+                </h2>
 
-                <label>
-                    Cédula
-                </label>
-
-                <input
-                    type="text"
-                    name="cedula"
-                    maxlength="10"
-                    minlength="10"
-                    pattern="[0-9]{10}"
-                    value="{{ alumno.cedula }}"
-                    required
-                >
-
-            </div>
-
-
-            <div class="form-group">
-
-                <label>
-                    Nombres
-                </label>
-
-                <input
-                    type="text"
-                    name="nombres"
-                    value="{{ alumno.nombres }}"
-                    required
-                >
-
-            </div>
-
-
-            <div class="form-group">
-
-                <label>
-                    Apellidos
-                </label>
-
-                <input
-                    type="text"
-                    name="apellidos"
-                    value="{{ alumno.apellidos }}"
-                    required
-                >
-
-            </div>
-
-
-            <div class="form-group">
-
-                <label>
-                    Curso
-                </label>
-
-                <input
-                    type="text"
-                    name="curso"
-                    value="{{ alumno.curso }}"
-                    required
-                >
-
-            </div>
-
-
-            <div class="form-group">
-
-                <label>
-                    Paralelo
-                </label>
-
-                <input
-                    type="text"
-                    name="paralelo"
-                    value="{{ alumno.paralelo }}"
-                    required
-                >
-
-            </div>
-
-
-            <div class="form-group">
-
-                <label>
-                    Especialidad
-                </label>
-
-                <select
-                    name="especialidad"
-                    required
-                >
-
-                    <option
-                        value="Especialidad por asignar"
-                        {% if alumno.especialidad == "Especialidad por asignar" %}selected{% endif %}
-                    >
-                        Especialidad por asignar
-                    </option>
-
-                    <option
-                        value="Tránsito Aéreo"
-                        {% if alumno.especialidad == "Tránsito Aéreo" %}selected{% endif %}
-                    >
-                        Tránsito Aéreo
-                    </option>
-
-                    <option
-                        value="Meteorología"
-                        {% if alumno.especialidad == "Meteorología" %}selected{% endif %}
-                    >
-                        Meteorología
-                    </option>
-
-                    <option
-                        value="Defensa Aérea"
-                        {% if alumno.especialidad == "Defensa Aérea" %}selected{% endif %}
-                    >
-                        Defensa Aérea
-                    </option>
-
-                    <option
-                        value="Despachador de Vuelo"
-                        {% if alumno.especialidad == "Despachador de Vuelo" %}selected{% endif %}
-                    >
-                        Despachador de Vuelo
-                    </option>
-
-                    <option
-                        value="Abastecimientos"
-                        {% if alumno.especialidad == "Abastecimientos" %}selected{% endif %}
-                    >
-                        Abastecimientos
-                    </option>
-
-                    <option
-                        value="Comunicaciones"
-                        {% if alumno.especialidad == "Comunicaciones" %}selected{% endif %}
-                    >
-                        Comunicaciones
-                    </option>
-
-                    <option
-                        value="Mantenimiento"
-                        {% if alumno.especialidad == "Mantenimiento" %}selected{% endif %}
-                    >
-                        Mantenimiento
-                    </option>
-
-                    <option
-                        value="Electrónica"
-                        {% if alumno.especialidad == "Electrónica" %}selected{% endif %}
-                    >
-                        Electrónica
-                    </option>
-
-                    <option
-                        value="Informática"
-                        {% if alumno.especialidad == "Informática" %}selected{% endif %}
-                    >
-                        Informática
-                    </option>
-
-                    <option
-                        value="Personal"
-                        {% if alumno.especialidad == "Personal" %}selected{% endif %}
-                    >
-                        Personal
-                    </option>
-
-                    <option
-                        value="Inteligencia"
-                        {% if alumno.especialidad == "Inteligencia" %}selected{% endif %}
-                    >
-                        Inteligencia
-                    </option>
-
-                </select>
-
-            </div>
-
-
-            <div class="form-group">
-
-                <label>
-                    Condición
-                </label>
-
-                <select
-                    name="estado"
-                    required
-                >
-
-                    <option
-                        value="DISPONIBLE"
-                        {% if alumno.estado == "DISPONIBLE" %}selected{% endif %}
-                    >
-                        Disponible
-                    </option>
-
-                    <option
-                        value="DESCANSO MÉDICO"
-                        {% if alumno.estado == "DESCANSO MÉDICO" %}selected{% endif %}
-                    >
-                        Descanso médico
-                    </option>
-
-                </select>
+                <p>
+                    Actualice los datos personales,
+                    académicos o administrativos
+                </p>
 
             </div>
 
         </div>
 
 
-        <div class="form-actions">
+        <a
+            href="{{ url_for('alumnos') }}"
+            class="back-button"
+        >
 
-            <a
-                href="{{ url_for('alumnos') }}"
-                class="btn-cancel"
-            >
-                Cancelar
-            </a>
+            <i class="fa-solid fa-arrow-left"></i>
 
-            <button
-                type="submit"
-                class="btn-primary"
-            >
-                Guardar cambios
-            </button>
+            Volver a alumnos
+
+        </a>
+
+    </section>
+
+
+    <section class="student-form-panel">
+
+        <div class="student-form-panel-header">
+
+            <span>
+                Modificación
+            </span>
+
+            <h3>
+                Información del alumno
+            </h3>
+
+            <p>
+                Modifique únicamente los datos que sean necesarios.
+            </p>
 
         </div>
 
-    </form>
+
+        <form
+            method="POST"
+            class="student-form"
+            autocomplete="off"
+        >
+
+            <div class="student-summary">
+
+                <div class="student-avatar">
+
+                    {% if alumno.nombres %}
+                        {{ alumno.nombres[0]|upper }}
+                    {% else %}
+                        A
+                    {% endif %}
+
+                </div>
+
+                <div>
+
+                    <strong>
+                        {{ alumno.apellidos }}
+                        {{ alumno.nombres }}
+                    </strong>
+
+                    <span>
+                        Cédula:
+                        {{ alumno.cedula }}
+                        ·
+                        ID:
+                        {{ alumno.id_alumno }}
+                    </span>
+
+                </div>
+
+            </div>
+
+
+            <div class="form-grid">
+
+                <!-- NÚMERO DE LISTA -->
+
+                <div class="form-group">
+
+                    <label for="numero_lista">
+                        Número de lista
+                    </label>
+
+                    <input
+                        type="number"
+                        id="numero_lista"
+                        name="numero_lista"
+                        class="form-control"
+                        value="{{ alumno.numero_lista or '' }}"
+                        min="1"
+                    >
+
+                    <span class="form-help">
+                        Debe ser único dentro de la nómina.
+                    </span>
+
+                </div>
+
+
+                <!-- CÉDULA -->
+
+                <div class="form-group">
+
+                    <label for="cedula">
+                        Cédula
+                    </label>
+
+                    <input
+                        type="text"
+                        id="cedula"
+                        name="cedula"
+                        class="form-control"
+                        value="{{ alumno.cedula }}"
+                        maxlength="10"
+                        minlength="10"
+                        inputmode="numeric"
+                        pattern="[0-9]{10}"
+                        required
+                    >
+
+                    <span class="form-help">
+                        Exactamente 10 dígitos.
+                    </span>
+
+                </div>
+
+
+                <!-- NOMBRES -->
+
+                <div class="form-group">
+
+                    <label for="nombres">
+                        Nombres
+                    </label>
+
+                    <input
+                        type="text"
+                        id="nombres"
+                        name="nombres"
+                        class="form-control"
+                        value="{{ alumno.nombres }}"
+                        required
+                    >
+
+                </div>
+
+
+                <!-- APELLIDOS -->
+
+                <div class="form-group">
+
+                    <label for="apellidos">
+                        Apellidos
+                    </label>
+
+                    <input
+                        type="text"
+                        id="apellidos"
+                        name="apellidos"
+                        class="form-control"
+                        value="{{ alumno.apellidos }}"
+                        required
+                    >
+
+                </div>
+
+
+                <!-- CURSO -->
+
+                <div class="form-group">
+
+                    <label for="curso">
+                        Curso
+                    </label>
+
+                    <input
+                        type="text"
+                        id="curso"
+                        name="curso"
+                        class="form-control"
+                        value="{{ alumno.curso }}"
+                        required
+                    >
+
+                </div>
+
+
+                <!-- PARALELO -->
+
+                <div class="form-group">
+
+                    <label for="paralelo">
+                        Paralelo
+                    </label>
+
+                    <input
+                        type="text"
+                        id="paralelo"
+                        name="paralelo"
+                        class="form-control"
+                        value="{{ alumno.paralelo }}"
+                        required
+                    >
+
+                </div>
+
+
+                <!-- ESPECIALIDAD -->
+
+                <div class="form-group">
+
+                    <label for="especialidad">
+                        Especialidad
+                    </label>
+
+                    <select
+                        id="especialidad"
+                        name="especialidad"
+                        class="form-control"
+                        required
+                    >
+
+                        <option
+                            value="Especialidad por asignar"
+                            {% if alumno.especialidad == "Especialidad por asignar" %}
+                            selected
+                            {% endif %}
+                        >
+                            Especialidad por asignar
+                        </option>
+
+                        <option
+                            value="Meteorología"
+                            {% if alumno.especialidad == "Meteorología" %}
+                            selected
+                            {% endif %}
+                        >
+                            Meteorología
+                        </option>
+
+                        <option
+                            value="Tránsito Aéreo"
+                            {% if alumno.especialidad == "Tránsito Aéreo" %}
+                            selected
+                            {% endif %}
+                        >
+                            Tránsito Aéreo
+                        </option>
+
+                        <option
+                            value="Mantenimiento Aeronáutico"
+                            {% if alumno.especialidad == "Mantenimiento Aeronáutico" %}
+                            selected
+                            {% endif %}
+                        >
+                            Mantenimiento Aeronáutico
+                        </option>
+
+                        <option
+                            value="Electrónica"
+                            {% if alumno.especialidad == "Electrónica" %}
+                            selected
+                            {% endif %}
+                        >
+                            Electrónica
+                        </option>
+
+                        <option
+                            value="Comunicaciones"
+                            {% if alumno.especialidad == "Comunicaciones" %}
+                            selected
+                            {% endif %}
+                        >
+                            Comunicaciones
+                        </option>
+
+                        <option
+                            value="Abastecimientos"
+                            {% if alumno.especialidad == "Abastecimientos" %}
+                            selected
+                            {% endif %}
+                        >
+                            Abastecimientos
+                        </option>
+
+                        <option
+                            value="Administración"
+                            {% if alumno.especialidad == "Administración" %}
+                            selected
+                            {% endif %}
+                        >
+                            Administración
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <!-- CONDICIÓN -->
+
+                <div class="form-group">
+
+                    <label for="estado">
+                        Condición
+                    </label>
+
+                    <select
+                        id="estado"
+                        name="estado"
+                        class="form-control"
+                        required
+                    >
+
+                        <option
+                            value="DISPONIBLE"
+                            {% if alumno.estado == "DISPONIBLE" %}
+                            selected
+                            {% endif %}
+                        >
+                            Disponible
+                        </option>
+
+                        <option
+                            value="DESCANSO MÉDICO"
+                            {% if alumno.estado == "DESCANSO MÉDICO" %}
+                            selected
+                            {% endif %}
+                        >
+                            Descanso médico
+                        </option>
+
+                    </select>
+
+                </div>
+
+            </div>
+
+
+            <div class="condition-info">
+
+                <div class="condition-info-icon">
+
+                    <i class="fa-solid fa-circle-info"></i>
+
+                </div>
+
+                <div>
+
+                    <strong>
+                        Condición y asistencia
+                    </strong>
+
+                    <p>
+                        La condición administrativa del alumno no modifica
+                        automáticamente su asistencia académica. Disponible
+                        y Descanso médico se registran inicialmente como
+                        ASISTE durante el bloque correspondiente. El docente
+                        cambia manualmente la asistencia cuando sea necesario.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="form-actions">
+
+                <a
+                    href="{{ url_for('alumnos') }}"
+                    class="btn-cancel"
+                >
+                    Cancelar
+                </a>
+
+                <button
+                    type="submit"
+                    class="btn-save"
+                >
+
+                    <i class="fa-solid fa-floppy-disk"></i>
+
+                    Guardar cambios
+
+                </button>
+
+            </div>
+
+        </form>
+
+    </section>
 
 </div>
 

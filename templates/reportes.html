@@ -5,159 +5,146 @@ Reportes | ETFA
 {% endblock %}
 
 {% block page_title %}
-Reportes
+Reporte académico
 {% endblock %}
 
 {% block page_description %}
-Análisis y consulta del control de asistencia
+Resumen de horas y asistencia de los alumnos
 {% endblock %}
 
 {% block content %}
 
-<div class="page-header-card">
+<style>
 
-    <div>
+.report-grid {
+    display: grid;
 
-        <span class="panel-label">
-            INFORMES
-        </span>
+    grid-template-columns:
+        repeat(4, 1fr);
 
-        <h2>
-            Reporte de asistencia
-        </h2>
+    gap: 12px;
 
-        <p>
-            Primer Año Militar · Paralelo C · ETFA
-        </p>
+    margin-bottom: 15px;
+}
 
-    </div>
+.report-card {
+    padding: 15px;
 
+    background: white;
 
-    <div class="report-header-actions">
+    border:
+        1px solid #e4e7ec;
 
-        <button type="button"
-                class="btn-cancel"
-                onclick="window.print();">
+    border-radius: 12px;
+}
 
-            Imprimir
+.report-card span {
+    font-size: 10px;
+    color: #667085;
+}
 
-        </button>
+.report-card strong {
+    display: block;
 
-    </div>
+    margin-top: 6px;
 
-</div>
+    font-size: 20px;
+}
 
+.report-panel {
+    background: white;
 
-<div class="report-stats-grid">
+    border:
+        1px solid #e4e7ec;
 
-    <div class="report-stat-card">
+    border-radius: 14px;
 
-        <div class="report-stat-icon">
-            📋
-        </div>
+    overflow: hidden;
+}
 
-        <div>
+.report-filter {
+    padding: 14px;
 
-            <span>
-                Registros
-            </span>
+    display: flex;
 
-            <strong>
-                {{ total_registros }}
-            </strong>
+    flex-wrap: wrap;
 
-            <small>
-                Registros encontrados
-            </small>
+    gap: 7px;
 
-        </div>
+    border-bottom:
+        1px solid #eaecf0;
+}
 
-    </div>
+.report-filter input,
+.report-filter select {
+    min-height: 38px;
 
+    padding: 0 9px;
 
-    <div class="report-stat-card">
+    border:
+        1px solid #d0d5dd;
 
-        <div class="report-stat-icon">
-            ✓
-        </div>
+    border-radius: 7px;
+}
 
-        <div>
+.report-filter button {
+    border: none;
 
-            <span>
-                Puntuales
-            </span>
+    border-radius: 7px;
 
-            <strong class="report-success">
-                {{ puntuales }}
-            </strong>
+    background: #2563eb;
 
-            <small>
-                {{ porcentaje_puntualidad }}% puntualidad
-            </small>
+    color: white;
 
-        </div>
+    padding: 0 15px;
 
-    </div>
+    font-weight: 700;
+}
 
+.report-table-wrapper {
+    overflow-x: auto;
+}
 
-    <div class="report-stat-card">
+.report-table {
+    width: 100%;
 
-        <div class="report-stat-icon">
-            ◷
-        </div>
+    min-width: 1050px;
 
-        <div>
+    border-collapse: collapse;
+}
 
-            <span>
-                Atrasados
-            </span>
+.report-table th {
+    padding: 10px;
 
-            <strong class="report-warning">
-                {{ atrasados }}
-            </strong>
+    background: #f8fafc;
 
-            <small>
-                {{ total_atraso }} min acumulados
-            </small>
+    color: #667085;
 
-        </div>
+    font-size: 9px;
 
-    </div>
+    text-align: left;
 
+    text-transform: uppercase;
+}
 
-    <div class="report-stat-card">
+.report-table td {
+    padding: 11px;
 
-        <div class="report-stat-icon">
-            ⏱
-        </div>
+    border-top:
+        1px solid #f2f4f7;
 
-        <div>
+    font-size: 10px;
+}
 
-            <span>
-                Horas
-            </span>
-
-            <strong>
-                {{ total_horas }}
-            </strong>
-
-            <small>
-                Horas trabajadas
-            </small>
-
-        </div>
-
-    </div>
-
-</div>
+</style>
 
 
-<div class="report-summary-grid">
+<div class="report-grid">
 
-    <div class="report-summary-item">
+    <div class="report-card">
 
         <span>
-            Alumnos incluidos
+            Alumnos reportados
         </span>
 
         <strong>
@@ -167,40 +154,40 @@ Análisis y consulta del control de asistencia
     </div>
 
 
-    <div class="report-summary-item">
+    <div class="report-card">
 
         <span>
-            Ausentes
+            Horas asistidas
         </span>
 
-        <strong class="report-danger">
+        <strong>
+            {{ total_horas }}
+        </strong>
+
+    </div>
+
+
+    <div class="report-card">
+
+        <span>
+            No asistencias
+        </span>
+
+        <strong style="color:#d92d20;">
             {{ ausentes }}
         </strong>
 
     </div>
 
 
-    <div class="report-summary-item">
+    <div class="report-card">
 
         <span>
-            Justificados
+            Porcentaje asistencia
         </span>
 
-        <strong class="report-info">
-            {{ justificados }}
-        </strong>
-
-    </div>
-
-
-    <div class="report-summary-item">
-
-        <span>
-            Jornadas incompletas
-        </span>
-
-        <strong>
-            {{ incompletos }}
+        <strong style="color:#039855;">
+            {{ porcentaje_puntualidad }} %
         </strong>
 
     </div>
@@ -208,282 +195,157 @@ Análisis y consulta del control de asistencia
 </div>
 
 
-<div class="panel">
+<div class="report-panel">
 
-<div class="report-filter-section">
+    <form
+        method="GET"
+        class="report-filter"
+    >
 
-    <div class="report-filter-title">
+        <input
+            type="text"
+            name="buscar"
+            value="{{ buscar }}"
+            placeholder="Alumno o materia"
+        >
 
-        <span class="panel-label">
-            FILTROS
-        </span>
+        <input
+            type="date"
+            name="fecha_inicio"
+            value="{{ fecha_inicio }}"
+        >
 
-        <h2>
-            Consultar registros
-        </h2>
+        <input
+            type="date"
+            name="fecha_fin"
+            value="{{ fecha_fin }}"
+        >
 
-    </div>
+        <select name="estado">
 
+            <option value="">
+                Todos
+            </option>
 
-    <form method="GET"
-          action="{{ url_for('reportes') }}"
-          class="report-filter-form">
+            <option
+                value="ASISTE"
+                {% if estado == "ASISTE" %}
+                selected
+                {% endif %}
+            >
+                Asiste
+            </option>
 
-        <div class="report-filter-group report-filter-search">
+            <option
+                value="NO_ASISTE"
+                {% if estado == "NO_ASISTE" %}
+                selected
+                {% endif %}
+            >
+                No asiste
+            </option>
 
-            <label>
-                Alumno
-            </label>
+            <option
+                value="JUSTIFICADO"
+                {% if estado == "JUSTIFICADO" %}
+                selected
+                {% endif %}
+            >
+                Justificado
+            </option>
 
-            <input
-                type="text"
-                name="buscar"
-                value="{{ buscar }}"
-                placeholder="Cédula, nombre, apellido o especialidad">
+        </select>
 
-        </div>
-
-
-        <div class="report-filter-group">
-
-            <label>
-                Desde
-            </label>
-
-            <input
-                type="date"
-                name="fecha_inicio"
-                value="{{ fecha_inicio }}">
-
-        </div>
-
-
-        <div class="report-filter-group">
-
-            <label>
-                Hasta
-            </label>
-
-            <input
-                type="date"
-                name="fecha_fin"
-                value="{{ fecha_fin }}">
-
-        </div>
-
-
-        <div class="report-filter-group">
-
-            <label>
-                Estado
-            </label>
-
-            <select name="estado">
-
-                <option value="">
-                    Todos
-                </option>
-
-                <option value="PUNTUAL"
-                    {% if estado == "PUNTUAL" %}selected{% endif %}>
-                    Puntual
-                </option>
-
-                <option value="ATRASADO"
-                    {% if estado == "ATRASADO" %}selected{% endif %}>
-                    Atrasado
-                </option>
-
-                <option value="AUSENTE"
-                    {% if estado == "AUSENTE" %}selected{% endif %}>
-                    Ausente
-                </option>
-
-                <option value="JUSTIFICADO"
-                    {% if estado == "JUSTIFICADO" %}selected{% endif %}>
-                    Justificado
-                </option>
-
-                <option value="INCOMPLETO"
-                    {% if estado == "INCOMPLETO" %}selected{% endif %}>
-                    Incompleto
-                </option>
-
-            </select>
-
-        </div>
-
-
-        <div class="report-filter-actions">
-
-            <button type="submit"
-                    class="btn-primary">
-
-                Generar reporte
-
-            </button>
-
-            <a href="{{ url_for('reportes') }}"
-               class="btn-cancel">
-
-                Limpiar
-
-            </a>
-
-        </div>
+        <button type="submit">
+            Generar reporte
+        </button>
 
     </form>
 
-</div>
+
+    <div class="report-table-wrapper">
+
+        <table class="report-table">
+
+            <thead>
+
+                <tr>
+                    <th>Fecha</th>
+                    <th>N°</th>
+                    <th>Alumno</th>
+                    <th>Materia</th>
+                    <th>Horario</th>
+                    <th>Estado</th>
+                    <th>Horas asistidas</th>
+                    <th>Horas programadas</th>
+                </tr>
+
+            </thead>
 
 
-<div class="table-container">
+            <tbody>
 
-<table class="report-table">
+            {% for r in registros %}
 
-<thead>
+                <tr>
 
-<tr>
-    <th>Alumno</th>
-    <th>Cédula</th>
-    <th>Fecha</th>
-    <th>Entrada</th>
-    <th>Salida</th>
-    <th>Estado</th>
-    <th>Atraso</th>
-    <th>Horas</th>
-</tr>
+                    <td>
+                        {{ r.fecha }}
+                    </td>
 
-</thead>
+                    <td>
+                        {{ r.numero_lista or "--" }}
+                    </td>
 
+                    <td>
+                        {{ r.apellidos }}
+                        {{ r.nombres }}
+                    </td>
 
-<tbody>
+                    <td>
+                        {{ r.materia }}
+                    </td>
 
-{% if registros %}
+                    <td>
+                        {{ r.hora_inicio }}
+                        -
+                        {{ r.hora_fin }}
+                    </td>
 
-{% for registro in registros %}
+                    <td>
+                        {{ r.estado_asistencia }}
+                    </td>
 
-<tr>
+                    <td>
+                        {{ r.horas_asistidas }}
+                    </td>
 
-    <td>
+                    <td>
+                        {{ r.horas_programadas }}
+                    </td>
 
-        <div class="student-cell">
+                </tr>
 
-            <div class="student-avatar">
-                {{ registro.nombres[0] }}
-            </div>
+            {% else %}
 
-            <div>
+                <tr>
 
-                <strong>
-                    {{ registro.apellidos }}
-                    {{ registro.nombres }}
-                </strong>
+                    <td
+                        colspan="8"
+                        style="text-align:center;padding:30px;"
+                    >
+                        No existen datos para el reporte.
+                    </td>
 
-                <span>
-                    {{ registro.especialidad or "Sin especialidad" }}
-                </span>
+                </tr>
 
-            </div>
+            {% endfor %}
 
-        </div>
+            </tbody>
 
-    </td>
+        </table>
 
-
-    <td>
-        {{ registro.cedula }}
-    </td>
-
-
-    <td>
-        {{ registro.fecha }}
-    </td>
-
-
-    <td>
-        {{ registro.hora_entrada or "--" }}
-    </td>
-
-
-    <td>
-        {{ registro.hora_salida or "--" }}
-    </td>
-
-
-    <td>
-
-        {% if registro.estado == "PUNTUAL" %}
-
-            <span class="badge badge-success">
-                Puntual
-            </span>
-
-        {% elif registro.estado == "ATRASADO" %}
-
-            <span class="badge badge-warning">
-                Atrasado
-            </span>
-
-        {% elif registro.estado == "AUSENTE" %}
-
-            <span class="badge badge-danger">
-                Ausente
-            </span>
-
-        {% elif registro.estado == "JUSTIFICADO" %}
-
-            <span class="badge badge-info">
-                Justificado
-            </span>
-
-        {% else %}
-
-            <span class="badge badge-neutral">
-                {{ registro.estado }}
-            </span>
-
-        {% endif %}
-
-    </td>
-
-
-    <td>
-        {{ registro.minutos_atraso or 0 }} min
-    </td>
-
-
-    <td>
-        <strong>
-            {{ registro.horas_trabajadas or 0 }} h
-        </strong>
-    </td>
-
-</tr>
-
-{% endfor %}
-
-
-{% else %}
-
-<tr>
-
-    <td colspan="8"
-        class="empty-table">
-
-        No existen registros para este reporte.
-
-    </td>
-
-</tr>
-
-{% endif %}
-
-</tbody>
-
-</table>
-
-</div>
+    </div>
 
 </div>
 
