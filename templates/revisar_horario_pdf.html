@@ -1,0 +1,708 @@
+{% extends "base.html" %}
+
+{% block title %}
+Revisar Horario PDF | ETFA
+{% endblock %}
+
+{% block page_title %}
+Análisis del horario
+{% endblock %}
+
+{% block page_description %}
+Contenido detectado automáticamente en el documento académico
+{% endblock %}
+
+{% block content %}
+
+<style>
+
+.pdf-review-page {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+
+/* =========================================================
+   CABECERA
+========================================================= */
+
+.pdf-review-header {
+
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: center;
+
+    gap: 15px;
+
+    padding: 18px;
+
+    background:
+        linear-gradient(
+            120deg,
+            #001d45,
+            #06377c
+        );
+
+    border-radius: 14px;
+
+    color: white;
+}
+
+
+.pdf-review-header h2 {
+
+    margin: 0 0 5px;
+
+    font-size: 17px;
+}
+
+
+.pdf-review-header p {
+
+    margin: 0;
+
+    color:
+        rgba(
+            255,
+            255,
+            255,
+            .75
+        );
+
+    font-size: 10px;
+}
+
+
+.pdf-back {
+
+    min-height: 38px;
+
+    padding: 0 13px;
+
+    display: inline-flex;
+
+    align-items: center;
+
+    gap: 7px;
+
+    border-radius: 8px;
+
+    background:
+        rgba(
+            255,
+            255,
+            255,
+            .12
+        );
+
+    border:
+        1px solid
+        rgba(
+            255,
+            255,
+            255,
+            .18
+        );
+
+    color: white;
+
+    text-decoration: none;
+
+    font-size: 10px;
+
+    font-weight: 700;
+}
+
+
+/* =========================================================
+   RESUMEN
+========================================================= */
+
+.pdf-summary {
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(
+            3,
+            minmax(0, 1fr)
+        );
+
+    gap: 10px;
+}
+
+
+.pdf-card {
+
+    padding: 15px;
+
+    background: white;
+
+    border:
+        1px solid
+        #e4e7ec;
+
+    border-radius: 12px;
+}
+
+
+.pdf-card span {
+
+    display: block;
+
+    margin-bottom: 5px;
+
+    color: #667085;
+
+    font-size: 9px;
+
+    font-weight: 700;
+
+    text-transform: uppercase;
+}
+
+
+.pdf-card strong {
+
+    color: #101828;
+
+    font-size: 12px;
+
+    word-break: break-word;
+}
+
+
+/* =========================================================
+   ESTADOS
+========================================================= */
+
+.status-success {
+
+    color: #027a48 !important;
+}
+
+
+.status-warning {
+
+    color: #b54708 !important;
+}
+
+
+/* =========================================================
+   ADVERTENCIA
+========================================================= */
+
+.pdf-warning {
+
+    padding: 14px;
+
+    display: flex;
+
+    gap: 10px;
+
+    align-items: flex-start;
+
+    background: #fffaeb;
+
+    border:
+        1px solid
+        #fedf89;
+
+    border-radius: 10px;
+
+    color: #93370d;
+
+    font-size: 10px;
+
+    line-height: 1.5;
+}
+
+
+/* =========================================================
+   PANEL
+========================================================= */
+
+.pdf-panel {
+
+    background: white;
+
+    border:
+        1px solid
+        #e4e7ec;
+
+    border-radius: 14px;
+
+    overflow: hidden;
+}
+
+
+.pdf-panel-header {
+
+    padding: 15px 17px;
+
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: center;
+
+    gap: 10px;
+
+    border-bottom:
+        1px solid
+        #eaecf0;
+}
+
+
+.pdf-panel-header h3 {
+
+    margin: 0;
+
+    font-size: 13px;
+}
+
+
+.pdf-panel-header p {
+
+    margin: 4px 0 0;
+
+    color: #667085;
+
+    font-size: 9px;
+}
+
+
+/* =========================================================
+   PÁGINA DEL PDF
+========================================================= */
+
+.pdf-page {
+
+    padding: 17px;
+
+    border-bottom:
+        1px solid
+        #eaecf0;
+}
+
+
+.pdf-page:last-child {
+
+    border-bottom: none;
+}
+
+
+.pdf-page-number {
+
+    display: inline-flex;
+
+    margin-bottom: 10px;
+
+    padding: 5px 9px;
+
+    background: #eff6ff;
+
+    border-radius: 999px;
+
+    color: #175cd3;
+
+    font-size: 9px;
+
+    font-weight: 800;
+}
+
+
+.pdf-text {
+
+    width: 100%;
+
+    max-height: 400px;
+
+    padding: 13px;
+
+    overflow: auto;
+
+    background: #f8fafc;
+
+    border:
+        1px solid
+        #eaecf0;
+
+    border-radius: 9px;
+
+    color: #344054;
+
+    font-family:
+        Consolas,
+        monospace;
+
+    font-size: 10px;
+
+    line-height: 1.6;
+
+    white-space: pre-wrap;
+
+    word-break: break-word;
+}
+
+
+.no-text {
+
+    padding: 15px;
+
+    background: #f9fafb;
+
+    border-radius: 8px;
+
+    color: #667085;
+
+    font-size: 10px;
+}
+
+
+/* =========================================================
+   SIGUIENTE PASO
+========================================================= */
+
+.next-step {
+
+    padding: 16px;
+
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: center;
+
+    gap: 15px;
+
+    background: #f8fbff;
+
+    border:
+        1px solid
+        #dbeafe;
+
+    border-radius: 12px;
+}
+
+
+.next-step h4 {
+
+    margin: 0 0 5px;
+
+    font-size: 12px;
+}
+
+
+.next-step p {
+
+    margin: 0;
+
+    color: #667085;
+
+    font-size: 9px;
+
+    line-height: 1.5;
+}
+
+
+.next-button {
+
+    min-height: 38px;
+
+    padding: 0 14px;
+
+    display: inline-flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    gap: 6px;
+
+    flex-shrink: 0;
+
+    border: none;
+
+    border-radius: 8px;
+
+    background: #2563eb;
+
+    color: white;
+
+    font-size: 10px;
+
+    font-weight: 700;
+
+    opacity: .55;
+
+    cursor: not-allowed;
+}
+
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media (max-width: 800px) {
+
+    .pdf-review-header {
+
+        flex-direction: column;
+
+        align-items: flex-start;
+    }
+
+
+    .pdf-summary {
+
+        grid-template-columns: 1fr;
+    }
+
+
+    .next-step {
+
+        flex-direction: column;
+
+        align-items: flex-start;
+    }
+
+}
+
+</style>
+
+
+<div class="pdf-review-page">
+
+
+    <!-- =====================================================
+         CABECERA
+    ====================================================== -->
+
+    <section class="pdf-review-header">
+
+        <div>
+
+            <h2>
+                PDF analizado correctamente
+            </h2>
+
+            <p>
+                Revisa la información que Python ha podido
+                obtener del documento.
+            </p>
+
+        </div>
+
+
+        <a
+            href="{{ url_for('importar_horario') }}"
+            class="pdf-back"
+        >
+
+            <i class="fa-solid fa-arrow-left"></i>
+
+            Cargar otro PDF
+
+        </a>
+
+    </section>
+
+
+    <!-- =====================================================
+         RESUMEN
+    ====================================================== -->
+
+    <section class="pdf-summary">
+
+
+        <div class="pdf-card">
+
+            <span>
+                Archivo
+            </span>
+
+            <strong>
+                {{ nombre_archivo }}
+            </strong>
+
+        </div>
+
+
+        <div class="pdf-card">
+
+            <span>
+                Páginas
+            </span>
+
+            <strong>
+                {{ total_paginas }}
+            </strong>
+
+        </div>
+
+
+        <div class="pdf-card">
+
+            <span>
+                Estado de lectura
+            </span>
+
+
+            {% if texto_detectado %}
+
+            <strong class="status-success">
+
+                <i class="fa-solid fa-circle-check"></i>
+
+                Texto detectado
+
+            </strong>
+
+            {% else %}
+
+            <strong class="status-warning">
+
+                <i class="fa-solid fa-triangle-exclamation"></i>
+
+                Sin texto
+
+            </strong>
+
+            {% endif %}
+
+        </div>
+
+    </section>
+
+
+    {% if advertencia %}
+
+    <div class="pdf-warning">
+
+        <i class="fa-solid fa-triangle-exclamation"></i>
+
+        <div>
+
+            <strong>
+                Atención
+            </strong>
+
+            <br>
+
+            {{ advertencia }}
+
+        </div>
+
+    </div>
+
+    {% endif %}
+
+
+    <!-- =====================================================
+         CONTENIDO DETECTADO
+    ====================================================== -->
+
+    <section class="pdf-panel">
+
+
+        <div class="pdf-panel-header">
+
+            <div>
+
+                <h3>
+                    Contenido detectado
+                </h3>
+
+                <p>
+                    Texto extraído página por página.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        {% for pagina in paginas %}
+
+        <div class="pdf-page">
+
+
+            <div class="pdf-page-number">
+
+                Página {{ pagina.numero }}
+
+            </div>
+
+
+            {% if pagina.texto %}
+
+            <div class="pdf-text">{{ pagina.texto }}</div>
+
+            {% else %}
+
+            <div class="no-text">
+
+                No se encontró texto legible
+                en esta página.
+
+            </div>
+
+            {% endif %}
+
+
+        </div>
+
+        {% endfor %}
+
+
+    </section>
+
+
+    <!-- =====================================================
+         PRÓXIMO PROCESO
+    ====================================================== -->
+
+    {% if texto_detectado %}
+
+    <section class="next-step">
+
+        <div>
+
+            <h4>
+                ✓ El PDF ya puede ser procesado
+            </h4>
+
+            <p>
+                El siguiente paso será convertir este texto
+                automáticamente en fechas, horas, materias,
+                docentes y lugares antes de enviarlo
+                a MySQL.
+            </p>
+
+        </div>
+
+
+        <button
+            type="button"
+            class="next-button"
+            disabled
+        >
+
+            <i class="fa-solid fa-wand-magic-sparkles"></i>
+
+            Detectar horario
+
+        </button>
+
+    </section>
+
+    {% endif %}
+
+
+</div>
+
+{% endblock %}

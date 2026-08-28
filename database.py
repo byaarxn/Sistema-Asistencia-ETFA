@@ -6,7 +6,7 @@ from config import DB_CONFIG
 
 
 # =========================================================
-# CONECTAR A MYSQL
+# CONEXIÓN MYSQL
 # =========================================================
 
 def conectar():
@@ -27,9 +27,7 @@ def conectar():
 
             charset="utf8mb4",
 
-            use_unicode=True,
-
-            connection_timeout=10
+            use_unicode=True
         )
 
 
@@ -38,16 +36,37 @@ def conectar():
             return conexion
 
 
-        return None
-
-
     except Error as error:
 
         print("")
         print("========================================")
         print("ERROR DE CONEXIÓN MYSQL")
         print("========================================")
+
         print(error)
+
+        print("")
+
+        print(
+            "HOST:",
+            DB_CONFIG["host"]
+        )
+
+        print(
+            "PORT:",
+            DB_CONFIG["port"]
+        )
+
+        print(
+            "USER:",
+            DB_CONFIG["user"]
+        )
+
+        print(
+            "DATABASE:",
+            DB_CONFIG["database"]
+        )
+
         print("========================================")
         print("")
 
@@ -58,96 +77,10 @@ def conectar():
 
         print("")
         print("========================================")
-        print("ERROR GENERAL DE BASE DE DATOS")
+        print("ERROR GENERAL DE CONEXIÓN")
         print("========================================")
         print(error)
         print("========================================")
         print("")
 
         return None
-
-
-# =========================================================
-# PROBAR CONEXIÓN
-# =========================================================
-
-def probar_conexion():
-
-    conexion = None
-    cursor = None
-
-    try:
-
-        conexion = conectar()
-
-        if conexion is None:
-
-            print(
-                "No se pudo conectar con MySQL."
-            )
-
-            return False
-
-
-        cursor = conexion.cursor()
-
-        cursor.execute(
-            "SELECT DATABASE();"
-        )
-
-        resultado = cursor.fetchone()
-
-
-        print("")
-        print("========================================")
-        print("CONEXIÓN MYSQL CORRECTA")
-        print("========================================")
-        print(
-            "Base de datos:",
-            resultado[0]
-        )
-        print("========================================")
-        print("")
-
-
-        return True
-
-
-    except Exception as error:
-
-        print(
-            "ERROR:",
-            error
-        )
-
-        return False
-
-
-    finally:
-
-        if cursor is not None:
-
-            try:
-                cursor.close()
-            except Exception:
-                pass
-
-
-        if conexion is not None:
-
-            try:
-
-                if conexion.is_connected():
-                    conexion.close()
-
-            except Exception:
-                pass
-
-
-# =========================================================
-# PRUEBA DIRECTA
-# =========================================================
-
-if __name__ == "__main__":
-
-    probar_conexion()

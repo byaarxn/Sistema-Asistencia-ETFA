@@ -1,0 +1,792 @@
+{% extends "base.html" %}
+
+{% block title %}
+Importar Horario PDF | ETFA
+{% endblock %}
+
+{% block page_title %}
+Importar horario
+{% endblock %}
+
+{% block page_description %}
+Carga automática de horarios académicos desde documentos PDF
+{% endblock %}
+
+{% block content %}
+
+<style>
+
+.import-page {
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 14px;
+
+}
+
+
+/* =========================================================
+   BANNER
+========================================================= */
+
+.import-hero {
+
+    padding: 18px 20px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    gap: 15px;
+
+    border-radius: 14px;
+
+    background:
+
+        linear-gradient(
+            120deg,
+            #001d45,
+            #06377c
+        );
+
+    color: white;
+
+}
+
+
+.import-hero-left {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 13px;
+
+}
+
+
+.import-hero-icon {
+
+    width: 46px;
+    height: 46px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    border-radius: 12px;
+
+    background:
+        rgba(
+            255,
+            255,
+            255,
+            .10
+        );
+
+    font-size: 18px;
+
+}
+
+
+.import-hero h2 {
+
+    margin: 0;
+
+    font-size: 17px;
+
+}
+
+
+.import-hero p {
+
+    margin-top: 4px;
+
+    color:
+        rgba(
+            255,
+            255,
+            255,
+            .75
+        );
+
+    font-size: 8px;
+
+}
+
+
+.back-button {
+
+    display: inline-flex;
+
+    align-items: center;
+
+    gap: 6px;
+
+    padding:
+        8px
+        11px;
+
+    border-radius: 8px;
+
+    border:
+        1px solid
+        rgba(
+            255,
+            255,
+            255,
+            .18
+        );
+
+    background:
+        rgba(
+            255,
+            255,
+            255,
+            .08
+        );
+
+    color: white;
+
+    text-decoration: none;
+
+    font-size: 8px;
+
+    font-weight: 700;
+
+}
+
+
+/* =========================================================
+   PANEL
+========================================================= */
+
+.import-panel {
+
+    max-width: 800px;
+
+    width: 100%;
+
+    margin: 0 auto;
+
+    background: white;
+
+    border:
+        1px solid
+        #e4e7ec;
+
+    border-radius: 14px;
+
+    overflow: hidden;
+
+}
+
+
+.import-panel-header {
+
+    padding: 15px 18px;
+
+    border-bottom:
+        1px solid
+        #eaecf0;
+
+}
+
+
+.import-panel-header span {
+
+    color: #1769e8;
+
+    font-size: 7px;
+
+    font-weight: 800;
+
+    letter-spacing: .8px;
+
+    text-transform: uppercase;
+
+}
+
+
+.import-panel-header h3 {
+
+    margin: 5px 0 0;
+
+    font-size: 15px;
+
+}
+
+
+.import-panel-header p {
+
+    margin-top: 4px;
+
+    color: #667085;
+
+    font-size: 8px;
+
+}
+
+
+/* =========================================================
+   CONTENIDO
+========================================================= */
+
+.import-body {
+
+    padding: 18px;
+
+}
+
+
+/* =========================================================
+   ALERTAS
+========================================================= */
+
+.import-alert {
+
+    margin-bottom: 15px;
+
+    padding: 11px 13px;
+
+    display: flex;
+
+    align-items: flex-start;
+
+    gap: 9px;
+
+    border-radius: 9px;
+
+    font-size: 8px;
+
+}
+
+
+.import-alert.error {
+
+    border:
+        1px solid
+        #fecdca;
+
+    background:
+        #fef3f2;
+
+    color:
+        #b42318;
+
+}
+
+
+.import-alert.success {
+
+    border:
+        1px solid
+        #abefc6;
+
+    background:
+        #ecfdf3;
+
+    color:
+        #067647;
+
+}
+
+
+/* =========================================================
+   ZONA DE CARGA
+========================================================= */
+
+.upload-area {
+
+    padding: 32px 20px;
+
+    display: flex;
+
+    flex-direction: column;
+
+    align-items: center;
+
+    justify-content: center;
+
+    text-align: center;
+
+    border:
+        2px dashed
+        #cbd5e1;
+
+    border-radius: 12px;
+
+    background:
+        #f8fafc;
+
+}
+
+
+.upload-icon {
+
+    width: 58px;
+    height: 58px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    margin-bottom: 13px;
+
+    border-radius: 50%;
+
+    background:
+        #eaf2ff;
+
+    color:
+        #1769e8;
+
+    font-size: 22px;
+
+}
+
+
+.upload-area h4 {
+
+    margin: 0;
+
+    font-size: 12px;
+
+}
+
+
+.upload-area p {
+
+    margin-top: 5px;
+
+    color: #667085;
+
+    font-size: 8px;
+
+}
+
+
+.file-input {
+
+    margin-top: 15px;
+
+    width: 100%;
+
+    max-width: 400px;
+
+    padding: 8px;
+
+    border:
+        1px solid
+        #d0d5dd;
+
+    border-radius: 8px;
+
+    background: white;
+
+    font-size: 8px;
+
+}
+
+
+/* =========================================================
+   AYUDA
+========================================================= */
+
+.import-help {
+
+    margin-top: 15px;
+
+    padding: 12px;
+
+    display: flex;
+
+    gap: 9px;
+
+    border:
+        1px solid
+        #dbeafe;
+
+    border-radius: 9px;
+
+    background:
+        #f8fbff;
+
+}
+
+
+.import-help-icon {
+
+    width: 30px;
+    height: 30px;
+
+    flex-shrink: 0;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    border-radius: 7px;
+
+    background:
+        #eaf2ff;
+
+    color:
+        #1769e8;
+
+}
+
+
+.import-help strong {
+
+    display: block;
+
+    font-size: 8px;
+
+}
+
+
+.import-help p {
+
+    margin-top: 4px;
+
+    color: #667085;
+
+    font-size: 7px;
+
+    line-height: 1.5;
+
+}
+
+
+/* =========================================================
+   BOTONES
+========================================================= */
+
+.import-actions {
+
+    margin-top: 16px;
+
+    padding-top: 14px;
+
+    display: flex;
+
+    justify-content: flex-end;
+
+    gap: 8px;
+
+    border-top:
+        1px solid
+        #eaecf0;
+
+}
+
+
+.btn-cancel {
+
+    min-height: 34px;
+
+    padding:
+        0 12px;
+
+    display: inline-flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    border:
+        1px solid
+        #d0d5dd;
+
+    border-radius: 8px;
+
+    background: white;
+
+    color: #344054;
+
+    text-decoration: none;
+
+    font-size: 8px;
+
+    font-weight: 700;
+
+}
+
+
+.btn-upload {
+
+    min-height: 34px;
+
+    padding:
+        0 14px;
+
+    display: inline-flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    gap: 6px;
+
+    border: none;
+
+    border-radius: 8px;
+
+    background:
+
+        linear-gradient(
+            135deg,
+            #1769e8,
+            #0e55c7
+        );
+
+    color: white;
+
+    font-size: 8px;
+
+    font-weight: 800;
+
+    cursor: pointer;
+
+}
+
+</style>
+
+
+<div class="import-page">
+
+
+    <!-- =====================================================
+         BANNER
+    ====================================================== -->
+
+    <section class="import-hero">
+
+
+        <div class="import-hero-left">
+
+
+            <div class="import-hero-icon">
+
+                <i class="fa-solid fa-file-pdf"></i>
+
+            </div>
+
+
+            <div>
+
+                <h2>
+                    Importar horario desde PDF
+                </h2>
+
+                <p>
+                    El sistema analizará el documento para generar el horario académico
+                </p>
+
+            </div>
+
+
+        </div>
+
+
+        <a
+            href="{{ url_for('horarios') }}"
+            class="back-button"
+        >
+
+            <i class="fa-solid fa-arrow-left"></i>
+
+            Volver a horarios
+
+        </a>
+
+
+    </section>
+
+
+
+    <section class="import-panel">
+
+
+        <div class="import-panel-header">
+
+            <span>
+                Importación
+            </span>
+
+            <h3>
+                Seleccionar horario
+            </h3>
+
+            <p>
+                Cargue el documento oficial de horario académico en formato PDF.
+            </p>
+
+        </div>
+
+
+        <div class="import-body">
+
+
+            {% if error %}
+
+            <div class="import-alert error">
+
+                <i class="fa-solid fa-circle-exclamation"></i>
+
+                <div>
+                    {{ error }}
+                </div>
+
+            </div>
+
+            {% endif %}
+
+
+
+            {% if exito %}
+
+            <div class="import-alert success">
+
+                <i class="fa-solid fa-circle-check"></i>
+
+                <div>
+
+                    <strong>
+                        PDF cargado correctamente.
+                    </strong>
+
+                    <br>
+
+                    {{ nombre_archivo }}
+
+                    <br>
+
+                    En el siguiente paso analizaremos automáticamente
+                    el contenido del documento.
+
+                </div>
+
+            </div>
+
+            {% endif %}
+
+
+
+            <form
+                method="POST"
+                enctype="multipart/form-data"
+            >
+
+
+                <div class="upload-area">
+
+
+                    <div class="upload-icon">
+
+                        <i class="fa-solid fa-cloud-arrow-up"></i>
+
+                    </div>
+
+
+                    <h4>
+                        Seleccione el horario en PDF
+                    </h4>
+
+
+                    <p>
+                        Archivo máximo: 10 MB
+                    </p>
+
+
+                    <input
+                        type="file"
+                        name="archivo_pdf"
+                        class="file-input"
+                        accept=".pdf,application/pdf"
+                        required
+                    >
+
+
+                </div>
+
+
+
+                <div class="import-help">
+
+
+                    <div class="import-help-icon">
+
+                        <i class="fa-solid fa-circle-info"></i>
+
+                    </div>
+
+
+                    <div>
+
+                        <strong>
+                            ¿Qué ocurrirá con el documento?
+                        </strong>
+
+                        <p>
+                            En este primer paso únicamente se carga y valida
+                            el PDF. Todavía no se modifica el horario académico
+                            ni se eliminan registros existentes.
+                        </p>
+
+                    </div>
+
+
+                </div>
+
+
+
+                <div class="import-actions">
+
+
+                    <a
+                        href="{{ url_for('horarios') }}"
+                        class="btn-cancel"
+                    >
+                        Cancelar
+                    </a>
+
+
+                    <button
+                        type="submit"
+                        class="btn-upload"
+                    >
+
+                        <i class="fa-solid fa-upload"></i>
+
+                        Subir PDF
+
+                    </button>
+
+
+                </div>
+
+
+            </form>
+
+
+        </div>
+
+
+    </section>
+
+
+</div>
+
+{% endblock %}

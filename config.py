@@ -2,67 +2,46 @@ import os
 
 
 # =========================================================
-# CONFIGURACIÓN GENERAL DEL SISTEMA ETFA
+# CONFIGURACIÓN MYSQL
+# LOCAL + RAILWAY
 # =========================================================
 
-SECRET_KEY = os.environ.get(
-    "SECRET_KEY",
-    "ETFA_LOCAL_2026_DESARROLLO"
-)
+DB_CONFIG = {
 
+    "host": os.getenv(
+        "MYSQLHOST",
+        "127.0.0.1"
+    ),
 
-# =========================================================
-# BASE DE DATOS
-# =========================================================
-
-# ---------------------------------------------------------
-# PRODUCCIÓN - RAILWAY
-# ---------------------------------------------------------
-
-if os.environ.get("MYSQLHOST"):
-
-    DB_CONFIG = {
-
-        "host": os.environ.get("MYSQLHOST"),
-
-        "port": int(
-            os.environ.get(
-                "MYSQLPORT",
-                3306
-            )
-        ),
-
-        "user": os.environ.get(
-            "MYSQLUSER"
-        ),
-
-        "password": os.environ.get(
-            "MYSQLPASSWORD"
-        ),
-
-        "database": os.environ.get(
-            "MYSQLDATABASE"
+    "port": int(
+        os.getenv(
+            "MYSQLPORT",
+            "3306"
         )
-    }
+    ),
+
+    "user": os.getenv(
+        "MYSQLUSER",
+        "root"
+    ),
+
+    "password": os.getenv(
+        "MYSQLPASSWORD",
+        "12345"
+    ),
+
+    "database": os.getenv(
+        "MYSQLDATABASE",
+        "asistencia_etfa"
+    )
+}
 
 
-# ---------------------------------------------------------
-# LOCAL - TU COMPUTADORA
-# ---------------------------------------------------------
+# =========================================================
+# SECRET KEY
+# =========================================================
 
-else:
-
-    DB_CONFIG = {
-
-        "host": "127.0.0.1",
-
-        "port": 3306,
-
-        "user": "root",
-
-        "password": "12345",
-
-        # CAMBIA SOLO ESTO SI TU BASE
-        # TIENE OTRO NOMBRE
-        "database": "asistencia_etfa"
-    }
+SECRET_KEY = os.getenv(
+    "SECRET_KEY",
+    "etfa-clave-secreta-local"
+)

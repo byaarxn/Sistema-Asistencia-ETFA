@@ -18,21 +18,13 @@ Programación semanal de clases y actividades del Paralelo C
 
 .schedule-header {
     display: flex;
-
     justify-content: space-between;
-
     align-items: center;
-
     gap: 15px;
-
     padding: 18px;
-
     margin-bottom: 15px;
-
     background: white;
-
     border: 1px solid #e4e7ec;
-
     border-radius: 14px;
 }
 
@@ -48,96 +40,98 @@ Programación semanal de clases y actividades del Paralelo C
 .schedule-actions {
     display: flex;
     gap: 8px;
+    flex-wrap: wrap;
 }
 
 .schedule-btn {
     min-height: 40px;
-
     padding: 0 14px;
 
     display: inline-flex;
-
     align-items: center;
     justify-content: center;
+
+    gap: 7px;
 
     border-radius: 8px;
 
     background: #2563eb;
-
     color: white;
 
     text-decoration: none;
 
     font-size: 11px;
-
     font-weight: 700;
 
     border: none;
+
+    cursor: pointer;
+
+    transition: .15s;
+}
+
+.schedule-btn:hover {
+    transform: translateY(-1px);
+    opacity: .92;
+}
+
+.btn-materias {
+    background: #475467;
+}
+
+.btn-importar {
+    background: #0f766e;
+}
+
+.btn-importar:hover {
+    background: #0d675f;
 }
 
 .current-class {
     padding: 17px;
-
     margin-bottom: 15px;
-
     border-radius: 14px;
-
     background: #eff6ff;
-
     border: 1px solid #bfdbfe;
 }
 
 .current-class span {
     color: #2563eb;
-
     font-size: 10px;
-
     font-weight: 800;
 }
 
 .current-class h3 {
     margin: 6px 0;
-
     color: #1e3a8a;
 }
 
 .filter-box {
     background: white;
-
     border: 1px solid #e4e7ec;
-
     border-radius: 14px;
-
     padding: 14px;
-
     margin-bottom: 15px;
 }
 
 .filter-box form {
     display: flex;
-
     gap: 8px;
-
     align-items: center;
+    flex-wrap: wrap;
 }
 
 .filter-box input {
     min-height: 38px;
-
     padding: 0 10px;
-
     border: 1px solid #d0d5dd;
-
     border-radius: 8px;
 }
 
 .schedule-panel {
     background: white;
-
     border: 1px solid #e4e7ec;
-
     border-radius: 14px;
-
     overflow: hidden;
 }
 
@@ -147,73 +141,49 @@ Programación semanal de clases y actividades del Paralelo C
 
 .schedule-table {
     width: 100%;
-
     min-width: 1100px;
-
     border-collapse: collapse;
 }
 
 .schedule-table th {
     padding: 11px;
-
     background: #f8fafc;
-
     color: #667085;
-
     font-size: 9px;
-
     text-transform: uppercase;
-
     text-align: left;
-
     white-space: nowrap;
 }
 
 .schedule-table td {
     padding: 11px;
-
     border-top: 1px solid #f2f4f7;
-
     font-size: 11px;
-
     vertical-align: middle;
 }
 
 .type-badge {
     display: inline-flex;
-
     padding: 5px 8px;
-
     border-radius: 999px;
-
     background: #f2f4f7;
-
     font-size: 9px;
-
     font-weight: 700;
 }
 
 .schedule-row-actions {
     display: flex;
-
     gap: 5px;
-
     flex-wrap: wrap;
 }
 
 .small-btn {
     padding: 6px 8px;
-
     border-radius: 6px;
-
     text-decoration: none;
-
     font-size: 9px;
-
     font-weight: 700;
-
     background: #eff6ff;
-
     color: #2563eb;
 }
 
@@ -225,6 +195,28 @@ Programación semanal de clases y actividades del Paralelo C
 .small-btn.attendance {
     background: #ecfdf3;
     color: #027a48;
+}
+
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media (max-width: 900px) {
+
+    .schedule-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .schedule-actions {
+        width: 100%;
+    }
+
+    .schedule-btn {
+        flex: 1;
+    }
+
 }
 
 </style>
@@ -247,19 +239,51 @@ Programación semanal de clases y actividades del Paralelo C
 
     <div class="schedule-actions">
 
+        <!-- =====================================================
+             MATERIAS
+        ====================================================== -->
+
         <a
             href="{{ url_for('materias') }}"
-            class="schedule-btn"
-            style="background:#475467;"
+            class="schedule-btn btn-materias"
         >
+
+            <i class="fa-solid fa-book"></i>
+
             Materias
+
         </a>
+
+
+        <!-- =====================================================
+             NUEVO BLOQUE
+        ====================================================== -->
 
         <a
             href="{{ url_for('nuevo_horario') }}"
             class="schedule-btn"
         >
-            + Nuevo bloque
+
+            <i class="fa-solid fa-plus"></i>
+
+            Nuevo bloque
+
+        </a>
+
+
+        <!-- =====================================================
+             IMPORTAR HORARIO PDF
+        ====================================================== -->
+
+        <a
+            href="{{ url_for('importar_horario') }}"
+            class="schedule-btn btn-importar"
+        >
+
+            <i class="fa-solid fa-file-pdf"></i>
+
+            Importar horario PDF
+
         </a>
 
     </div>
@@ -317,8 +341,10 @@ Programación semanal de clases y actividades del Paralelo C
             type="submit"
             class="schedule-btn"
         >
+            <i class="fa-solid fa-filter"></i>
             Filtrar
         </button>
+
 
         {% if fecha_busqueda %}
 
@@ -327,7 +353,11 @@ Programación semanal de clases y actividades del Paralelo C
             class="schedule-btn"
             style="background:#667085;"
         >
+
+            <i class="fa-solid fa-rotate-left"></i>
+
             Ver todo
+
         </a>
 
         {% endif %}
@@ -376,9 +406,11 @@ Programación semanal de clases y actividades del Paralelo C
 
 
                     <td>
+
                         <strong>
                             {{ h.dia_semana }}
                         </strong>
+
                     </td>
 
 
@@ -398,11 +430,17 @@ Programación semanal de clases y actividades del Paralelo C
                             {{ h.materia }}
                         </strong>
 
+
                         {% if h.codigo %}
 
-                            <div style="margin-top:3px;color:#98a2b3;">
-                                {{ h.codigo }}
-                            </div>
+                        <div
+                            style="
+                                margin-top:3px;
+                                color:#98a2b3;
+                            "
+                        >
+                            {{ h.codigo }}
+                        </div>
 
                         {% endif %}
 
@@ -442,6 +480,9 @@ Programación semanal de clases y actividades del Paralelo C
 
                         <div class="schedule-row-actions">
 
+
+                            <!-- ASISTENCIA -->
+
                             {% if h.contabiliza_asistencia %}
 
                             <a
@@ -451,11 +492,17 @@ Programación semanal de clases y actividades del Paralelo C
                                 ) }}"
                                 class="small-btn attendance"
                             >
+
+                                <i class="fa-solid fa-check"></i>
+
                                 Asistencia
+
                             </a>
 
                             {% endif %}
 
+
+                            <!-- EDITAR -->
 
                             <a
                                 href="{{ url_for(
@@ -464,9 +511,15 @@ Programación semanal de clases y actividades del Paralelo C
                                 ) }}"
                                 class="small-btn"
                             >
+
+                                <i class="fa-solid fa-pen"></i>
+
                                 Editar
+
                             </a>
 
+
+                            <!-- ELIMINAR -->
 
                             <a
                                 href="{{ url_for(
@@ -474,9 +527,17 @@ Programación semanal de clases y actividades del Paralelo C
                                     id_horario=h.id_horario_academico
                                 ) }}"
                                 class="small-btn delete"
-                                onclick="return confirm('¿Eliminar este bloque del horario?');"
+                                onclick="
+                                    return confirm(
+                                        '¿Eliminar este bloque del horario?'
+                                    );
+                                "
                             >
+
+                                <i class="fa-solid fa-trash"></i>
+
                                 Eliminar
+
                             </a>
 
                         </div>
@@ -485,15 +546,22 @@ Programación semanal de clases y actividades del Paralelo C
 
                 </tr>
 
+
             {% else %}
 
                 <tr>
 
                     <td
                         colspan="11"
-                        style="text-align:center;padding:35px;"
+                        style="
+                            text-align:center;
+                            padding:35px;
+                            color:#667085;
+                        "
                     >
+
                         No existen bloques académicos registrados.
+
                     </td>
 
                 </tr>

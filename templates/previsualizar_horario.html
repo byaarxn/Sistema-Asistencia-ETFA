@@ -1,0 +1,954 @@
+{% extends "base.html" %}
+
+{% block title %}
+Previsualizar Horario | ETFA
+{% endblock %}
+
+{% block page_title %}
+Previsualización del horario
+{% endblock %}
+
+{% block page_description %}
+Bloques detectados automáticamente desde el PDF antes de guardarlos
+{% endblock %}
+
+{% block content %}
+
+<style>
+
+.preview-page {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.preview-hero {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 15px;
+
+    padding: 18px;
+
+    border-radius: 14px;
+
+    background:
+        linear-gradient(
+            120deg,
+            #001d45,
+            #06377c
+        );
+
+    color: white;
+}
+
+.preview-hero h2 {
+    margin: 0 0 5px;
+    font-size: 17px;
+}
+
+.preview-hero p {
+    margin: 0;
+
+    color:
+        rgba(
+            255,
+            255,
+            255,
+            .75
+        );
+
+    font-size: 9px;
+}
+
+.preview-back {
+    min-height: 38px;
+
+    padding: 0 13px;
+
+    display: inline-flex;
+
+    align-items: center;
+    justify-content: center;
+
+    gap: 7px;
+
+    border-radius: 8px;
+
+    background:
+        rgba(
+            255,
+            255,
+            255,
+            .12
+        );
+
+    border:
+        1px solid
+        rgba(
+            255,
+            255,
+            255,
+            .18
+        );
+
+    color: white;
+
+    text-decoration: none;
+
+    font-size: 9px;
+    font-weight: 700;
+}
+
+
+/* =========================================================
+   RESUMEN
+========================================================= */
+
+.preview-summary {
+    display: grid;
+
+    grid-template-columns:
+        repeat(
+            4,
+            minmax(0, 1fr)
+        );
+
+    gap: 10px;
+}
+
+.summary-card {
+    padding: 14px;
+
+    background: white;
+
+    border:
+        1px solid
+        #e4e7ec;
+
+    border-radius: 12px;
+}
+
+.summary-card span {
+    display: block;
+
+    margin-bottom: 5px;
+
+    color: #667085;
+
+    font-size: 8px;
+    font-weight: 800;
+
+    text-transform: uppercase;
+}
+
+.summary-card strong {
+    display: block;
+
+    color: #101828;
+
+    font-size: 14px;
+}
+
+.summary-card.success strong {
+    color: #027a48;
+}
+
+.summary-card.warning strong {
+    color: #b54708;
+}
+
+
+/* =========================================================
+   AVISO
+========================================================= */
+
+.notice {
+    padding: 13px;
+
+    display: flex;
+
+    gap: 9px;
+
+    background: #eff8ff;
+
+    border:
+        1px solid
+        #b2ddff;
+
+    border-radius: 10px;
+
+    color: #175cd3;
+
+    font-size: 9px;
+
+    line-height: 1.5;
+}
+
+
+/* =========================================================
+   PANEL
+========================================================= */
+
+.preview-panel {
+    background: white;
+
+    border:
+        1px solid
+        #e4e7ec;
+
+    border-radius: 14px;
+
+    overflow: hidden;
+}
+
+.preview-panel-header {
+    padding: 15px 17px;
+
+    border-bottom:
+        1px solid
+        #eaecf0;
+}
+
+.preview-panel-header h3 {
+    margin: 0 0 4px;
+
+    font-size: 13px;
+}
+
+.preview-panel-header p {
+    margin: 0;
+
+    color: #667085;
+
+    font-size: 8px;
+}
+
+
+/* =========================================================
+   TABLA
+========================================================= */
+
+.preview-table-wrap {
+    width: 100%;
+
+    overflow-x: auto;
+}
+
+.preview-table {
+    width: 100%;
+
+    min-width: 1250px;
+
+    border-collapse: collapse;
+}
+
+.preview-table th {
+    padding: 10px;
+
+    background: #f8fafc;
+
+    color: #667085;
+
+    font-size: 8px;
+
+    text-transform: uppercase;
+
+    text-align: left;
+
+    white-space: nowrap;
+}
+
+.preview-table td {
+    padding: 10px;
+
+    border-top:
+        1px solid
+        #f2f4f7;
+
+    font-size: 9px;
+
+    vertical-align: middle;
+}
+
+.preview-table tbody tr:hover {
+    background: #fafcff;
+}
+
+
+/* =========================================================
+   ESTADOS
+========================================================= */
+
+.status-ok,
+.status-review {
+    display: inline-flex;
+
+    align-items: center;
+
+    gap: 5px;
+
+    padding: 5px 7px;
+
+    border-radius: 999px;
+
+    font-size: 8px;
+
+    font-weight: 800;
+}
+
+.status-ok {
+    background: #ecfdf3;
+    color: #027a48;
+}
+
+.status-review {
+    background: #fffaeb;
+    color: #b54708;
+}
+
+.confidence {
+    font-weight: 800;
+}
+
+.raw-text {
+    max-width: 260px;
+
+    color: #667085;
+
+    font-size: 8px;
+
+    line-height: 1.4;
+
+    word-break: break-word;
+}
+
+
+/* =========================================================
+   ACCIONES
+========================================================= */
+
+.preview-actions {
+    display: flex;
+
+    justify-content: flex-end;
+
+    align-items: center;
+
+    gap: 8px;
+
+    padding: 14px 17px;
+
+    border-top:
+        1px solid
+        #eaecf0;
+
+    background: #f8fafc;
+}
+
+.btn-secondary,
+.btn-confirmar {
+    min-height: 38px;
+
+    padding: 0 14px;
+
+    display: inline-flex;
+
+    align-items: center;
+    justify-content: center;
+
+    gap: 6px;
+
+    border-radius: 8px;
+
+    font-size: 9px;
+
+    font-weight: 800;
+
+    text-decoration: none;
+
+    transition: .15s;
+}
+
+.btn-secondary {
+    background: white;
+
+    border:
+        1px solid
+        #d0d5dd;
+
+    color: #344054;
+}
+
+.btn-secondary:hover {
+    background: #f9fafb;
+}
+
+.btn-confirmar {
+    border: none;
+
+    background: #2563eb;
+
+    color: white;
+
+    cursor: pointer;
+
+    box-shadow:
+        0 2px 5px
+        rgba(
+            37,
+            99,
+            235,
+            .20
+        );
+}
+
+.btn-confirmar:hover {
+    background: #1d4ed8;
+
+    transform:
+        translateY(-1px);
+}
+
+.btn-confirmar:active {
+    transform:
+        translateY(0);
+}
+
+
+/* =========================================================
+   ESTADO VACÍO
+========================================================= */
+
+.empty-state {
+    padding: 40px;
+
+    text-align: center;
+
+    color: #667085;
+
+    font-size: 10px;
+}
+
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media (max-width: 900px) {
+
+    .preview-hero {
+        flex-direction: column;
+
+        align-items: flex-start;
+    }
+
+    .preview-summary {
+        grid-template-columns:
+            repeat(
+                2,
+                minmax(0, 1fr)
+            );
+    }
+
+    .preview-actions {
+        flex-wrap: wrap;
+    }
+
+}
+
+@media (max-width: 550px) {
+
+    .preview-summary {
+        grid-template-columns: 1fr;
+    }
+
+    .preview-actions {
+        flex-direction: column;
+    }
+
+    .preview-actions form,
+    .preview-actions a,
+    .btn-confirmar {
+        width: 100%;
+    }
+
+}
+
+</style>
+
+
+<div class="preview-page">
+
+
+    <!-- =====================================================
+         CABECERA
+    ====================================================== -->
+
+    <section class="preview-hero">
+
+        <div>
+
+            <h2>
+                Horario detectado automáticamente
+            </h2>
+
+            <p>
+                {{ nombre_archivo }}
+                ·
+                {{ total_paginas }} página(s)
+            </p>
+
+        </div>
+
+
+        <a
+            href="{{ url_for('importar_horario') }}"
+            class="preview-back"
+        >
+
+            <i class="fa-solid fa-arrow-left"></i>
+
+            Cargar otro PDF
+
+        </a>
+
+    </section>
+
+
+    <!-- =====================================================
+         RESUMEN
+    ====================================================== -->
+
+    <section class="preview-summary">
+
+
+        <div class="summary-card">
+
+            <span>
+                Bloques detectados
+            </span>
+
+            <strong>
+                {{ total_bloques }}
+            </strong>
+
+        </div>
+
+
+        <div class="summary-card success">
+
+            <span>
+                Listos
+            </span>
+
+            <strong>
+                {{ bloques_listos }}
+            </strong>
+
+        </div>
+
+
+        <div class="summary-card warning">
+
+            <span>
+                Requieren revisión
+            </span>
+
+            <strong>
+                {{ bloques_revision }}
+            </strong>
+
+        </div>
+
+
+        <div class="summary-card">
+
+            <span>
+                Estado
+            </span>
+
+            <strong>
+                PREVISUALIZACIÓN
+            </strong>
+
+        </div>
+
+
+    </section>
+
+
+    <!-- =====================================================
+         AVISO
+    ====================================================== -->
+
+    <div class="notice">
+
+        <i class="fa-solid fa-circle-info"></i>
+
+        <div>
+
+            El sistema ha detectado automáticamente
+            las fechas, horas, materias, docentes y lugares.
+
+            <strong>
+                Revisa la información antes de importarla.
+            </strong>
+
+            Al pulsar
+            <strong>
+                Confirmar e importar
+            </strong>
+            los bloques serán registrados en MySQL.
+
+            Los bloques que ya existan serán omitidos
+            automáticamente para evitar duplicados.
+
+        </div>
+
+    </div>
+
+
+    <!-- =====================================================
+         TABLA
+    ====================================================== -->
+
+    <section class="preview-panel">
+
+
+        <div class="preview-panel-header">
+
+            <h3>
+                Bloques encontrados
+            </h3>
+
+            <p>
+                La fecha determina automáticamente
+                el día correspondiente de la semana.
+            </p>
+
+        </div>
+
+
+        <div class="preview-table-wrap">
+
+
+            <table class="preview-table">
+
+
+                <thead>
+
+                    <tr>
+
+                        <th>#</th>
+
+                        <th>Fecha</th>
+
+                        <th>Día</th>
+
+                        <th>Inicio</th>
+
+                        <th>Fin</th>
+
+                        <th>Horas</th>
+
+                        <th>
+                            Materia / Actividad
+                        </th>
+
+                        <th>Docente</th>
+
+                        <th>Lugar</th>
+
+                        <th>Confianza</th>
+
+                        <th>Estado</th>
+
+                        <th>Texto original</th>
+
+                    </tr>
+
+                </thead>
+
+
+                <tbody>
+
+
+                {% for bloque in bloques %}
+
+
+                    <tr>
+
+
+                        <td>
+                            {{ loop.index }}
+                        </td>
+
+
+                        <td>
+
+                            <strong>
+                                {{ bloque.fecha }}
+                            </strong>
+
+                        </td>
+
+
+                        <td>
+
+                            <strong>
+                                {{ bloque.dia_semana }}
+                            </strong>
+
+                        </td>
+
+
+                        <td>
+                            {{ bloque.hora_inicio }}
+                        </td>
+
+
+                        <td>
+                            {{ bloque.hora_fin }}
+                        </td>
+
+
+                        <td>
+
+                            {{ bloque.horas_clase }} h
+
+                        </td>
+
+
+                        <td>
+
+                            <strong>
+                                {{ bloque.materia }}
+                            </strong>
+
+
+                            {% if not bloque.id_materia %}
+
+                            <div
+                                style="
+                                    margin-top:3px;
+                                    color:#b54708;
+                                "
+                            >
+
+                                <i
+                                    class="
+                                        fa-solid
+                                        fa-circle-exclamation
+                                    "
+                                ></i>
+
+                                Se creará/vinculará
+                                al importar
+
+                            </div>
+
+                            {% endif %}
+
+                        </td>
+
+
+                        <td>
+
+                            {{
+                                bloque.docente
+                                or "--"
+                            }}
+
+                        </td>
+
+
+                        <td>
+
+                            {{
+                                bloque.lugar
+                                or "--"
+                            }}
+
+                        </td>
+
+
+                        <td
+                            class="confidence"
+                        >
+
+                            {{ bloque.confianza }}%
+
+                        </td>
+
+
+                        <td>
+
+
+                            {% if bloque.requiere_revision %}
+
+
+                                <span
+                                    class="status-review"
+                                >
+
+                                    <i
+                                        class="
+                                            fa-solid
+                                            fa-triangle-exclamation
+                                        "
+                                    ></i>
+
+                                    Revisar
+
+                                </span>
+
+
+                            {% else %}
+
+
+                                <span
+                                    class="status-ok"
+                                >
+
+                                    <i
+                                        class="
+                                            fa-solid
+                                            fa-circle-check
+                                        "
+                                    ></i>
+
+                                    Listo
+
+                                </span>
+
+
+                            {% endif %}
+
+
+                        </td>
+
+
+                        <td>
+
+                            <div class="raw-text">
+
+                                {{
+                                    bloque.texto_origen
+                                }}
+
+                            </div>
+
+                        </td>
+
+
+                    </tr>
+
+
+                {% else %}
+
+
+                    <tr>
+
+                        <td
+                            colspan="12"
+                            class="empty-state"
+                        >
+
+                            <i
+                                class="
+                                    fa-solid
+                                    fa-file-circle-exclamation
+                                "
+                            ></i>
+
+                            <br><br>
+
+                            No se detectaron bloques
+                            válidos.
+
+                            <br>
+
+                            Verifica que el PDF sea un
+                            horario académico ETFA con
+                            fechas y horas legibles.
+
+                        </td>
+
+                    </tr>
+
+
+                {% endfor %}
+
+
+                </tbody>
+
+
+            </table>
+
+
+        </div>
+
+
+        <!-- =================================================
+             BOTONES
+        ================================================== -->
+
+        <div class="preview-actions">
+
+
+            <a
+                href="{{ url_for('importar_horario') }}"
+                class="btn-secondary"
+            >
+
+                <i class="fa-solid fa-arrow-left"></i>
+
+                Volver
+
+            </a>
+
+
+            {% if total_bloques > 0 %}
+
+
+            <form
+                method="POST"
+                action="{{ url_for('confirmar_importacion_horario') }}"
+                style="display:inline;"
+                onsubmit="
+                    return confirm(
+                        '¿Confirmar e importar {{ total_bloques }} bloques del horario a MySQL?'
+                    );
+                "
+            >
+
+
+                <button
+                    type="submit"
+                    class="btn-confirmar"
+                >
+
+                    <i class="fa-solid fa-database"></i>
+
+                    Confirmar e importar
+
+                </button>
+
+
+            </form>
+
+
+            {% endif %}
+
+
+        </div>
+
+
+    </section>
+
+
+</div>
+
+
+{% endblock %}

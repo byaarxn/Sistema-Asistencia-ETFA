@@ -1,0 +1,199 @@
+{% extends "base.html" %}
+
+{% block title %}
+Resultado de importación | ETFA
+{% endblock %}
+
+{% block page_title %}
+Resultado de importación
+{% endblock %}
+
+{% block page_description %}
+Resumen del procesamiento del horario académico
+{% endblock %}
+
+{% block content %}
+
+<style>
+
+.result-wrap {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.result-hero {
+    padding: 20px;
+    border-radius: 14px;
+    color: white;
+    background: linear-gradient(120deg, #062a5e, #0b4a9f);
+}
+
+.result-hero.error {
+    background: linear-gradient(120deg, #7f1d1d, #b42318);
+}
+
+.result-hero h2 {
+    margin: 0 0 6px;
+    font-size: 18px;
+}
+
+.result-hero p {
+    margin: 0;
+    opacity: .85;
+    font-size: 11px;
+}
+
+.result-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 12px;
+}
+
+.result-card {
+    padding: 16px;
+    background: white;
+    border: 1px solid #e4e7ec;
+    border-radius: 12px;
+}
+
+.result-card span {
+    display: block;
+    margin-bottom: 7px;
+    color: #667085;
+    font-size: 9px;
+    font-weight: 800;
+    text-transform: uppercase;
+}
+
+.result-card strong {
+    font-size: 22px;
+    color: #101828;
+}
+
+.result-actions {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.result-btn {
+    min-height: 40px;
+    padding: 0 14px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-size: 10px;
+    font-weight: 800;
+    background: #2563eb;
+    color: white;
+}
+
+.result-btn.secondary {
+    background: #475467;
+}
+
+@media (max-width: 850px) {
+    .result-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+
+@media (max-width: 520px) {
+    .result-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+</style>
+
+<div class="result-wrap">
+
+    <section class="result-hero {% if not exito %}error{% endif %}">
+
+        <h2>
+            {% if exito %}
+                Importación completada
+            {% else %}
+                No se pudo completar la importación
+            {% endif %}
+        </h2>
+
+        <p>
+            {{ mensaje }}
+        </p>
+
+        {% if nombre_archivo %}
+        <p style="margin-top:8px;">
+            Archivo: {{ nombre_archivo }}
+        </p>
+        {% endif %}
+
+    </section>
+
+    {% if exito %}
+
+    <section class="result-grid">
+
+        <div class="result-card">
+            <span>Bloques detectados</span>
+            <strong>{{ total_detectados or 0 }}</strong>
+        </div>
+
+        <div class="result-card">
+            <span>Bloques importados</span>
+            <strong>{{ importados or 0 }}</strong>
+        </div>
+
+        <div class="result-card">
+            <span>Duplicados omitidos</span>
+            <strong>{{ omitidos or 0 }}</strong>
+        </div>
+
+        <div class="result-card">
+            <span>Materias creadas</span>
+            <strong>{{ materias_creadas or 0 }}</strong>
+        </div>
+
+    </section>
+
+    <section class="result-grid">
+
+        <div class="result-card">
+            <span>Asistencias generadas</span>
+            <strong>{{ asistencias_generadas or 0 }}</strong>
+        </div>
+
+        <div class="result-card">
+            <span>Páginas procesadas</span>
+            <strong>{{ total_paginas or 0 }}</strong>
+        </div>
+
+    </section>
+
+    {% endif %}
+
+    <div class="result-actions">
+
+        <a
+            href="{{ url_for('horarios') }}"
+            class="result-btn"
+        >
+            Ver horario
+        </a>
+
+        <a
+            href="{{ url_for('importar_horario') }}"
+            class="result-btn secondary"
+        >
+            Importar otro PDF
+        </a>
+
+    </div>
+
+</div>
+
+{% endblock %}
